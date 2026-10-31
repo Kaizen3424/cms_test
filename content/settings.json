@@ -1,0 +1,15 @@
+{
+  "siteTitle": "Wanderlust Chronicles",
+  "tagline": "Uncharted Trails, Mindful Travel & Secret Corners of the Earth",
+  "heroHeading": "Discover the art of slow, immersive wandering",
+  "heroSubheading": "Documenting untold journeys across ancient alleys, misty alpine ridges, and vibrant bazaars. Real stories, unfiltered field notes, and sustainable travel guides.",
+  "heroImage": "/images/destinations/dolomites-hero.svg",
+  "contactEmail": "hello@wanderlustchronicles.io",
+  "footerText": "© 2026 Wanderlust Chronicles. Handcrafted with passion and managed with MyCMS.",
+  "stats": [
+    { "label": "Countries Explored", "value": "38+" },
+    { "label": "Field Dispatches", "value": "120+" },
+    { "label": "Trail Miles", "value": "4,200+" },
+    { "label": "Active Readers", "value": "24k" }
+  ]
+}

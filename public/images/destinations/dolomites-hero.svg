@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="40%" stop-color="#431407" />
+      <stop offset="70%" stop-color="#991b1b" />
+      <stop offset="90%" stop-color="#f97316" />
+      <stop offset="100%" stop-color="#fef08a" />
+    </linearGradient>
+    <linearGradient id="peakBack" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4c1d95" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#1f2937" />
+    </linearGradient>
+    <linearGradient id="peakFore" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#dc2626" />
+      <stop offset="50%" stop-color="#7f1d1d" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="glowSun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff" />
+      <stop offset="100%" stop-color="#fb923c" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#skyGrad)" />
+  <circle cx="600" cy="520" r="140" fill="url(#glowSun)" opacity="0.6" />
+  <!-- Back peaks -->
+  <polygon points="100,560 250,340 380,560" fill="url(#peakBack)" />
+  <polygon points="320,560 480,280 620,560" fill="url(#peakBack)" />
+  <polygon points="580,560 740,310 900,560" fill="url(#peakBack)" />
+  <polygon points="840,560 1020,330 1150,560" fill="url(#peakBack)" />
+  <!-- Front sharp Dolomite spires -->
+  <polygon points="180,620 340,240 380,290 420,220 540,620" fill="url(#peakFore)" />
+  <polygon points="500,620 620,180 660,250 720,170 820,620" fill="url(#peakFore)" />
+  <polygon points="760,620 900,260 980,310 1060,620" fill="url(#peakFore)" />
+  <!-- Alpine meadow and silhouette trees -->
+  <path d="M0,600 Q300,550 600,590 T1200,610 L1200,800 L0,800 Z" fill="#090d16" />
+  <!-- Pine silhouettes -->
+  <g fill="#05080f">
+    <polygon points="60,600 75,530 90,600" />
+    <polygon points="80,610 95,540 110,610" />
+    <polygon points="150,605 165,520 180,605" />
+    <polygon points="210,615 225,535 240,615" />
+    <polygon points="980,600 995,510 1010,600" />
+    <polygon points="1040,610 1055,530 1070,610" />
+    <polygon points="1100,605 1115,525 1130,605" />
+  </g>
+  <text x="600" y="730" font-family="system-ui, sans-serif" font-size="28" font-weight="600" fill="#f8fafc" text-anchor="middle" letter-spacing="4">THE DOLOMITES · ALTA VIA</text>
+</svg>

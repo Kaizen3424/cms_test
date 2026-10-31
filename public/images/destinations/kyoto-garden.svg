@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="100%" height="100%">
+  <defs>
+    <linearGradient id="kyotoSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="50%" stop-color="#047857" />
+      <stop offset="85%" stop-color="#6ee7b7" />
+      <stop offset="100%" stop-color="#fef3c7" />
+    </linearGradient>
+    <linearGradient id="templeWood" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#18181b" />
+      <stop offset="100%" stop-color="#27272a" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#kyotoSky)" />
+  <!-- Pagoda Silhouette -->
+  <g fill="url(#templeWood)" transform="translate(700, 150)">
+    <!-- Spire -->
+    <rect x="195" y="0" width="10" height="120" />
+    <!-- Roof 1 -->
+    <path d="M70,140 Q200,90 330,140 L310,170 Q200,130 90,170 Z" />
+    <rect x="140" y="170" width="120" height="40" />
+    <!-- Roof 2 -->
+    <path d="M40,230 Q200,170 360,230 L340,265 Q200,215 60,265 Z" />
+    <rect x="120" y="265" width="160" height="50" />
+    <!-- Roof 3 -->
+    <path d="M10,340 Q200,260 390,340 L360,380 Q200,310 40,380 Z" />
+    <rect x="90" y="380" width="220" height="70" />
+    <!-- Base -->
+    <rect x="60" y="450" width="280" height="100" />
+  </g>
+  <!-- Bamboo forest hills -->
+  <path d="M0,520 Q400,420 800,530 T1200,540 L1200,800 L0,800 Z" fill="#022c22" />
+  <!-- Stepping stone path in moss -->
+  <ellipse cx="250" cy="720" rx="60" ry="25" fill="#3f3f46" />
+  <ellipse cx="380" cy="690" rx="55" ry="22" fill="#52525b" />
+  <ellipse cx="500" cy="735" rx="65" ry="28" fill="#3f3f46" />
+  <ellipse cx="640" cy="705" rx="50" ry="20" fill="#52525b" />
+  <!-- Stone lantern -->
+  <g fill="#27272a" transform="translate(180, 480)">
+    <polygon points="40,20 80,0 120,20 100,50 60,50" />
+    <rect x="70" y="50" width="20" height="40" />
+    <polygon points="50,90 110,90 90,110 70,110" />
+    <rect x="75" y="110" width="10" height="60" />
+    <rect x="55" y="170" width="50" height="20" />
+  </g>
+  <text x="600" y="770" font-family="system-ui, sans-serif" font-size="24" font-weight="600" fill="#a7f3d0" text-anchor="middle" letter-spacing="4">KYOTO · ZEN MOSS GARDEN</text>
+</svg>
