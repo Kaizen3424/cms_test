@@ -1,6 +1,5 @@
 {
-  "title": "Chasing the Enrosadira: 4 Days on the Alta Via 1",
-  "slug": "chasing-enrosadira-dolomites",
+  "title": "Hurray",
   "excerpt": "Traversing high limestone passes and staying in historic mountain huts as the twilight sky sets the sheer cliffs ablaze with crimson and violet light.",
   "content": "The Dolomites do not resemble any other mountain range on Earth. Composed of fossilized coral reefs that rose from an ancient Tethys ocean millions of years ago, their sheer vertical spires turn pale rose, ochre, and deep crimson as the sun dips below the horizon—a phenomenon known locally as 'enrosadira'.\n\nStarting from Lago di Braies, we climbed steeply into the heart of the Fanes-Sennes-Prags Nature Park. Each afternoon ended at a warm rifugio where the smell of wood smoke, polenta, and hearty speck welcomed exhausted hikers. Sleeping under a sky dusted with billions of stars at 2,750 meters altitude resets your entire sense of scale and belonging.",
   "coverImage": "/images/posts/dolomites-sunset.svg",
@@ -8,6 +7,11 @@
   "author": "Maya Lin",
   "readingTime": "7 min read",
   "featured": true,
-  "tags": ["Trekking", "Mountains", "Alps", "Adventure"],
+  "tags": [
+    "Trekking",
+    "Mountains",
+    "Alps",
+    "Adventure"
+  ],
   "publishDate": "2026-10-02T16:45:00Z"
 }
