@@ -1271,7 +1271,7 @@ packages:
     engines: {node: '>=18'}
 
   patcms@file:vendor/patcms-0.1.0.tgz:
-    resolution: {integrity: sha512-gyLBPVwz+UUjTzI8ciefdPUTerY6Cd7kzZi5fXeGdvOW9O9c8ApoZC7E7BSJVvY84b23VvyK7HpgvsUSc4pifw==, tarball: file:vendor/patcms-0.1.0.tgz}
+    resolution: {integrity: sha512-LtwyNJRJsLahdkeOZkYmZcxWvhqpY5OSWNB19vHzdxI6xl1sB3fDLdXNLj+Sh6mINtx9VyXQAHvU6Ck62gW0gQ==, tarball: file:vendor/patcms-0.1.0.tgz}
     version: 0.1.0
     engines: {node: '>=22.12.0'}
 
