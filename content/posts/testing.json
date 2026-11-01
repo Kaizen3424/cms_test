@@ -1,6 +1,6 @@
 {
   "title": "testing",
-  "excerpt": "Real-loop edit 1",
+  "excerpt": "Foreign edit from API",
   "content": "asdadads",
   "coverImage": "/images/img_20251128_wa00129ajz7b.webp",
   "author": "Kunduman",
@@ -10,5 +10,5 @@
     "asdadsad",
     "asdadsd"
   ],
-  "publishDate": "2026-10-31T10:49:00.000Z"
+  "publishDate": "2026-10-31T10:49:00Z"
 }
