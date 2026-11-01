@@ -4,19 +4,10 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@mycms/core': file:./vendor/mycms-core-0.0.1.tgz
-
 importers:
 
   .:
     dependencies:
-      '@mycms/admin':
-        specifier: file:./vendor/mycms-admin-0.0.1.tgz
-        version: file:vendor/mycms-admin-0.0.1.tgz(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)
-      '@mycms/core':
-        specifier: file:vendor/mycms-core-0.0.1.tgz
-        version: file:vendor/mycms-core-0.0.1.tgz
       '@radix-ui/react-checkbox':
         specifier: ^1.1.0
         version: 1.4.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -368,15 +359,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
-
-  '@mycms/admin@file:vendor/mycms-admin-0.0.1.tgz':
-    resolution: {integrity: sha512-irpQZHGrkaIFgPYn4+KjZCAn00OAc5+EcxVSaSjm7dlVVfB19DFvlVCZWeIfxGQz++0evEJ3XUGwyDYnmt5lsw==, tarball: file:vendor/mycms-admin-0.0.1.tgz}
-    version: 0.0.1
-
-  '@mycms/core@file:vendor/mycms-core-0.0.1.tgz':
-    resolution: {integrity: sha512-CKLEpy1sEprl0DD7lO5afNI+w2b9MWcKGts37Oaf7mp9m6rfrrNbEoTs6467yzetctkcBMT7W2dGCvP9f/bN3w==, tarball: file:vendor/mycms-core-0.0.1.tgz}
-    version: 0.0.1
-    engines: {node: '>=22.12.0'}
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     resolution: {integrity: sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ==}
@@ -1691,32 +1673,6 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
-
-  '@mycms/admin@file:vendor/mycms-admin-0.0.1.tgz(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)':
-    dependencies:
-      '@mycms/core': file:vendor/mycms-core-0.0.1.tgz
-      '@radix-ui/react-checkbox': 1.4.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@radix-ui/react-dialog': 1.3.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@radix-ui/react-dropdown-menu': 2.2.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@radix-ui/react-label': 2.1.17(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@radix-ui/react-popover': 1.3.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@radix-ui/react-select': 2.4.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@radix-ui/react-slot': 1.5.0(@types/react@19.3.0)(react@19.3.1)
-      '@radix-ui/react-switch': 1.4.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@radix-ui/react-tooltip': 1.4.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@tanstack/react-query': 5.105.0(@types/react@19.3.0)(react@19.3.1)
-      '@tanstack/react-router': 1.170.46(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
-      react-dom: 19.3.1(react@19.3.1)
-      react-hook-form: 7.91.0(@types/react@19.3.0)(react@19.3.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - '@types/react-dom'
-
-  '@mycms/core@file:vendor/mycms-core-0.0.1.tgz':
-    dependencies:
-      idb-keyval: 6.3.0
-      zod: 4.6.7
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true

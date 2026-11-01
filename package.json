@@ -10,8 +10,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@mycms/admin": "file:./vendor/mycms-admin-0.0.1.tgz",
-    "@mycms/core": "file:./vendor/mycms-core-0.0.1.tgz",
     "@radix-ui/react-checkbox": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.0",
     "@radix-ui/react-dropdown-menu": "^2.1.0",
@@ -30,11 +28,6 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.0",
     "zod": "4.6.7"
-  },
-  "pnpm": {
-    "overrides": {
-      "@mycms/core": "file:./vendor/mycms-core-0.0.1.tgz"
-    }
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
