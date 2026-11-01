@@ -1,5 +1,5 @@
-import * as fields from "@mycms/core"
-import { defineCollection, defineConfig, defineFiles, toAdminConfig } from "@mycms/core"
+import * as fields from "patcms"
+import { defineCollection, defineConfig, defineFiles, toAdminConfig } from "patcms"
 import { z } from "zod"
 
 const media = {

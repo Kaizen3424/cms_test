@@ -56,6 +56,9 @@ importers:
       lucide-react:
         specifier: ^0.460.0
         version: 0.460.0(react@19.3.1)
+      patcms:
+        specifier: file:./vendor/patcms-0.1.0.tgz
+        version: file:vendor/patcms-0.1.0.tgz
       react:
         specifier: ^19.0.0
         version: 19.3.1
@@ -1266,6 +1269,11 @@ packages:
   node-releases@2.0.63:
     resolution: {integrity: sha512-6li2QanLsAXpIH2R6j77MzRyvOyrvdTqlKtO4CgBdHGNvN99ZZfyxszHc5o5+IZBWD5u6Hzwg83JoGXmqZNG9Q==}
     engines: {node: '>=18'}
+
+  patcms@file:vendor/patcms-0.1.0.tgz:
+    resolution: {integrity: sha512-gyLBPVwz+UUjTzI8ciefdPUTerY6Cd7kzZi5fXeGdvOW9O9c8ApoZC7E7BSJVvY84b23VvyK7HpgvsUSc4pifw==, tarball: file:vendor/patcms-0.1.0.tgz}
+    version: 0.1.0
+    engines: {node: '>=22.12.0'}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -2493,6 +2501,11 @@ snapshots:
   nanoid@3.3.20: {}
 
   node-releases@2.0.63: {}
+
+  patcms@file:vendor/patcms-0.1.0.tgz:
+    dependencies:
+      idb-keyval: 6.3.0
+      zod: 4.6.7
 
   picocolors@1.1.1: {}
 
