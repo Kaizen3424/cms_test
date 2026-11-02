@@ -77,7 +77,7 @@ export function NewEntryScreen(props: {
           <div className="panel-toolbar">
             <button
               type="button"
-              className="panel-btn"
+              className="panel-btn panel-btn-primary"
               disabled={busy}
               onClick={() => void create()}
             >

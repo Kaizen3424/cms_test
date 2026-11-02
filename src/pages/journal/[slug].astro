@@ -1,0 +1,102 @@
+---
+/**
+ * /journal/[slug]/ — the real article route (what CMS previewPath links into).
+ * Rendered from the committed JSON; related destination excerpt if attached.
+ */
+import Layout from "../../layouts/Layout.astro"
+import Nav from "../../components/Nav.astro"
+import Footer from "../../components/Footer.astro"
+import { getCollection } from "astro:content"
+import { formatDate } from "../../lib/format"
+import { heroFallback } from "../../lib/site-content"
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts")
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }))
+}
+
+const { post } = Astro.props
+const related =
+  post.data.destination === undefined
+    ? undefined
+    : (await getCollection("destinations")).find((d) => d.id === post.data.destination)
+const destinationName = related?.data.name.split(",")[0]
+const heroImage = post.data.coverImage ?? related?.data.heroImage ?? heroFallback
+---
+
+<Layout title={`${post.data.title} · Wanderlust Chronicles`} description={post.data.excerpt}>
+  <Nav siteTitle="Wanderlust Chronicles" />
+  <main class="bg-canvas-soft">
+    <article>
+      <header class="relative overflow-hidden">
+        <div class="absolute inset-0" aria-hidden>
+          <img src={heroImage} alt="" class="h-full w-full scale-105 object-cover object-center" />
+          <div class="absolute inset-0" style="background: linear-gradient(to top, var(--canvas-soft) 4%, rgb(11 13 10 / 62%) 82%);"></div>
+        </div>
+
+        <div class="relative mx-auto max-w-3xl px-6 pt-28 pb-14">
+          <nav aria-label="Breadcrumb" class="mb-4 text-xs font-medium text-on-solid/80">
+            <a href="/journal/" class="hover:text-primary">Journal</a>
+            <span class="mx-1.5">/</span>
+            {destinationName ?? post.data.author ?? "Dispatch"}
+          </nav>
+          <h1 class="t-display-xl mb-6 max-w-2xl text-on-solid [text-shadow:0_1px_24px_rgb(11_13_10/45%)]">
+            {post.data.title}
+          </h1>
+          <p class="flex flex-wrap items-center gap-3 text-xs font-medium text-on-solid/90">
+            <span class="rounded-pill bg-primary px-3 py-1 font-semibold text-on-primary">{post.data.readingTime ?? "5 min read"}</span>
+            <span>{formatDate(post.data.publishDate, "long")}</span>
+            <span>·</span>
+            <span>By {post.data.author ?? "Wanderlust"}</span>
+          </p>
+        </div>
+      </header>
+
+      <div class="mx-auto max-w-3xl px-6 pb-6">
+        <div class="-mt-10 rounded-xl bg-canvas p-8 shadow-e2 md:p-12">
+          <p class="mb-8 border-l-4 border-primary pl-4 text-base font-medium text-body italic">{post.data.excerpt}</p>
+
+          <div class="space-y-6 text-base leading-relaxed whitespace-pre-line text-body">
+            {
+              post.data.content.split("\n\n").map((paragraph) => (
+                <p>{paragraph}</p>
+              ))
+            }
+          </div>
+
+          {
+            post.data.tags?.length ? (
+              <div class="mt-10 flex flex-wrap gap-2 border-t border-hairline pt-6">
+                {post.data.tags.map((tag) => (
+                  <span class="rounded-pill bg-canvas-soft px-3 py-1 text-xs font-medium text-body">#{tag}</span>
+                ))}
+              </div>
+            ) : null
+          }
+        </div>
+
+        {
+          related ? (
+            <aside data-reveal class="mt-10 overflow-hidden rounded-xl bg-canvas shadow-e1">
+              <span class="flex flex-col items-start gap-1 p-8">
+                <span class="t-eyebrow mb-1 text-positive-strong">This story comes from</span>
+                <span class="flex items-baseline gap-3">
+                  <span class="t-display-xs text-ink">{related.data.name}</span>
+                  <span class="rounded-md bg-primary-pale px-2 py-0.5 text-xs font-semibold text-ink-deep">{related.data.country}</span>
+                </span>
+                <span class="mb-3 line-clamp-2 text-sm text-body">{related.data.description}</span>
+                <a
+                  href={`/destinations/${related.id}/`}
+                  class="pressable inline-flex items-center gap-2 rounded-pill bg-primary px-4 py-2 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-active"
+                >
+                  Open the destination guide →
+                </a>
+              </span>
+            </aside>
+          ) : null
+        }
+      </div>
+    </article>
+  </main>
+  <Footer siteTitle="Wanderlust Chronicles" footerText="Git-backed content with patcms." />
+</Layout>

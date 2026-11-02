@@ -145,7 +145,7 @@ function FolderList(props: {
             {direction === "asc" ? "↑" : "↓"}
           </button>
           {collection.create === false ? null : (
-            <button type="button" className="panel-btn" onClick={create}>
+            <button type="button" className="panel-btn panel-btn-primary" onClick={create}>
               New {collection.labelSingular ?? "entry"}
             </button>
           )}

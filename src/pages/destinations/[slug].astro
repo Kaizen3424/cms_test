@@ -1,0 +1,76 @@
+---
+/**
+ * /destinations/[slug]/ — the real destination-guide route (CMS previewPath).
+ */
+import Layout from "../../layouts/Layout.astro"
+import Nav from "../../components/Nav.astro"
+import Footer from "../../components/Footer.astro"
+import { getCollection } from "astro:content"
+import { CheckCircle2 } from "lucide-react"
+import { heroFallback } from "../../lib/site-content"
+
+export async function getStaticPaths() {
+  const destinations = await getCollection("destinations")
+  return destinations.map((destination) => ({
+    params: { slug: destination.id },
+    props: { destination },
+  }))
+}
+
+const { destination } = Astro.props
+const heroImage = destination.data.heroImage ?? heroFallback
+---
+
+<Layout title={`${destination.data.name} · Destinations`} description={destination.data.description}>
+  <Nav siteTitle="Wanderlust Chronicles" />
+  <main class="bg-canvas-soft">
+    <article class="mx-auto max-w-4xl px-6 py-16">
+      <nav aria-label="Breadcrumb" class="mb-6 text-xs font-medium text-body">
+        <a href="/#destinations" class="hover:text-positive-strong">Destinations</a>
+        <span class="mx-1.5">/</span>
+        {destination.data.country}
+      </nav>
+
+      <header data-reveal class="mb-10">
+        <div class="t-eyebrow mb-2 text-positive-strong">Destination guide</div>
+        <h1 class="t-display-xl mb-3 text-ink">{destination.data.name}</h1>
+        <p class="max-w-xl text-base leading-relaxed text-body">{destination.data.description}</p>
+      </header>
+
+      <figure data-reveal class="mb-2 overflow-hidden rounded-xl shadow-e2">
+        <img src={heroImage} alt={destination.data.name} class="aspect-[21/9] w-full object-cover" />
+        <figcaption class="bg-canvas px-4 py-2 text-xs text-mute">
+          {destination.data.name} — {destination.data.bestTimeToVisit ?? "scouted on foot"}
+        </figcaption>
+      </figure>
+
+      <div data-reveal data-reveal-delay="0.08" class="mt-10 grid gap-6 md:grid-cols-2">
+        <div class="rounded-xl bg-canvas p-8 shadow-e1">
+          <div class="t-eyebrow mb-3 text-positive-strong">Best season</div>
+          <p class="text-sm leading-relaxed text-body">{destination.data.bestTimeToVisit ?? "—"}</p>
+        </div>
+        <div class="rounded-xl bg-canvas p-8 shadow-e1">
+          <div class="t-eyebrow mb-3 text-positive-strong">Climate</div>
+          <p class="text-sm leading-relaxed text-body">{destination.data.climate ?? "—"}</p>
+        </div>
+      </div>
+
+      {
+        destination.data.highlights?.length ? (
+          <div data-reveal data-reveal-delay="0.12" class="mt-6 rounded-xl bg-canvas p-8 shadow-e1">
+            <div class="t-eyebrow mb-4 text-positive-strong">Curated highlights</div>
+            <ul class="grid gap-3 md:grid-cols-2">
+              {destination.data.highlights.map((hl) => (
+                <li class="flex items-start gap-2 text-sm text-body">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-positive-strong" aria-hidden />
+                  <span>{hl}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null
+      }
+    </article>
+  </main>
+  <Footer siteTitle="Wanderlust Chronicles" footerText="Git-backed content with patcms." />
+</Layout>

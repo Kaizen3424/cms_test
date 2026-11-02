@@ -1,0 +1,30 @@
+---
+/**
+ * ThemeToggle — server-rendered markup; src/scripts/site.ts wires the
+ * three-state behaviour by [data-theme-toggle]. Used in the landing nav and
+ * the admin topbar.
+ */
+
+const options = [
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
+  { value: "system", label: "System" },
+] as const
+---
+
+<div class="theme-toggle theme-toggle-bar" data-theme-toggle role="radiogroup" aria-label="Colour theme">
+  {
+    options.map((option) => (
+      <button
+        type="button"
+        role="radio"
+        aria-checked={option.value === "system" ? "false" : "false"}
+        data-theme-choice={option.value}
+        title={option.label}
+        class="theme-toggle-btn"
+      >
+        {option.label}
+      </button>
+    ))
+  }
+</div>

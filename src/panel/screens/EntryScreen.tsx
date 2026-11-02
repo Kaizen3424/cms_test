@@ -251,7 +251,7 @@ export function EntryScreen(props: {
           <div className="panel-toolbar">
             <button
               type="button"
-              className="panel-btn"
+              className="panel-btn panel-btn-primary"
               disabled={saveState.kind === "saving"}
               onClick={() => void save()}
             >

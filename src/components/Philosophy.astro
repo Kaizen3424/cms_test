@@ -1,0 +1,48 @@
+---
+/**
+ * Philosophy — "Mindful Travel Manifesto" on the white canvas band;
+ * soft-green feature cards (DESIGN.md card-feature-green).
+ */
+import { Camera, Globe, Heart } from "lucide-react"
+
+const principles = [
+  {
+    icon: Globe,
+    title: "Slow down & stay longer",
+    text: "We believe in staying in one village for weeks rather than checking off five cities in a weekend. True understanding comes with lingering.",
+  },
+  {
+    icon: Camera,
+    title: "Presence over content",
+    text: "Never allow capturing a photograph to eclipse experiencing the sacred moment. We honor local customs and request consent before photographing human faces.",
+  },
+  {
+    icon: Heart,
+    title: "Direct guild support",
+    text: "100% of our accommodation and culinary spending goes to independent, generational family artisans, mountain rifugios, and local craftspeople.",
+  },
+] as const
+---
+
+<section id="tips" class="bg-canvas-soft">
+  <div class="mx-auto max-w-6xl px-6 py-20">
+    <div class="mx-auto mb-16 max-w-xl text-center" data-reveal>
+      <div class="t-eyebrow mb-3 text-positive-strong">Our principles</div>
+      <h2 class="t-display-md text-ink">Mindful travel manifesto</h2>
+    </div>
+
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      {
+        principles.map((principle, index) => (
+          <div data-reveal data-reveal-delay={String(0.06 * index)} class="rounded-xl bg-primary-pale p-8">
+            <div class="mb-6 grid h-12 w-12 place-items-center rounded-xl bg-canvas text-positive-strong shadow-e1">
+              <principle.icon className="h-6 w-6" aria-hidden />
+            </div>
+            <h3 class="mb-3 text-lg font-bold text-ink">{principle.title}</h3>
+            <p class="text-sm leading-relaxed text-body">{principle.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

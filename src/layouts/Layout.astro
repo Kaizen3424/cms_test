@@ -1,0 +1,58 @@
+---
+/**
+ * Layout — the shared document shell for both pages (DESIGN.md "Dark Mode":
+ * an `is:inline` boot script resolves the theme BEFORE first paint so there
+ * is no flash of the wrong theme; the ThemeToggle module re-resolves live).
+ * `title`/`description`/`noindex` come straight from page frontmatter and,
+ * ont the landing, from the CMS-managed settings.json.
+ */
+
+import "../styles/global.css"
+
+interface Props {
+  readonly title: string
+  readonly description: string
+  readonly noindex?: boolean
+}
+
+const { title, description, noindex = false } = Astro.props
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex, nofollow" /> : null}
+    <link rel="icon" type="image/svg+xml" href="/images/author/maya-lin.svg" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e8ebe6" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d120c" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      (function () {
+        try {
+          var s = localStorage.getItem("theme");
+          var m = s === "dark" || s === "light" ? s : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          var r = document.documentElement;
+          r.dataset.theme = m;
+          r.style.colorScheme = m;
+          r.classList.add("js");
+        } catch (e) {
+          document.documentElement.dataset.theme = "light";
+          document.documentElement.classList.add("js");
+        }
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-canvas text-ink antialiased">
+    <slot />
+    <script>
+      import "../scripts/site.ts"
+    </script>
+  </body>
+</html>

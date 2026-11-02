@@ -1,5 +1,5 @@
 import * as fields from "patcms"
-import { defineCollection, defineConfig, defineFiles, toAdminConfig } from "patcms"
+import { defineCollection, defineConfig, defineFiles } from "patcms"
 import { z } from "zod"
 
 const media = {
@@ -89,7 +89,7 @@ export const travelConfig = defineConfig({
       folder: "content/posts",
       identifierField: "title",
       summary: "{{title}} ({{readingTime}})",
-      previewPath: "/#story-{{slug}}",
+      previewPath: "/journal/{{slug}}/",
       sortableFields: ["publishDate", "title", "readingTime"],
       thumbnail: "coverImage",
       media,
@@ -107,7 +107,7 @@ export const travelConfig = defineConfig({
       folder: "content/destinations",
       identifierField: "name",
       summary: "{{name}} ({{country}})",
-      previewPath: "/#destination-{{slug}}",
+      previewPath: "/destinations/{{slug}}/",
       sortableFields: ["name", "country"],
       thumbnail: "heroImage",
       media,
@@ -137,5 +137,3 @@ export const travelConfig = defineConfig({
     }),
   ],
 })
-
-export const travelAdminConfig = toAdminConfig(travelConfig)

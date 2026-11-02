@@ -1,0 +1,73 @@
+---
+/**
+ * Hero — the sage canvas band (DESIGN.md `hero-band`): display-mega headline,
+ * the DispatchTicker island as the signature interactive card, and a white
+ * stat card with count-ups.
+ */
+import DispatchTicker from "./islands/DispatchTicker.tsx"
+import type { StoryPost } from "./islands/StoryBrowser.tsx"
+import type { SiteSettings } from "../content.config"
+
+interface Props {
+  readonly settings: SiteSettings
+  readonly featured: StoryPost[]
+}
+
+const { settings, featured } = Astro.props
+const heroImage = settings.heroImage ?? "/images/destinations/dolomites-hero.svg"
+---
+
+<section class="relative overflow-hidden border-b border-hairline bg-canvas-soft">
+  <!-- Sage-warm blob: Austin-canvas texture keeps the band from feeling flat -->
+  <div class="pointer-events-none absolute -top-40 right-[-20%] h-[480px] w-[720px] rounded-full bg-canvas-soft-warm blur-3xl" aria-hidden></div>
+
+  <div class="relative mx-auto max-w-6xl px-6 pt-14 pb-20 md:pt-20 md:pb-28">
+    <div class="grid items-center gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <div data-reveal class="mb-6 inline-flex items-center gap-2 rounded-pill border border-hairline bg-canvas px-3 py-1 text-xs font-medium text-body shadow-e1">
+          <span class="relative flex h-2 w-2" aria-hidden>
+            <span class="absolute h-full w-full animate-ping rounded-full bg-positive/60"></span>
+            <span class="h-2 w-2 rounded-full bg-positive"></span>
+          </span>
+          Autumn 2026 expeditions live
+        </div>
+
+        <h1 data-reveal data-reveal-delay="0.05" class="t-display-xl mb-6 max-w-2xl text-ink">
+          {settings.heroHeading}
+        </h1>
+
+        <p data-reveal data-reveal-delay="0.12" class="mb-8 max-w-xl text-lg leading-relaxed text-body">
+          {settings.heroSubheading}
+        </p>
+
+        <div data-reveal data-reveal-delay="0.18" class="flex flex-wrap items-center gap-4">
+          <a href="#stories" class="pressable inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-on-primary shadow-e1 transition-colors hover:bg-primary-active">
+            Read field stories
+          </a>
+          <a href="#destinations" class="pressable inline-flex items-center gap-2 rounded-xl border border-hairline bg-canvas px-6 py-3 text-sm font-semibold text-ink shadow-e1 transition-colors hover:bg-canvas-soft-warm">
+            Explore destinations
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5" data-reveal data-reveal-delay="0.2">
+        <DispatchTicker client:load stories={featured} heroFallback={heroImage} />
+      </div>
+    </div>
+
+    {
+      settings.stats?.length ? (
+        <div data-reveal data-reveal-delay="0.1" class="mt-16 grid grid-cols-2 gap-6 rounded-xl bg-canvas px-8 py-8 shadow-e1 md:grid-cols-4">
+          {settings.stats.map((stat) => (
+            <div class="text-center md:text-left">
+              <div class="t-display-xs text-ink" data-countup data-countup-format="plain">
+                {stat.value}
+              </div>
+              <div class="mt-1 text-xs font-medium tracking-wider text-mute uppercase">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      ) : null
+    }
+  </div>
+</section>

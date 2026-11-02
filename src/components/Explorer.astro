@@ -1,0 +1,63 @@
+---
+/**
+ * Explorer — "Behind the Lens" on the always-dark band (DESIGN.md
+ * card-feature-dark: --solid stays dark in both themes, accents read Primary).
+ */
+import { MapPin } from "lucide-react"
+import type { AuthorProfile } from "../content.config"
+
+interface Props {
+  readonly author: AuthorProfile
+}
+
+const { author } = Astro.props
+const avatar = author.avatar ?? "/images/author/maya-lin.svg"
+---
+
+<section id="about" class="mx-auto max-w-6xl px-6 py-20">
+  <div data-reveal class="relative overflow-hidden rounded-2xl bg-solid p-8 md:p-14">
+    <div class="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full blur-3xl" style="background: rgb(159 232 112 / 8%);" aria-hidden></div>
+
+    <div class="relative grid items-center gap-10 md:grid-cols-12">
+      <div class="flex flex-col items-center md:col-span-4 md:items-start">
+        <div class="relative mb-6 h-44 w-44 overflow-hidden rounded-2xl border-2 border-primary/40 shadow-e2">
+          <img src={avatar} alt={author.name} class="h-full w-full object-cover" />
+        </div>
+
+        {
+          author.location ? (
+            <span class="mb-2 inline-flex items-center gap-1.5 rounded-pill bg-on-solid/10 px-3 py-1 text-xs font-medium text-primary">
+              <MapPin className="h-3 w-3 text-primary" aria-hidden />
+              {author.location}
+            </span>
+          ) : null
+        }
+      </div>
+
+      <div class="md:col-span-8">
+        <div class="t-eyebrow mb-3 text-primary">Behind the lens</div>
+        <h2 class="t-display-sm mb-2 text-on-solid">{author.name}</h2>
+        <p class="mb-6 text-sm font-medium text-primary-neutral">{author.role}</p>
+
+        <p class="mb-6 text-base leading-relaxed text-on-solid/85">{author.bio}</p>
+
+        {
+          author.quote ? (
+            <blockquote class="mb-6 rounded-xl border-l-4 border-primary bg-on-solid/5 p-4 text-sm text-on-solid/85 italic">
+              “{author.quote}”
+            </blockquote>
+          ) : null
+        }
+
+        <div class="flex flex-wrap gap-6 border-t border-on-solid/15 pt-5 text-xs text-on-solid/70">
+          {author.gear ? (
+            <span>
+              <span class="mb-1 block text-on-solid/50">Essential field gear</span>
+              <span class="font-medium text-on-solid/90">{author.gear}</span>
+            </span>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
