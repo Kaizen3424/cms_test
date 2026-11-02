@@ -49,7 +49,7 @@ export function App() {
         <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-medium text-[11px] border border-amber-500/30">
           <Sparkles className="w-3 h-3 text-amber-400" /> Phase 6 Integration Demo
         </span>
-        <span>Content powered by <strong>MyCMS</strong> · Git-backed & Zero Database</span>
+        <span>Content powered by <strong>patcms</strong> · Git-backed &amp; Zero Database</span>
         <a
           href="/admin.html"
           className="underline font-semibold hover:text-white transition-colors ml-2 flex items-center gap-1"
@@ -538,7 +538,7 @@ export function App() {
                   href="/admin.html"
                   className="text-xs text-amber-400 hover:underline flex items-center gap-1 font-semibold"
                 >
-                  Edit this story in MyCMS Studio <ArrowRight className="w-3.5 h-3.5" />
+                  Edit this story in patcms Studio <ArrowRight className="w-3.5 h-3.5" />
                 </a>
               </div>
             </div>
