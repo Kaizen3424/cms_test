@@ -1,87 +1,126 @@
-# Wanderlust Chronicles — Travel Blog & MyCMS Integration
+# Wanderlust Chronicles — Travel Blog on patcms (Astro + Bun)
 
-A single-page landing page for an expedition travel blog ("Wanderlust Chronicles"), integrated with **MyCMS** for **Phase 6** testing and validation.
+A statically-rendered expedition travel blog ("Wanderlust Chronicles") whose every word,
+image path and stat lives as version-controlled JSON — managed through **patcms**, a
+zero-database, git-backed CMS. One repository holds the site, the content *and* the CMS
+config: an edit in the studio is a commit, a commit is a deploy.
 
----
-
-## 🌟 Overview
-
-- **Public Landing Page** (`/`): A modern, responsive single-page editorial travel blog with:
-  - Atmospheric hero section & live expedition statistics
-  - Filterable field dispatches (reading times, categories, author bio, modal reader)
-  - Curated destination guides (Kyoto, Dolomites, Marrakech, Banff) with best seasons, climate, and highlights
-  - Nomad explorer profile ("Behind the Lens" with Maya Lin) & camera gear breakdown
-  - Mindful Travel Manifesto & Sunday Dispatch newsletter postcard
-- **CMS Studio** (`/admin.html` or `/admin`):
-  - Directly powered by `@mycms/admin` and `@mycms/core`
-  - Zero-database, Git-backed content architecture
-  - **Local Sandbox Mode**: Pre-seeded with all travel blog posts and destinations, runs an in-memory `FakeGithubServer` so you can test editing, drafting, widgets, and saving immediately offline with zero setup!
-  - **Real GitHub Mode**: Ready to connect to any actual GitHub repository with a Personal Access Token (PAT).
+- **Site framework:** Astro 7 (static output — no SSR adapter; every save is a rebuild)
+- **Package manager:** Bun
+- **CMS:** [`patcms`](https://www.npmjs.com/package/patcms) from npm, mounted as the CMS Studio at `/admin/`
+- **Design system:** the "Wise" system from `DESIGN.md` — sage canvas, white cards, one lime accent, self-hosted Inter, spring physics via `motion`
 
 ---
 
-## 📂 Content Architecture
+## 🗺️ Routes (all real, all static)
 
-Content lives as version-controlled JSON files:
+| Route | What it is |
+| --- | --- |
+| `/` | Landing page: hero with auto-advancing **featured dispatch ticker**, filterable story grid with modal reader, destination cards, explorer profile, manifesto, newsletter |
+| `/journal/` | Chronological archive of every dispatch |
+| `/journal/<slug>/` | The full article page — what the CMS preview button opens |
+| `/destinations/<slug>/` | Destination field guide |
+| `/admin/` | **CMS Studio** — sign in with a GitHub token, edit, save |
+| `/rss.xml`, `sitemap-index.xml` | Publication feeds |
+| `/404.html` | Not-found page |
+
+Static redirects: `/admin.html` → `/admin/` (301, in `public/_redirects`).
+
+---
+
+## 📂 Where things live
 
 ```
 cms_test/
-├── content/
-│   ├── settings.json              # Site title, tagline, hero text, stats, contact
-│   ├── author.json                # Explorer bio, gear, quote, avatar
-│   ├── destinations/              # Destination guides
-│   │   ├── banff-canada.json
-│   │   ├── dolomites-italy.json
-│   │   ├── kyoto-japan.json
-│   │   └── marrakech-morocco.json
-│   └── posts/                     # Field notes & articles
-│       ├── banff-glacial-lakes.json
-│       ├── dolomites-alpine-trails.json
-│       ├── kyoto-tea-gardens.json
-│       └── marrakech-souks-and-spices.json
-├── public/
-│   └── images/                    # Scenic SVG assets
-│       ├── author/
-│       ├── destinations/
-│       └── posts/
-└── src/
-    ├── cms/
-    │   ├── config.ts              # Zod-first MyCMS collection & field definitions
-    │   └── sandbox.ts             # In-memory FakeGithubServer transport for offline testing
-    ├── admin-entry.tsx            # CMS mount point (mountAdmin) with mode switcher
-    ├── App.tsx                    # Landing page component
-    ├── data.ts                    # Dynamic loader for JSON content
-    └── main.tsx                   # Main entry point & client router
+├── content/                    ← THE CONTENT (CMS writes here; Astro reads here)
+│   ├── settings.json           # site title, tagline, hero copy, stats, contact
+│   ├── author.json             # explorer bio, gear, quote, avatar
+│   ├── destinations/*.json     # destination guides
+│   └── posts/*.json            # field notes & articles
+├── public/images/              # scenic assets (upload target for the CMS media library)
+├── public/_headers             # Cloudflare Pages headers incl. admin CSP
+├── public/_redirects           # /admin.html → /admin/
+├── src/
+│   ├── cms/config.ts           # patcms defineConfig: collections, fields, media folder
+│   ├── panel/                  # the CMS Studio UI (React island, unstyled framework-free)
+│   ├── components/             # .astro section components + React islands (islands/)
+│   ├── layouts/Layout.astro    # document shell: theme boot script, fonts, meta
+│   ├── lib/                    # settings/author loaders, format helpers, repo target
+│   ├── scripts/site.ts         # vanilla behaviours: theme toggle, reveals, count-ups
+│   ├── styles/                 # theme.css (tokens) + global.css (Tailwind v4 binding)
+│   ├── content.config.ts       # Astro Content Layer: glob loaders over content/**
+│   └── pages/                  # index, admin, journal/…, destinations/…, rss, 404
+├── astro.config.mjs            # static build, react + sitemap, Tailwind via vite plugin
+└── DESIGN.md                   # the design spec this site implements
+```
+
+Content is **the same JSON the CMS edits** — there is no copy step. `src/content.config.ts`
+declares Astro collections that glob over `content/posts` and `content/destinations`;
+`settings.json` / `author.json` are imported directly.
+
+---
+
+## 🚀 Commands (Bun)
+
+```bash
+bun install        # install dependencies
+bun run dev        # dev server → http://localhost:5173/ (studio at /admin/)
+bun run build      # static build → dist/
+bun run preview    # serve dist/ on :5173
+bun run typecheck  # astro sync && astro check
 ```
 
 ---
 
-## 🚀 Running the Project
+## 🖥️ Using the CMS Studio
 
-### 1. Development Server
-```bash
-pnpm dev
-```
-- Open `http://localhost:5173/` for the Travel Blog landing page.
-- Click **"Studio / CMS Admin"** in the top navigation or open `http://localhost:5173/admin.html` to enter the CMS.
+1. Open **/admin/** and sign in with a GitHub **Personal Access Token**
+   (fine-grained, "Contents: read & write" on this repository).
+2. The token is stored only in the browser (IndexedDB) — it is never committed, logged,
+   or placed in any URL.
+3. Editing behaviour:
+   - **Draft** autosaves to IndexedDB per entry; discard or publish from the editor.
+   - **Save** writes a normal `chore(cms): save …` commit to `main` — which is the
+     repository Cloudflare Pages deploys from, so the live site updates automatically.
+   - Saving an unchanged entry is a **noop** (no empty commits).
+   - If someone edited the file upstream while you worked, the panel shows a **conflict
+     table** (yours vs. remote per field) and you decide each side — no exception, no data loss.
+   - The media library uploads to `public/images/` and references them as `/images/…`.
+   - The **preview** button opens the real rendered route (`/journal/<slug>/`,
+     `/destinations/<slug>/`) once it exists in the built site.
 
-### 2. Testing the CMS in Sandbox Mode
-- In `/admin.html`, Local Sandbox Mode is active by default.
-- When prompted for a GitHub token on the login screen, enter any test token (e.g. `sandbox-token`).
-- You will enter the studio with full access:
-  - Browse **Dispatches & Stories**
-  - Edit posts, test slug generation, and relation fields linking posts to destinations
-  - Test the **Destinations** collection
-  - Edit **Site Settings** and **Traveler Bio**
-  - Verify drafts in IndexedDB, the save pipeline, and validation!
+Contribution rules the site keeps to: never force-push, never merge JSON with
+`Object.assign`, never embed the token in URLs or logs, never render repository content
+as HTML.
 
-### 3. Testing with Real GitHub
-- Click **"Switch to Real GitHub Mode"** in the top bar (or add `?mode=github&owner=YOUR_USER&repo=YOUR_REPO`).
-- Enter your GitHub Personal Access Token (with repo scope) to edit live content directly on GitHub.
+---
 
-### 4. Production Build
-```bash
-pnpm build
-pnpm preview
-```
-Both `index.html` (landing page) and `admin.html` (MyCMS studio) bundle cleanly into `dist/`.
+## 🔒 /admin/ security headers
+
+`public/_headers` gives `/admin*` a strict CSP: `script-src 'self' <theme-boot-hash>`,
+`connect-src 'self' https://api.github.com`, no `object-src`, `frame-ancestors 'none'`,
+plus `X-Robots-Tag: noindex` and `robots.txt` disallow. The one permitted inline script is
+the theme boot (avoid-light-flash) resolver, pinned by its **sha256 hash**.
+
+> If you ever edit the boot script in `src/layouts/Layout.astro`, recompute the hash:
+> build, extract the `<script>` content from `dist/admin/index.html`, and update the
+> `'sha256-…'` value in `public/_headers`.
+
+---
+
+## ☁️ Cloudflare Pages
+
+- **Build command:** `bun install && bun run build`
+- **Build output directory:** `dist`
+- **Deployment:** automatic on push to `main` — including the CMS save commits above
+- `CF_PAGES_URL` supplies the production `site` for the sitemap/RSS at build time.
+
+---
+
+## 🧪 Testing notes
+
+- `content/posts/testing.json` is a scratch entry for exercising the create → edit →
+  save → delete flow against the live repo; safe to delete from the studio when done.
+- Local sandbox/`FakeGithubServer` mode was removed along with the old Vite scaffold —
+  the studio now tests against the real repository (use a scratch branch on a fork of your
+  own repo if you'd rather not touch `main`).
