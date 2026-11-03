@@ -124,7 +124,7 @@ export const WorldMap: React.FC<WorldMapProps> = ({ places }) => {
     >
       {/* 1. Category Filter Pills (Top Left) - Smooth scrollable on mobile */}
       <div
-        className="absolute top-20 sm:top-24 left-3 sm:left-10 right-3 sm:right-auto z-30 flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 pointer-events-auto"
+        className="absolute top-[22px] sm:top-[38px] left-3 sm:left-10 right-3 sm:right-auto z-30 flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 pointer-events-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <button
