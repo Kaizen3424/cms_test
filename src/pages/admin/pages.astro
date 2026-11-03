@@ -1,0 +1,8 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AdminApp from '../../components/islands/AdminApp.tsx';
+---
+
+<AdminLayout title="Atlas — Pages">
+  <AdminApp client:only="react" />
+</AdminLayout>
