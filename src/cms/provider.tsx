@@ -71,6 +71,13 @@ export interface CmsApi {
   publishSettings(name: SettingsName): Promise<PublishResult>;
   createPlace(value: PlaceValue): Promise<{ id: string }>;
   uploadMedia(file: File, folder?: string, options?: { overwrite?: boolean }): Promise<{ path: string }>;
+  /**
+   * Read an already-committed media file back from the repository as a Blob.
+   * Used by admin previews as a fallback when the public `/images/…` URL is
+   * not servable yet (upload committed but deploy still running, or local dev
+   * where `public/images` has not been updated by the upload).
+   */
+  getMediaBlob(publicPath: string): Promise<Blob>;
   lastPublish?: PublishInfo;
 }
 
@@ -579,6 +586,18 @@ export function CmsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  /**
+   * Fetch committed media bytes straight from the repository through the CMS
+   * client (which caches blobs locally). This is the reliable preview source:
+   * it works before the deployment that would serve `/images/…` exists.
+   */
+  const getMediaBlob = useCallback(async (publicPath: string): Promise<Blob> => {
+    const media = await cms.media.get(publicPath);
+    // `MediaBlob.bytes` is a Uint8Array; copy into a fresh ArrayBuffer so the
+    // Blob owns its memory regardless of the underlying buffer's view offsets.
+    return new Blob([media.bytes.slice()], { type: media.type ?? 'application/octet-stream' });
+  }, []);
+
   // Boot: restore a remembered session, then load content. Also watch for a
   // mid-session expiry (signed-in → signed-out that we did not initiate).
   useEffect(() => {
@@ -636,6 +655,7 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       publishSettings,
       createPlace,
       uploadMedia,
+      getMediaBlob,
       lastPublish,
     }),
     [
@@ -654,6 +674,7 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       publishSettings,
       createPlace,
       uploadMedia,
+      getMediaBlob,
       lastPublish,
     ],
   );

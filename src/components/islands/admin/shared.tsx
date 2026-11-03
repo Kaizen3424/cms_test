@@ -12,12 +12,22 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from 'react';
 import type { ReactNode } from 'react';
 import { AlertTriangle, Check, Loader2, RotateCcw, Upload, X } from 'lucide-react';
 import { useCms } from '../../../cms/provider';
 import type { PlaceValue, PublishResult, SettingsName } from '../../../cms/provider';
 import { parseDraftKey } from '../../../cms/drafts';
+import {
+  PREVIEW_FAILED,
+  clearPreviewFailure,
+  loadRepoPreview,
+  mediaRepoPath,
+  previewSnapshot,
+  rememberUploadedPreview,
+  subscribePreview,
+} from '../../../lib/mediaPreview';
 
 /** Mirrors `placeCategories` in src/lib/schema.ts (kept local to avoid bundling zod). */
 export const PLACE_CATEGORIES = [
@@ -501,6 +511,7 @@ export function UploadButton({
 
   const handleFile = async (file: File) => {
     setUploading(true);
+    let replaced = false;
     try {
       let path: string;
       try {
@@ -510,13 +521,20 @@ export function UploadButton({
         if (!isConflictError(thrown)) throw thrown;
         const replace = window.confirm(
           `"${file.name}" already exists in the media library. Replace it with the selected file?\n\n` +
-            'Tip: prefer a new filename — browsers may keep showing the old image for a while.',
+            'The preview updates instantly. Visitors see the new image once the site is deployed.',
         );
         if (!replace) return;
+        replaced = true;
         ({ path } = await cms.uploadMedia(file, undefined, { overwrite: true }));
       }
+      // Show the exact uploaded bytes right away — the public URL only becomes
+      // reachable once the deployment that serves it is live.
+      rememberUploadedPreview(path, file);
       onUploaded(path);
-      showToast('Image uploaded to the media library', 'success');
+      showToast(
+        replaced ? 'Image replaced in the media library' : 'Image uploaded to the media library',
+        'success',
+      );
     } catch (thrown) {
       showToast(describeUploadError(thrown, file.name), 'error');
     } finally {
@@ -611,15 +629,37 @@ export function formatClock(iso: string): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+/* ----------------------- admin preview object URLs ----------------------- */
+
+/** The explicit "image is not available" panel with a retry affordance. */
+function missingState(onRetry: () => void) {
+  return (
+    <div className="absolute inset-0 bg-[#eae9e5] flex flex-col items-center justify-center gap-1 px-1 text-center">
+      <span className="text-[10px] font-semibold text-[#71716b] uppercase tracking-wider bg-white px-2 py-1 rounded border border-[#dcdcd5]">
+        Not on live site
+      </span>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="text-[10px] font-semibold text-[#e60023] hover:underline cursor-pointer"
+      >
+        Retry
+      </button>
+    </div>
+  );
+}
+
 /* --------------------------- media preview ---------------------------- */
 
 /**
  * Always-visible image preview that never shows a silent grey box.
- * Every value change triggers a fresh fetch (cache-busted with a version
- * counter) so a stale browser-cached 404 (the deploy-lag poison from the
- * old immutable `/images/*` header rule) can never mask a new image. If
- * the image still fails to load, an explicit "Not on live site" badge
- * appears instead of leaving the placeholder background visible forever.
+ *
+ * Source priority:
+ *  1. the exact bytes of a file the user just uploaded (instant, no network),
+ *  2. the public URL (works once the deployment serving it is live),
+ *  3. the committed blob read straight from the repository (works during the
+ *     deploy window and in local dev, where `public/images` never changes),
+ *  4. only then the explicit "Not on live site" state with a Retry button.
  */
 export function MediaPreview({
   src,
@@ -630,16 +670,47 @@ export function MediaPreview({
   alt: string;
   class?: string;
 }) {
-  const [version, setVersion] = useState(0);
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
+  const cms = useCms();
+  const key = mediaRepoPath(src) ?? '';
+  const preview = useSyncExternalStore(
+    subscribePreview,
+    () => previewSnapshot(key),
+    () => '',
+  );
+  /** The URL that finished loading — comparing it keeps the fade honest. */
+  const [loadedSrc, setLoadedSrc] = useState('');
+  /** The URL that failed to load — comparing it keeps errors scoped to a URL. */
+  const [failedSrc, setFailedSrc] = useState('');
+  // Adjusting state during render (React's documented pattern): a new value
+  // gets a new cache-busting token in the same pass, so the image is fetched
+  // exactly once per change instead of twice.
+  const [token, setToken] = useState({ src, value: 1 });
+  if (token.src !== src) {
+    setToken({ src, value: token.value + 1 });
+  }
+
+  const localSrc = preview && preview !== PREVIEW_FAILED ? preview : '';
+  const repoFailed = preview === PREVIEW_FAILED;
+
+  // The public URL 404'd (deploy still running, or local dev). Read the
+  // committed blob from the repository instead of giving up.
+  const networkSrc = (() => {
+    if (!src) return '';
+    // Cache-bust: every value change fetches a fresh URL, so a browser-cached
+    // 404 (from the deploy window after an upload) can never mask the new
+    // image. Query strings are ignored by static assets served through
+    // Cloudflare Workers.
+    const sep = src.startsWith('data:') ? '' : src.includes('?') ? '&' : '?';
+    return src.startsWith('data:') ? src : `${src}${sep}v=${token.value}`;
+  })();
+  const displaySrc = localSrc || networkSrc;
+  const loaded = loadedSrc === displaySrc;
+  const networkError = failedSrc === networkSrc && !localSrc;
 
   useEffect(() => {
-    if (!src) return;
-    setLoaded(false);
-    setError(false);
-    setVersion((v) => v + 1);
-  }, [src]);
+    if (!networkError || localSrc || !key || repoFailed) return;
+    void loadRepoPreview(key, cms.getMediaBlob);
+  }, [networkError, localSrc, key, repoFailed, cms]);
 
   if (!src) {
     return (
@@ -649,49 +720,47 @@ export function MediaPreview({
     );
   }
 
-  if (error) {
+  if (repoFailed && !localSrc) {
+    return missingState(() => {
+      clearPreviewFailure(key);
+      setFailedSrc('');
+      setLoadedSrc('');
+      setToken((t) => ({ src: t.src, value: t.value + 1 }));
+    });
+  }
+
+  // The public URL failed and the repository read is still in flight.
+  if (networkError && !localSrc && key) {
     return (
-      <div className="absolute inset-0 bg-[#eae9e5] flex flex-col items-center justify-center gap-1 px-1 text-center">
-        <span className="text-[10px] font-semibold text-[#71716b] uppercase tracking-wider bg-white px-2 py-1 rounded border border-[#dcdcd5]">
-          Not on live site
-        </span>
-        <button
-          type="button"
-          onClick={() => {
-            setError(false);
-            setLoaded(false);
-            setVersion((v) => v + 1);
-          }}
-          className="text-[10px] font-semibold text-[#e60023] hover:underline cursor-pointer"
-        >
-          Retry
-        </button>
-      </div>
+      <div className="absolute inset-0 bg-[#f5f5f0] animate-pulse" aria-hidden="true" />
     );
   }
 
-  // Cache-bust: every value change fetches a fresh URL, so a browser-cached
-  // 404 (from the deploy window after an upload) can never mask the new image.
-  // Query strings are ignored by static assets served through Cloudflare Workers.
-  const sep = src.startsWith('data:') ? '' : src.includes('?') ? '&' : '?';
-  const displaySrc = src.startsWith('data:') ? src : `${src}${sep}v=${version}`;
+  // A remote URL failed outright — there is nothing else to read it from.
+  if (networkError && !localSrc && !key) {
+    return missingState(() => {
+      setFailedSrc('');
+      setLoadedSrc('');
+      setToken((t) => ({ src: t.src, value: t.value + 1 }));
+    });
+  }
 
   return (
     <>
       {!loaded && (
         <div className="absolute inset-0 bg-[#f5f5f0] animate-pulse" aria-hidden="true" />
       )}
-      {/* Cache-bust: a value change fetches a fresh URL, so a browser-cached
-          404 (from the deploy window right after an upload) can never mask
-          the new image. Query strings are ignored by the static asset layer. */}
       <img
         src={displaySrc}
         alt={alt}
         onLoad={() => {
-          setLoaded(true);
-          setError(false);
+          setLoadedSrc(displaySrc);
+          setFailedSrc('');
         }}
-        onError={() => setError(true)}
+        onError={() => {
+          setLoadedSrc('');
+          setFailedSrc(networkSrc);
+        }}
         className={`transition-opacity duration-200 ${loaded ? 'opacity-100' : 'opacity-0'} ${className}`}
       />
     </>
