@@ -1,0 +1,220 @@
+- generic [ref=f1e3]:
+  - banner [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - button "Meridian Travel Studio" [ref=f1e7]
+        - navigation [ref=f1e10]:
+          - button "Entries" [ref=f1e11]
+          - button "Places" [ref=f1e12]
+          - button "Archive" [ref=f1e13]
+          - button "Field Notes" [ref=f1e14]
+      - generic [ref=f1e15]:
+        - button "View Site" [ref=f1e16]
+        - button "Notifications" [ref=f1e21]
+        - button "Settings" [ref=f1e25]
+        - generic "Logged in as Editorial Manager (EM)" [ref=f1e29] [cursor=pointer]: EM
+  - main [ref=f1e33]:
+    - generic [ref=f1e34]:
+      - generic [ref=f1e35]:
+        - heading "Your Places" [level=1] [ref=f1e36]
+        - paragraph [ref=f1e37]: Everything visitors see on the map lives here.
+      - button "New Place" [ref=f1e39] [cursor=pointer]
+    - generic [ref=f1e42]:
+      - generic [ref=f1e43]:
+        - generic [ref=f1e44]: Published on site
+        - generic [ref=f1e49]:
+          - generic [ref=f1e50]: "12"
+          - generic [ref=f1e51]: Active
+      - generic [ref=f1e53]:
+        - generic [ref=f1e54]: In progress
+        - generic [ref=f1e59]:
+          - generic [ref=f1e60]: "0"
+          - generic [ref=f1e61]: Draft
+      - generic [ref=f1e63]:
+        - generic [ref=f1e64]: Curated negatives
+        - generic [ref=f1e69]:
+          - generic [ref=f1e70]: "62"
+          - generic [ref=f1e71]: Medium Format
+    - generic [ref=f1e72]:
+      - textbox "Search places..." [ref=f1e77]
+      - generic [ref=f1e78]:
+        - button "All (12)" [ref=f1e79] [cursor=pointer]
+        - button "Published (12)" [ref=f1e80] [cursor=pointer]
+        - button "Drafts (0)" [ref=f1e81] [cursor=pointer]
+    - generic [ref=f1e82]:
+      - article [ref=f1e83]:
+        - generic [ref=f1e84] [cursor=pointer]:
+          - img "Ladakh" [ref=f1e85]
+          - generic [ref=f1e86]: Published
+        - generic [ref=f1e89]:
+          - generic [ref=f1e90]:
+            - text: India
+            - heading "Ladakh" [level=2] [ref=f1e91] [cursor=pointer]
+            - paragraph [ref=f1e92]: 7 medium-format frames · Edited 2 days ago
+          - generic [ref=f1e93]:
+            - generic [ref=f1e94]:
+              - button "Edit story" [ref=f1e95] [cursor=pointer]
+              - button "view live" [ref=f1e99]
+            - generic [ref=f1e100]: 34.1526° N, 77.5771° E
+      - article [ref=f1e101]:
+        - generic [ref=f1e102] [cursor=pointer]:
+          - img "Lofoten" [ref=f1e103]
+          - generic [ref=f1e104]: Published
+        - generic [ref=f1e107]:
+          - generic [ref=f1e108]:
+            - text: Norway
+            - heading "Lofoten" [level=2] [ref=f1e109] [cursor=pointer]
+            - paragraph [ref=f1e110]: 5 medium-format frames · Edited 5 days ago
+          - generic [ref=f1e111]:
+            - generic [ref=f1e112]:
+              - button "Edit story" [ref=f1e113] [cursor=pointer]
+              - button "view live" [ref=f1e117]
+            - generic [ref=f1e118]: 68.20° N, 13.95° E
+      - article [ref=f1e119]:
+        - generic [ref=f1e120] [cursor=pointer]:
+          - img "Wadi Rum" [ref=f1e121]
+          - generic [ref=f1e122]: Published
+        - generic [ref=f1e125]:
+          - generic [ref=f1e126]:
+            - text: Jordan
+            - heading "Wadi Rum" [level=2] [ref=f1e127] [cursor=pointer]
+            - paragraph [ref=f1e128]: 5 medium-format frames · Edited 1 week ago
+          - generic [ref=f1e129]:
+            - generic [ref=f1e130]:
+              - button "Edit story" [ref=f1e131] [cursor=pointer]
+              - button "view live" [ref=f1e135]
+            - generic [ref=f1e136]: 29.57° N, 35.42° E
+      - article [ref=f1e137]:
+        - generic [ref=f1e138] [cursor=pointer]:
+          - img "Kyoto" [ref=f1e139]
+          - generic [ref=f1e140]: Published
+        - generic [ref=f1e143]:
+          - generic [ref=f1e144]:
+            - text: Japan
+            - heading "Kyoto" [level=2] [ref=f1e145] [cursor=pointer]
+            - paragraph [ref=f1e146]: 5 medium-format frames · Edited 2 weeks ago
+          - generic [ref=f1e147]:
+            - generic [ref=f1e148]:
+              - button "Edit story" [ref=f1e149] [cursor=pointer]
+              - button "view live" [ref=f1e153]
+            - generic [ref=f1e154]: 35.01° N, 135.76° E
+      - article [ref=f1e155]:
+        - generic [ref=f1e156] [cursor=pointer]:
+          - img "Oaxaca" [ref=f1e157]
+          - generic [ref=f1e158]: Published
+        - generic [ref=f1e161]:
+          - generic [ref=f1e162]:
+            - text: Mexico
+            - heading "Oaxaca" [level=2] [ref=f1e163] [cursor=pointer]
+            - paragraph [ref=f1e164]: 5 medium-format frames · Edited 3 weeks ago
+          - generic [ref=f1e165]:
+            - generic [ref=f1e166]:
+              - button "Edit story" [ref=f1e167] [cursor=pointer]
+              - button "view live" [ref=f1e171]
+            - generic [ref=f1e172]: 17.07° N, 96.72° W
+      - article [ref=f1e173]:
+        - generic [ref=f1e174] [cursor=pointer]:
+          - img "Faroe Islands" [ref=f1e175]
+          - generic [ref=f1e176]: Published
+        - generic [ref=f1e179]:
+          - generic [ref=f1e180]:
+            - text: North Atlantic
+            - heading "Faroe Islands" [level=2] [ref=f1e181] [cursor=pointer]
+            - paragraph [ref=f1e182]: 5 medium-format frames · Edited 4 hours ago
+          - generic [ref=f1e183]:
+            - generic [ref=f1e184]:
+              - button "Edit story" [ref=f1e185] [cursor=pointer]
+              - button "view live" [ref=f1e189]
+            - generic [ref=f1e190]: 62.27° N, 6.78° W
+      - article [ref=f1e191]:
+        - generic [ref=f1e192] [cursor=pointer]:
+          - img "Iceland" [ref=f1e193]
+          - generic [ref=f1e194]: Published
+        - generic [ref=f1e197]:
+          - generic [ref=f1e198]:
+            - text: Iceland
+            - heading "Iceland" [level=2] [ref=f1e199] [cursor=pointer]
+            - paragraph [ref=f1e200]: 5 medium-format frames · Edited 1 month ago
+          - generic [ref=f1e201]:
+            - generic [ref=f1e202]:
+              - button "Edit story" [ref=f1e203] [cursor=pointer]
+              - button "view live" [ref=f1e207]
+            - generic [ref=f1e208]: 64.96° N, 19.02° W
+      - article [ref=f1e209]:
+        - generic [ref=f1e210] [cursor=pointer]:
+          - img "Scotland" [ref=f1e211]
+          - generic [ref=f1e212]: Published
+        - generic [ref=f1e215]:
+          - generic [ref=f1e216]:
+            - text: United Kingdom
+            - heading "Scotland" [level=2] [ref=f1e217] [cursor=pointer]
+            - paragraph [ref=f1e218]: 5 medium-format frames · Edited 1 month ago
+          - generic [ref=f1e219]:
+            - generic [ref=f1e220]:
+              - button "Edit story" [ref=f1e221] [cursor=pointer]
+              - button "view live" [ref=f1e225]
+            - generic [ref=f1e226]: 57.32° N, 4.42° W
+      - article [ref=f1e227]:
+        - generic [ref=f1e228] [cursor=pointer]:
+          - img "Italy" [ref=f1e229]
+          - generic [ref=f1e230]: Published
+        - generic [ref=f1e233]:
+          - generic [ref=f1e234]:
+            - text: Italy
+            - heading "Italy" [level=2] [ref=f1e235] [cursor=pointer]
+            - paragraph [ref=f1e236]: 5 medium-format frames · Edited 2 months ago
+          - generic [ref=f1e237]:
+            - generic [ref=f1e238]:
+              - button "Edit story" [ref=f1e239] [cursor=pointer]
+              - button "view live" [ref=f1e243]
+            - generic [ref=f1e244]: 46.41° N, 11.85° E
+      - article [ref=f1e245]:
+        - generic [ref=f1e246] [cursor=pointer]:
+          - img "Morocco" [ref=f1e247]
+          - generic [ref=f1e248]: Published
+        - generic [ref=f1e251]:
+          - generic [ref=f1e252]:
+            - text: Morocco
+            - heading "Morocco" [level=2] [ref=f1e253] [cursor=pointer]
+            - paragraph [ref=f1e254]: 5 medium-format frames · Edited 2 months ago
+          - generic [ref=f1e255]:
+            - generic [ref=f1e256]:
+              - button "Edit story" [ref=f1e257] [cursor=pointer]
+              - button "view live" [ref=f1e261]
+            - generic [ref=f1e262]: 31.06° N, 7.91° W
+      - article [ref=f1e263]:
+        - generic [ref=f1e264] [cursor=pointer]:
+          - img "Chile" [ref=f1e265]
+          - generic [ref=f1e266]: Published
+        - generic [ref=f1e269]:
+          - generic [ref=f1e270]:
+            - text: Chile
+            - heading "Chile" [level=2] [ref=f1e271] [cursor=pointer]
+            - paragraph [ref=f1e272]: 5 medium-format frames · Edited 3 months ago
+          - generic [ref=f1e273]:
+            - generic [ref=f1e274]:
+              - button "Edit story" [ref=f1e275] [cursor=pointer]
+              - button "view live" [ref=f1e279]
+            - generic [ref=f1e280]: 51.25° S, 72.88° W
+      - article [ref=f1e281]:
+        - generic [ref=f1e282] [cursor=pointer]:
+          - img "New Zealand" [ref=f1e283]
+          - generic [ref=f1e284]: Published
+        - generic [ref=f1e287]:
+          - generic [ref=f1e288]:
+            - text: New Zealand
+            - heading "New Zealand" [level=2] [ref=f1e289] [cursor=pointer]
+            - paragraph [ref=f1e290]: 5 medium-format frames · Edited 3 months ago
+          - generic [ref=f1e291]:
+            - generic [ref=f1e292]:
+              - button "Edit story" [ref=f1e293] [cursor=pointer]
+              - button "view live" [ref=f1e297]
+            - generic [ref=f1e298]: 43.59° S, 170.14° E
+    - generic [ref=f1e299]: Your changes save safely. Nothing goes live until you press Publish.
+  - contentinfo [ref=f1e305]:
+    - generic [ref=f1e306]:
+      - paragraph [ref=f1e307]: © 2026 Meridian Travel Journal. All entries and photographic negatives are preserved locally.
+      - navigation [ref=f1e308]:
+        - button "Public Site" [ref=f1e309] [cursor=pointer]
+        - button "Travel With Us Desk" [ref=f1e310] [cursor=pointer]
+        - generic [ref=f1e311]: Safe Storage Active

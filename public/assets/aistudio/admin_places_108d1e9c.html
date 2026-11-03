@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Atlas Studio — Places Manager</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-error-container": "#93000a",
+            "on-secondary-fixed": "#1c1b1b",
+            "tertiary-fixed-dim": "#c9c6c2",
+            "outline-variant": "#e8bcb8",
+            "on-surface": "#1a1c1b",
+            "error-container": "#ffdad6",
+            "secondary": "#5f5e5e",
+            "on-primary-fixed": "#410004",
+            "on-primary-fixed-variant": "#930012",
+            "secondary-fixed": "#e5e2e1",
+            "on-tertiary": "#ffffff",
+            "inverse-on-surface": "#f1f1ef",
+            "surface": "#f9f9f7",
+            "tertiary-container": "#74726f",
+            "surface-container-lowest": "#ffffff",
+            "background": "#f9f9f7",
+            "primary": "#b7001a",
+            "tertiary": "#5b5a57",
+            "secondary-fixed-dim": "#c8c6c5",
+            "surface-container": "#eeeeec",
+            "primary-fixed-dim": "#ffb3ad",
+            "inverse-primary": "#ffb3ad",
+            "surface-tint": "#c0001b",
+            "on-secondary-fixed-variant": "#474746",
+            "surface-container-highest": "#e2e3e1",
+            "surface-container-high": "#e8e8e6",
+            "on-tertiary-fixed": "#1c1b19",
+            "surface-bright": "#f9f9f7",
+            "surface-container-low": "#f4f4f2",
+            "on-tertiary-container": "#fcf8f4",
+            "surface-dim": "#dadad8",
+            "inverse-surface": "#2f3130",
+            "on-secondary-container": "#636262",
+            "on-primary-container": "#fff7f6",
+            "on-error": "#ffffff",
+            "primary-container": "#e60023",
+            "outline": "#936e6b",
+            "on-surface-variant": "#5e3f3c",
+            "on-secondary": "#ffffff",
+            "surface-variant": "#e2e3e1",
+            "secondary-container": "#e2dfde",
+            "on-primary": "#ffffff",
+            "error": "#ba1a1a",
+            "primary-fixed": "#ffdad7",
+            "on-background": "#1a1c1b",
+            "tertiary-fixed": "#e6e2de",
+            "on-tertiary-fixed-variant": "#484744"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "3rem",
+            "space-xl": "3rem",
+            "margin-mobile": "1.25rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "label-md": ["Inter"],
+            "display-xl-mobile": ["Inter"],
+            "display-xl": ["Inter"],
+            "headline-lg": ["Inter"],
+            "label-caps": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "body-md": ["Inter"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "label-md": ["13px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "display-xl-mobile": ["38px", { "lineHeight": "42px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "display-xl": ["64px", { "lineHeight": "68px", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+            "headline-lg": ["40px", { "lineHeight": "46px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "label-caps": ["11px", { "lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md selection:bg-primary-container selection:text-white">
+<!-- TopNavBar (Shared Component JSON Blueprint Executed) -->
+<header class="bg-surface dark:bg-inverse-surface border-b border-surface-container-highest dark:border-outline-variant/20 sticky top-0 z-40">
+<div class="w-full px-6 lg:px-12 py-3 flex items-center justify-between mx-auto">
+<!-- Brand Logo + Navigation Links -->
+<div class="flex items-center gap-8">
+<a class="font-headline-md text-headline-md font-semibold tracking-tight text-on-surface dark:text-inverse-on-surface flex items-center gap-2" href="#">
+<span>Atlas Studio</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container inline-block"></span>
+</a>
+<!-- Desktop Navigation Items -->
+<nav class="hidden md:flex items-center gap-6 pt-1">
+<a class="text-secondary dark:text-tertiary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface transition-colors pb-1 font-label-caps text-label-caps uppercase tracking-wider" href="#">Entries</a>
+<a class="text-on-surface dark:text-inverse-on-surface border-b-2 border-primary font-semibold pb-1 font-label-caps text-label-caps uppercase tracking-wider" href="#">Places</a>
+<a class="text-secondary dark:text-tertiary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface transition-colors pb-1 font-label-caps text-label-caps uppercase tracking-wider" href="#">Archive</a>
+<a class="text-secondary dark:text-tertiary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface transition-colors pb-1 font-label-caps text-label-caps uppercase tracking-wider" href="#">Field Notes</a>
+</nav>
+</div>
+<!-- Trailing Cluster -->
+<div class="flex items-center gap-3">
+<!-- View Site Pill Action -->
+<a class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-surface-container-highest bg-surface-container-lowest hover:bg-surface-container-low transition-colors duration-150 font-label-md text-label-md text-secondary hover:text-on-surface" href="#">
+<span>View Site</span>
+<span class="material-symbols-outlined text-[15px]" data-icon="north_east">north_east</span>
+</a>
+<!-- Trailing Icon Actions -->
+<button aria-label="Notifications" class="p-2 rounded-full text-secondary hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150 flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+</button>
+<button aria-label="Settings" class="p-2 rounded-full text-secondary hover:text-on-surface hover:bg-surface-container-low transition-colors duration-150 flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+<!-- User Profile Avatar Badge -->
+<div class="relative ml-1 cursor-pointer flex items-center gap-2 group">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-surface-container-highest flex items-center justify-center text-on-surface font-label-md text-label-md font-semibold" title="User initials avatar badge">
+            EM
+          </div>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-600 ring-2 ring-surface"></span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas Container -->
+<main class="flex-1 max-w-[1440px] w-full mx-auto px-6 lg:px-12 py-8 md:py-10">
+<!-- Page Header Section -->
+<section class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-8 border-b border-surface-container-highest">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Your Places</h1>
+<p class="font-body-md text-body-md text-secondary mt-1">Everything visitors see on the map lives here.</p>
+</div>
+<div>
+<button class="inline-flex items-center gap-2 bg-primary-container text-on-primary font-label-md text-label-md px-6 py-3 rounded-full hover:bg-primary transition-colors duration-150 active:scale-95 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+<span>New Place</span>
+</button>
+</div>
+</section>
+<!-- Status Summary Strip -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 py-6">
+<!-- Card 1: Published -->
+<div class="bg-surface-container-lowest rounded-xl p-5 md:p-6 border border-surface-container-highest flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary">Published on site</span>
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="public">public</span>
+</div>
+<div class="mt-4 flex items-baseline gap-3">
+<span class="font-headline-lg text-headline-lg text-on-surface">5</span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-low border border-surface-container-highest font-label-caps text-label-caps text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+            Active
+          </span>
+</div>
+</div>
+<!-- Card 2: Drafts -->
+<div class="bg-surface-container-lowest rounded-xl p-5 md:p-6 border border-surface-container-highest flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary">In progress</span>
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="edit_note">edit_note</span>
+</div>
+<div class="mt-4 flex items-baseline gap-3">
+<span class="font-headline-lg text-headline-lg text-on-surface">1</span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-low border border-surface-container-highest font-label-caps text-label-caps text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+            Draft
+          </span>
+</div>
+</div>
+<!-- Card 3: Photos -->
+<div class="bg-surface-container-lowest rounded-xl p-5 md:p-6 border border-surface-container-highest flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary">Curated negatives</span>
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="photo_camera">photo_camera</span>
+</div>
+<div class="mt-4 flex items-baseline gap-3">
+<span class="font-headline-lg text-headline-lg text-on-surface">48</span>
+<span class="font-label-caps text-label-caps text-secondary">Medium Format</span>
+</div>
+</div>
+</section>
+<!-- Toolbar Row: Search + Filter Chips -->
+<section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 py-4 mb-2">
+<!-- Search Capsule -->
+<div class="relative w-full sm:w-80">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-secondary text-[18px]" data-icon="search">search</span>
+<input class="w-full h-11 pl-10 pr-4 bg-surface-container-low border border-surface-container-highest rounded-full font-body-md text-body-md text-on-surface placeholder:text-secondary focus:outline-none focus:border-on-surface transition-colors" placeholder="Search places..." type="text"/>
+</div>
+<!-- Filter Chips -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+<button class="px-4 py-2 rounded-full bg-on-surface text-surface-container-lowest font-label-md text-label-md whitespace-nowrap" type="button">
+          All (6)
+        </button>
+<button class="px-4 py-2 rounded-full bg-surface-container-lowest border border-surface-container-highest text-secondary hover:text-on-surface font-label-md text-label-md whitespace-nowrap transition-colors" type="button">
+          Published (5)
+        </button>
+<button class="px-4 py-2 rounded-full bg-surface-container-lowest border border-surface-container-highest text-secondary hover:text-on-surface font-label-md text-label-md whitespace-nowrap transition-colors" type="button">
+          Drafts (1)
+        </button>
+</div>
+</section>
+<!-- Places Grid: 3-column Editorial Cards -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2 pb-12">
+<!-- Card 1: Ladakh -->
+<article class="group bg-surface-container-lowest rounded-xl border border-surface-container-highest overflow-hidden flex flex-col hover:border-surface-dim transition-all duration-200">
+<div class="relative aspect-[3/2] overflow-hidden bg-surface-container">
+<img alt="Ladakh Himalayas mountain vista with serpentine dirt road" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1VitY7JOzoNFDFLMHrQl4N8kc_3gdSBQquE21M2jC26g7Q3wWvB3Gubl8YFLnhCKGJ12RQE6RlfI3W2b56Z5oKEAczrGhx9xnYBje_SodfkisalbPXSqqfykhwPye_W8Ub_f-oDEMvuHFUePAr8UjLGPKVEMGokDsL_orTM8ooMGeZgLsp3uoJpWFe01D2SOCffIF5EoZt8ULBTpZphk9YyZVUMS59bWRcdroKZjHbrIrBGCZ3BBSmooqjQ"/>
+<div class="absolute top-3.5 right-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container-highest font-label-caps text-label-caps text-on-surface shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              Published
+            </span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary">INDIA</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-1 group-hover:text-primary transition-colors">Ladakh</h2>
+<p class="font-body-md text-body-md text-secondary mt-2">7 medium-format frames · Edited 2 days ago</p>
+</div>
+<div class="pt-4 mt-4 border-t border-surface-container flex items-center justify-between">
+<span class="font-label-md text-label-md text-secondary group-hover:text-on-surface transition-colors flex items-center gap-1">
+              Edit story
+              <span class="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</span>
+<span class="font-label-caps text-label-caps text-secondary">34.15° N, 77.57° E</span>
+</div>
+</div>
+</article>
+<!-- Card 2: Lofoten -->
+<article class="group bg-surface-container-lowest rounded-xl border border-surface-container-highest overflow-hidden flex flex-col hover:border-surface-dim transition-all duration-200">
+<div class="relative aspect-[3/2] overflow-hidden bg-surface-container">
+<img alt="Lofoten Islands snow covered peaks and red fishing cabins" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1U8TItnCrESDnaNnp7Ub7XfQZDOYkF03hFy4QJLA-svQxNvThW4Oo_oGyhkAXLAs7Jwk2DThdn6k5bHM_gaw4XzVpDiCTY_J1Ta13BCNLLWK6DL4JO1wlbyjRAQmys7GOiQuj5jWaKKmtjQ-ZeMI7I4dmRtNrC7DbpT-SnR_wGo_KWUR5V0ethMtxH_uDm2gRpPx98g_i3vo8MdNe8Va4QRYRFVtgHXOd10QrNU4qA-P7Q9Rby9oNafzwqu"/>
+<div class="absolute top-3.5 right-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container-highest font-label-caps text-label-caps text-on-surface shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              Published
+            </span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary">NORWAY</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-1 group-hover:text-primary transition-colors">Lofoten</h2>
+<p class="font-body-md text-body-md text-secondary mt-2">9 medium-format frames · Edited 5 days ago</p>
+</div>
+<div class="pt-4 mt-4 border-t border-surface-container flex items-center justify-between">
+<span class="font-label-md text-label-md text-secondary group-hover:text-on-surface transition-colors flex items-center gap-1">
+              Edit story
+              <span class="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</span>
+<span class="font-label-caps text-label-caps text-secondary">68.20° N, 13.95° E</span>
+</div>
+</div>
+</article>
+<!-- Card 3: Wadi Rum -->
+<article class="group bg-surface-container-lowest rounded-xl border border-surface-container-highest overflow-hidden flex flex-col hover:border-surface-dim transition-all duration-200">
+<div class="relative aspect-[3/2] overflow-hidden bg-surface-container">
+<img alt="Wadi Rum golden desert dunes and monolithic sandstone mountains at sunset" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1WmJGsRP97M9m9XTr3fEDA06TfnP_HSarGn6BPKqEnvImru4Ru7sHRawghZdZZRskzc2sxmAFpNoN0NSlZc4zjbXErSLboigrqx0dJbM51b2HnBxJE_ZVfmzCX9on6EKz0eOz70NP3zSRcvrR7BUGO6pSkyEyLzkHlti6wmCOprargCPUxCcCGzpg3VH9SYJc5Fb_NQHEDocFPNOiNi1jeoow1Lh0nFnVE4bLMtqLSz5UvKUtDbjBVcM5I"/>
+<div class="absolute top-3.5 right-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container-highest font-label-caps text-label-caps text-on-surface shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              Published
+            </span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary">JORDAN</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-1 group-hover:text-primary transition-colors">Wadi Rum</h2>
+<p class="font-body-md text-body-md text-secondary mt-2">8 medium-format frames · Edited 1 week ago</p>
+</div>
+<div class="pt-4 mt-4 border-t border-surface-container flex items-center justify-between">
+<span class="font-label-md text-label-md text-secondary group-hover:text-on-surface transition-colors flex items-center gap-1">
+              Edit story
+              <span class="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</span>
+<span class="font-label-caps text-label-caps text-secondary">29.57° N, 35.42° E</span>
+</div>
+</div>
+</article>
+<!-- Card 4: Kyoto -->
+<article class="group bg-surface-container-lowest rounded-xl border border-surface-container-highest overflow-hidden flex flex-col hover:border-surface-dim transition-all duration-200">
+<div class="relative aspect-[3/2] overflow-hidden bg-surface-container">
+<img alt="Historic Kyoto alleyway with traditional wooden machiya and woman in kimono" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1UWTFxN7N2UoLYbnpWUCPOdFSE7M-6_MB71XxuPLZNpesAcUdgUm5MQlMpXFhQ3iW6On2-n3HU1N8veqaXfOA0lDfEUMiNYxevvw-xMFfp2psUVuaT5P7x6_4KU-f19_Yd-_f3UcpClE0LbjHxHnaz-7b5rA7UpkxBANZgpIid5wE1TS8PdGUOI_scnrQfOzObQf4zcc3lASpaOP6fW85hI7Kb-BpiKOd4AoaQ55Do1xAGLVcZPE8WoaRjz"/>
+<div class="absolute top-3.5 right-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container-highest font-label-caps text-label-caps text-on-surface shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              Published
+            </span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary">JAPAN</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-1 group-hover:text-primary transition-colors">Kyoto</h2>
+<p class="font-body-md text-body-md text-secondary mt-2">11 medium-format frames · Edited 2 weeks ago</p>
+</div>
+<div class="pt-4 mt-4 border-t border-surface-container flex items-center justify-between">
+<span class="font-label-md text-label-md text-secondary group-hover:text-on-surface transition-colors flex items-center gap-1">
+              Edit story
+              <span class="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</span>
+<span class="font-label-caps text-label-caps text-secondary">35.01° N, 135.76° E</span>
+</div>
+</div>
+</article>
+<!-- Card 5: Oaxaca -->
+<article class="group bg-surface-container-lowest rounded-xl border border-surface-container-highest overflow-hidden flex flex-col hover:border-surface-dim transition-all duration-200">
+<div class="relative aspect-[3/2] overflow-hidden bg-surface-container">
+<img alt="Oaxaca agave valley with rider on mule under Sierra Madre mountains" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1WKTSzOEOUuD5kJSh4MAdNJFLETircWW-a8iPcm_H4DOsyACh5m9IdNHPJT3Rp5tKklZWJyyGwKhO0lYyj5ta3DVUzS_lXzsJ8p2K5ddqM4tG295lBQq-HD2mkvp_SZrroUkKqlm3pD5qGEFGSR3VhCGwRyYJaH95X3rce23EIEAPs-x-fVPE7nvWk23_PxnjZLA4VJJBkAoYpEshbKmfDFd7eIGWJGp1jaLDsxWYkgrWnyxjCHH1psEkFV"/>
+<div class="absolute top-3.5 right-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm border border-surface-container-highest font-label-caps text-label-caps text-on-surface shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              Published
+            </span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary">MEXICO</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-1 group-hover:text-primary transition-colors">Oaxaca</h2>
+<p class="font-body-md text-body-md text-secondary mt-2">6 medium-format frames · Edited 3 weeks ago</p>
+</div>
+<div class="pt-4 mt-4 border-t border-surface-container flex items-center justify-between">
+<span class="font-label-md text-label-md text-secondary group-hover:text-on-surface transition-colors flex items-center gap-1">
+              Edit story
+              <span class="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</span>
+<span class="font-label-caps text-label-caps text-secondary">17.07° N, 96.72° W</span>
+</div>
+</div>
+</article>
+<!-- Card 6: Faroe Islands (Draft) -->
+<article class="group bg-surface-container-lowest rounded-xl border border-surface-container-highest overflow-hidden flex flex-col hover:border-surface-dim transition-all duration-200">
+<div class="relative aspect-[3/2] overflow-hidden bg-surface-container">
+<img alt="Dramatic sea cliff lighthouse in the Faroe Islands with moody mist" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida/AEtjO1VqVsedB_WzrSvjXSPV8Gir3lPsDTd8ma4ChbwMya_SzGlB7fUbWSsdRQeC5-Com2W1njPPCdTYwXP6WGPxUlcsGhwvfq1LZPCQUkciw_PemFdsRJ8_mImF8D-Rv2W5cbrL9bwPlYcniDSuG3uA7h1gJIBJPXg_Yy-M-ijtTt06tTSu5H_YETda6JZGNN0_ZG_0dkMFukJr_cQg9kFqMlTs4kVMFnXxv2908btq7irX0yAZjjMhMB0pjCVZ"/>
+<div class="absolute top-3.5 right-3.5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest/95 backdrop-blur-sm border border-surface-container-highest font-label-caps text-label-caps text-on-surface shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+              Draft
+            </span>
+</div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between">
+<div>
+<span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary">NORTH ATLANTIC</span>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-1 group-hover:text-primary transition-colors">Faroe Islands</h2>
+<p class="font-body-md text-body-md text-secondary mt-2">7 frames uploaded · Edited 4 hours ago</p>
+</div>
+<div class="pt-4 mt-4 border-t border-surface-container flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-semibold flex items-center gap-1">
+              Continue editing
+              <span class="material-symbols-outlined text-[16px] group-hover:translate-x-0.5 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</span>
+<span class="font-label-caps text-label-caps text-secondary">62.27° N, 6.78° W</span>
+</div>
+</div>
+</article>
+</section>
+<!-- Calming Reassurance Microcopy Strip -->
+<section class="py-6 border-t border-surface-container flex items-center justify-center text-center">
+<div class="inline-flex items-center gap-2 text-secondary font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px] text-secondary" data-icon="verified_user">verified_user</span>
+<span>Your changes save safely. Nothing goes live until you press Publish.</span>
+</div>
+</section>
+</main>
+<!-- Web Footer (Shared Component JSON Blueprint Executed) -->
+<footer class="bg-surface dark:bg-inverse-surface border-t border-surface-container-highest dark:border-outline-variant/20">
+<div class="w-full px-6 lg:px-12 py-6 flex flex-col md:flex-row items-center justify-between gap-4 mx-auto">
+<!-- Copyright / Safe Vault Notice -->
+<p class="font-body-md text-body-md text-secondary dark:text-tertiary-fixed-dim text-center md:text-left">
+        © 2025 Atlas Editorial Journal. All entries and photographic negatives are automatically preserved and encrypted locally.
+      </p>
+<!-- Admin Editorial Links -->
+<nav class="flex flex-wrap items-center justify-center gap-6">
+<a class="font-label-caps text-label-caps uppercase tracking-wider text-secondary dark:text-tertiary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150" href="#">Journal Index</a>
+<a class="font-label-caps text-label-caps uppercase tracking-wider text-secondary dark:text-tertiary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150" href="#">Sync Status</a>
+<a class="font-label-caps text-label-caps uppercase tracking-wider text-secondary dark:text-tertiary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150" href="#">Editorial Guidelines</a>
+<a class="font-label-caps text-label-caps uppercase tracking-wider text-secondary dark:text-tertiary-fixed-dim hover:text-on-surface dark:hover:text-inverse-on-surface hover:text-primary dark:hover:text-inverse-primary transition-colors duration-150" href="#">System Settings</a>
+</nav>
+</div>
+</footer>
+</body></html>

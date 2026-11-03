@@ -1,0 +1,99 @@
+- generic [ref=e3]:
+  - generic [ref=e324]: Your travel inquiry has been received! An expedition director will be in touch within 24 hours.
+  - banner:
+    - generic:
+      - button "Meridian Travel Explorer" [ref=e4] [cursor=pointer]:
+        - generic [ref=e6]: Meridian Travel
+        - generic [ref=e7]: Explorer
+      - navigation [ref=e8]:
+        - button "Explore" [ref=e9] [cursor=pointer]
+        - button "Philosophy" [ref=e11] [cursor=pointer]
+        - button "Studio" [ref=e12] [cursor=pointer]
+      - button "Travel with us" [ref=e19] [cursor=pointer]
+  - main [ref=e227]:
+    - generic [ref=e228]:
+      - generic [ref=e229]:
+        - generic [ref=e230]: Bespoke Tourism & Guided Expeditions
+        - heading "Travel With Us." [level=1] [ref=e232]
+        - paragraph [ref=e233]: We curate small-group expeditions and tailored itineraries to the world's most quietly extraordinary landscapes. Reach out to our expedition desk to join an upcoming route or commission a private journey.
+      - generic [ref=e234]:
+        - generic [ref=e327]:
+          - heading "Expedition Inquiry Received" [level=3] [ref=e332]
+          - paragraph [ref=e333]: Thank you, Arthur Pendelton. One of our destination specialists will review your vision for ladakh and contact you at arthur@expeditions.org within 24 hours.
+          - generic [ref=e334]:
+            - button "Submit Another Inquiry" [ref=e335]
+            - button "Back to Map" [ref=e336]
+        - generic [ref=e263]:
+          - generic [ref=e264]:
+            - heading "Expedition Headquarters Desk" [level=3] [ref=e265]
+            - generic [ref=e270]:
+              - generic [ref=e275]:
+                - generic [ref=e276]: Direct Inquiries
+                - link "expeditions@meridiantravel.com" [ref=e277] [cursor=pointer]:
+                  - /url: mailto:expeditions@meridiantravel.com
+              - generic [ref=e281]:
+                - generic [ref=e282]: Telephone
+                - generic [ref=e283]: +1 (800) 492-8527 (Toll Free)
+                - generic [ref=e284]: +44 20 7946 0912 (London Desk)
+              - generic [ref=e289]:
+                - generic [ref=e290]: Operational Hours
+                - generic [ref=e291]: "Monday – Friday: 08:00 – 18:00 GMT"
+                - generic [ref=e292]: Live journey satellite monitoring 24/7
+          - generic [ref=e293]:
+            - heading "Regional Field Outposts" [level=3] [ref=e294]
+            - generic [ref=e299]:
+              - generic [ref=e300]:
+                - generic [ref=e301]: Leh Basecamp, Ladakh
+                - paragraph [ref=e302]: Old Fort Road, Leh 194101, High Himalayas
+              - generic [ref=e303]:
+                - generic [ref=e304]: Svolvær Outpost, Norway
+                - paragraph [ref=e305]: Fiskergata 14, 8300 Lofoten Archipelago
+              - generic [ref=e306]:
+                - generic [ref=e307]: Kyoto Atelier, Japan
+                - paragraph [ref=e308]: Shirakawa-suji, Higashiyama-ku, Kyoto
+          - generic [ref=e309]:
+            - generic [ref=e310]: The Meridian Travel Promise
+            - list [ref=e314]:
+              - listitem [ref=e315]:
+                - generic [ref=e317]: "Small party cap: Maximum 6 travelers per expedition"
+              - listitem [ref=e318]:
+                - generic [ref=e320]: Full carbon & environmental preservation contribution
+              - listitem [ref=e321]:
+                - generic [ref=e323]: Authentic, unscripted local homestays & private refuges
+  - contentinfo [ref=e182]:
+    - generic [ref=e183]:
+      - generic [ref=e184]:
+        - generic [ref=e185]:
+          - generic [ref=e186]: Meridian Travel
+          - paragraph [ref=e189]: A bespoke expedition agency dedicated to quiet landscapes, slow travel, and medium-format photographic documentation.
+          - generic [ref=e190]:
+            - link "expeditions@meridiantravel.com" [ref=e195] [cursor=pointer]:
+              - /url: mailto:expeditions@meridiantravel.com
+            - generic [ref=e196]: +1 (800) 492-8527
+        - generic [ref=e200]:
+          - heading "Pages" [level=4] [ref=e201]
+          - list [ref=e202]:
+            - listitem [ref=e203]:
+              - button "Explore World Map" [ref=e204] [cursor=pointer]
+            - listitem [ref=e205]:
+              - button "Our Philosophy" [ref=e206] [cursor=pointer]
+            - listitem [ref=e207]:
+              - button "Travel With Us (Inquiries & Routes) →" [ref=e208] [cursor=pointer]
+            - listitem [ref=e209]:
+              - button "Studio CMS Manager" [ref=e210] [cursor=pointer]
+        - generic [ref=e211]:
+          - heading "Featured Routes" [level=4] [ref=e212]
+          - list [ref=e213]:
+            - listitem [ref=e214]:
+              - button "Ladakh, India" [ref=e215] [cursor=pointer]
+            - listitem [ref=e216]:
+              - button "Lofoten, Norway" [ref=e217] [cursor=pointer]
+            - listitem [ref=e218]:
+              - button "Wadi Rum, Jordan" [ref=e219] [cursor=pointer]
+            - listitem [ref=e220]:
+              - button "Kyoto, Japan" [ref=e221] [cursor=pointer]
+      - generic [ref=e222]:
+        - generic [ref=e223]: © 2026 Meridian Travel Guild Ltd. Handcrafted expeditions worldwide.
+        - generic [ref=e224]:
+          - generic [ref=e225] [cursor=pointer]: Privacy Policy
+          - generic [ref=e226] [cursor=pointer]: Terms of Travel

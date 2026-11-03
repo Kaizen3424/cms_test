@@ -1,0 +1,137 @@
+- generic [ref=e3]:
+  - banner:
+    - generic:
+      - button "Meridian Travel Explorer" [ref=e4] [cursor=pointer]:
+        - generic [ref=e6]: Meridian Travel
+        - generic [ref=e7]: Explorer
+      - navigation [ref=e8]:
+        - button "Explore" [ref=e9] [cursor=pointer]
+        - button "Philosophy" [ref=e11] [cursor=pointer]
+        - button "Studio" [ref=e12] [cursor=pointer]
+      - button "Travel with us" [ref=e19] [cursor=pointer]
+  - generic [ref=e24]:
+    - generic [ref=e26]:
+      - generic [ref=e27]:
+        - button "All Expeditions (12)" [ref=e28] [cursor=pointer]
+        - button "High Altitude" [ref=e29] [cursor=pointer]
+        - button "Coastlines" [ref=e30] [cursor=pointer]
+        - button "Quiet Sanctuaries" [ref=e31] [cursor=pointer]
+      - generic:
+        - generic [ref=e33] [cursor=pointer]
+        - generic "Lofoten, Norway" [ref=e38] [cursor=pointer]: Lofoten
+        - generic "Wadi Rum, Jordan" [ref=e42] [cursor=pointer]: Wadi Rum
+        - generic "Kyoto, Japan" [ref=e46] [cursor=pointer]: Kyoto
+        - generic "Oaxaca, Mexico" [ref=e50] [cursor=pointer]: Oaxaca
+        - generic "Faroe Islands, North Atlantic" [ref=e54] [cursor=pointer]: Faroe Islands
+        - generic "Iceland, Iceland" [ref=e58] [cursor=pointer]: Iceland
+        - generic "Scotland, United Kingdom" [ref=e62] [cursor=pointer]: Scotland
+        - generic "Italy, Italy" [ref=e66] [cursor=pointer]: Italy
+        - generic "Morocco, Morocco" [ref=e70] [cursor=pointer]: Morocco
+        - generic "Chile, Chile" [ref=e74] [cursor=pointer]: Chile
+        - generic "New Zealand, New Zealand" [ref=e78] [cursor=pointer]: New Zealand
+        - generic [ref=e81]:
+          - generic [ref=e82] [cursor=pointer]:
+            - img "Ladakh Landscape" [ref=e83]
+            - generic [ref=e84]: "Route #14"
+            - button "Saved" [ref=e85]
+          - generic [ref=e88]:
+            - heading "Ladakh, India" [level=3] [ref=e92]
+            - paragraph [ref=e93]: “Six mornings above 4,000m.”
+            - generic [ref=e94]:
+              - generic [ref=e95]: 34.1526° N, 77.5771° E
+              - button "View Route Journal" [ref=e96] [cursor=pointer]
+      - generic [ref=e100]:
+        - generic [ref=e102]: 12 active routes worldwide
+        - generic [ref=e103]: "|"
+        - generic [ref=e104]: Guided & Independent
+    - generic [ref=e105]:
+      - generic [ref=e106]:
+        - text: Field Notes & Photographic Record
+        - heading "A calm expedition instrument wrapped in quiet print chrome." [level=2] [ref=e107]
+      - generic [ref=e108]:
+        - paragraph [ref=e109]: Meridian Travel rejects fast tourism. We curate places reached with patience, documented on medium-format emulsion, and recorded with geographic fidelity. Every location marker corresponds to a finished visual essay and guided route.
+        - button "Read Our Philosophy" [ref=e111] [cursor=pointer]
+    - generic [ref=e116]:
+      - generic [ref=e117]:
+        - generic [ref=e118]:
+          - generic [ref=e119]: Curated Selection
+          - heading "Fresh From The Road" [level=2] [ref=e122]
+        - generic [ref=e123]: Click any frame to view journal
+      - generic [ref=e126]:
+        - article [ref=e127] [cursor=pointer]:
+          - img "Ladakh" [ref=e128]
+          - generic [ref=e130]:
+            - generic [ref=e131]: Ladakh
+            - button "Saved" [ref=e132]
+          - generic [ref=e135]:
+            - paragraph [ref=e136]: India · 34.1526° N
+            - heading "Cliffside monastery at first light" [level=4] [ref=e137]
+        - article [ref=e138] [cursor=pointer]:
+          - img "Lofoten" [ref=e139]
+          - generic [ref=e141]:
+            - generic [ref=e142]: Lofoten
+            - button "Saved" [ref=e143]
+          - generic [ref=e146]:
+            - paragraph [ref=e147]: Norway · 68.20° N
+            - heading "Reinefjord under heavy morning blizzard" [level=4] [ref=e148]
+        - article [ref=e149] [cursor=pointer]:
+          - img "Wadi Rum" [ref=e150]
+          - generic [ref=e152]:
+            - generic [ref=e153]: Wadi Rum
+            - button "Save to Atlas" [ref=e154]
+          - generic [ref=e157]:
+            - paragraph [ref=e158]: Jordan · 29.57° N
+            - heading "Sunset raking over Burdah rock canyon" [level=4] [ref=e159]
+        - article [ref=e160] [cursor=pointer]:
+          - img "Kyoto" [ref=e161]
+          - generic [ref=e163]:
+            - generic [ref=e164]: Kyoto
+            - button "Save to Atlas" [ref=e165]
+          - generic [ref=e168]:
+            - paragraph [ref=e169]: Japan · 35.01° N
+            - heading "Solitary pedestrian in Gion alleyway at 5am" [level=4] [ref=e170]
+        - article [ref=e171] [cursor=pointer]:
+          - img "Oaxaca" [ref=e172]
+          - generic [ref=e174]:
+            - generic [ref=e175]: Oaxaca
+            - button "Save to Atlas" [ref=e176]
+          - generic [ref=e179]:
+            - paragraph [ref=e180]: Mexico · 17.07° N
+            - heading "Mule trail through cultivated agave terraces" [level=4] [ref=e181]
+  - contentinfo [ref=e182]:
+    - generic [ref=e183]:
+      - generic [ref=e184]:
+        - generic [ref=e185]:
+          - generic [ref=e186]: Meridian Travel
+          - paragraph [ref=e189]: A bespoke expedition agency dedicated to quiet landscapes, slow travel, and medium-format photographic documentation.
+          - generic [ref=e190]:
+            - link "expeditions@meridiantravel.com" [ref=e195] [cursor=pointer]:
+              - /url: mailto:expeditions@meridiantravel.com
+            - generic [ref=e196]: +1 (800) 492-8527
+        - generic [ref=e200]:
+          - heading "Pages" [level=4] [ref=e201]
+          - list [ref=e202]:
+            - listitem [ref=e203]:
+              - button "Explore World Map" [ref=e204] [cursor=pointer]
+            - listitem [ref=e205]:
+              - button "Our Philosophy" [ref=e206] [cursor=pointer]
+            - listitem [ref=e207]:
+              - button "Travel With Us (Inquiries & Routes) →" [ref=e208] [cursor=pointer]
+            - listitem [ref=e209]:
+              - button "Studio CMS Manager" [ref=e210] [cursor=pointer]
+        - generic [ref=e211]:
+          - heading "Featured Routes" [level=4] [ref=e212]
+          - list [ref=e213]:
+            - listitem [ref=e214]:
+              - button "Ladakh, India" [ref=e215] [cursor=pointer]
+            - listitem [ref=e216]:
+              - button "Lofoten, Norway" [ref=e217] [cursor=pointer]
+            - listitem [ref=e218]:
+              - button "Wadi Rum, Jordan" [ref=e219] [cursor=pointer]
+            - listitem [ref=e220]:
+              - button "Kyoto, Japan" [ref=e221] [cursor=pointer]
+      - generic [ref=e222]:
+        - generic [ref=e223]: © 2026 Meridian Travel Guild Ltd. Handcrafted expeditions worldwide.
+        - generic [ref=e224]:
+          - generic [ref=e225] [cursor=pointer]: Privacy Policy
+          - generic [ref=e226] [cursor=pointer]: Terms of Travel

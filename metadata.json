@@ -1,0 +1,7 @@
+{
+  "name": "Atlas — Photography Travel Explorer",
+  "description": "An expedition journal and cartographic explorer cataloging slow travel, high-altitude landscapes, and medium-format photo essays.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

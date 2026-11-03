@@ -1,0 +1,159 @@
+- generic [ref=f1e3]:
+  - banner [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - button "Meridian Travel Studio" [ref=f1e7]
+        - navigation [ref=f1e10]:
+          - button "Entries" [ref=f1e11]
+          - button "Places" [ref=f1e12]
+          - button "Archive" [ref=f1e13]
+          - button "Field Notes" [ref=f1e14]
+      - generic [ref=f1e15]:
+        - button "View Site" [ref=f1e16]
+        - button "Notifications" [ref=f1e21]
+        - button "Settings" [ref=f1e25]
+        - generic "Logged in as Editorial Manager (EM)" [ref=f1e29] [cursor=pointer]: EM
+  - main [ref=f1e312]:
+    - generic [ref=f1e313]:
+      - button "Back to Your Places" [ref=f1e315] [cursor=pointer]
+      - generic [ref=f1e319]:
+        - generic [ref=f1e320]:
+          - heading "Lofoten" [level=1] [ref=f1e321]
+          - generic [ref=f1e322]: Published
+        - generic [ref=f1e324]:
+          - button "Preview" [ref=f1e325] [cursor=pointer]
+          - button "Unpublish to Draft" [ref=f1e330] [cursor=pointer]
+      - generic [ref=f1e334]:
+        - generic [ref=f1e337]: All changes saved automatically
+        - generic [ref=f1e338]: •
+        - generic [ref=f1e339]: Just now
+    - generic [ref=f1e340]:
+      - generic [ref=f1e341]:
+        - heading "Place Details" [level=2] [ref=f1e342]
+        - paragraph [ref=f1e343]: Basic geographic context that anchors this dispatch on the world atlas.
+      - generic [ref=f1e344]:
+        - generic [ref=f1e345]:
+          - generic [ref=f1e346]:
+            - generic [ref=f1e347]: Place name
+            - textbox [ref=f1e348]: Lofoten
+            - paragraph [ref=f1e349]: The primary name shown on the cover and journal header.
+          - generic [ref=f1e350]:
+            - generic [ref=f1e351]: Country
+            - textbox [ref=f1e352]: Norway
+            - paragraph [ref=f1e353]: Used for region grouping and filtering in the global archive.
+        - generic [ref=f1e354]:
+          - generic [ref=f1e355]: Map position
+          - generic [ref=f1e356]:
+            - generic [ref=f1e362]:
+              - textbox "e.g. 34.1526° N, 77.5771° E" [ref=f1e363]: 68.20° N, 13.95° E
+              - textbox "Terrain description e.g. High Altitude Cold Desert Plateau" [ref=f1e364]: Arctic Archipelago • Norwegian Sea
+            - button "Adjust Pin on Map" [ref=f1e365] [cursor=pointer]
+        - generic [ref=f1e366]:
+          - generic [ref=f1e367]: One-line fragment
+          - textbox [ref=f1e368]: Arctic fjord winter cabins and cod drying racks in the sea wind.
+          - paragraph [ref=f1e369]: A single quiet impression that sits beneath the title on the explorer map card.
+    - generic [ref=f1e370]:
+      - generic [ref=f1e371]:
+        - generic [ref=f1e372]:
+          - heading "The photo essay" [level=2] [ref=f1e373]
+          - paragraph [ref=f1e374]: Drag or use arrows to reorder photos. Visitors see them in this order.
+        - generic [ref=f1e375]: 5 curated frames
+      - generic [ref=f1e376]:
+        - generic [ref=f1e377]:
+          - generic [ref=f1e378]:
+            - img "Reinefjord under heavy morning blizzard" [ref=f1e379]
+            - generic [ref=f1e380]: "01"
+          - generic [ref=f1e381]:
+            - generic [ref=f1e382]: Caption
+            - textbox [ref=f1e383]: Reinefjord under heavy morning blizzard
+            - paragraph [ref=f1e384]: Hamnøy Bridge • 68.14° N
+          - generic [ref=f1e385]:
+            - generic [ref=f1e386]:
+              - button "Move Up" [disabled] [ref=f1e387]
+              - button "Move Down" [ref=f1e390] [cursor=pointer]
+            - button "Remove Frame" [ref=f1e393] [cursor=pointer]
+            - generic "Drag to reorder" [ref=f1e397]
+        - generic [ref=f1e405]:
+          - generic [ref=f1e406]:
+            - img "Arctic fjord winter cabins on weathered timber stilts" [ref=f1e407]
+            - generic [ref=f1e408]: "02"
+          - generic [ref=f1e409]:
+            - generic [ref=f1e410]: Caption
+            - textbox [ref=f1e411]: Arctic fjord winter cabins on weathered timber stilts
+            - paragraph [ref=f1e412]: Reine Fishermen settlement • Vestfjorden coast
+          - generic [ref=f1e413]:
+            - generic [ref=f1e414]:
+              - button "Move Up" [ref=f1e415] [cursor=pointer]
+              - button "Move Down" [ref=f1e418] [cursor=pointer]
+            - button "Remove Frame" [ref=f1e421] [cursor=pointer]
+            - generic "Drag to reorder" [ref=f1e425]
+        - generic [ref=f1e433]:
+          - generic [ref=f1e434]:
+            - img "Wooden cod drying racks standing empty against the gale" [ref=f1e435]
+            - generic [ref=f1e436]: "03"
+          - generic [ref=f1e437]:
+            - generic [ref=f1e438]: Caption
+            - textbox [ref=f1e439]: Wooden cod drying racks standing empty against the gale
+            - paragraph [ref=f1e440]: Å i Lofoten • Sea Promontory
+          - generic [ref=f1e441]:
+            - generic [ref=f1e442]:
+              - button "Move Up" [ref=f1e443] [cursor=pointer]
+              - button "Move Down" [ref=f1e446] [cursor=pointer]
+            - button "Remove Frame" [ref=f1e449] [cursor=pointer]
+            - generic "Drag to reorder" [ref=f1e453]
+        - generic [ref=f1e461]:
+          - generic [ref=f1e462]:
+            - img "Haukland beach turquoise surf breaking on snowbank" [ref=f1e463]
+            - generic [ref=f1e464]: "04"
+          - generic [ref=f1e465]:
+            - generic [ref=f1e466]: Caption
+            - textbox [ref=f1e467]: Haukland beach turquoise surf breaking on snowbank
+            - paragraph [ref=f1e468]: Vestvågøy Northern Shore • Polar Noon
+          - generic [ref=f1e469]:
+            - generic [ref=f1e470]:
+              - button "Move Up" [ref=f1e471] [cursor=pointer]
+              - button "Move Down" [ref=f1e474] [cursor=pointer]
+            - button "Remove Frame" [ref=f1e477] [cursor=pointer]
+            - generic "Drag to reorder" [ref=f1e481]
+        - generic [ref=f1e489]:
+          - generic [ref=f1e490]:
+            - img "Aurora borealis curtain unfurling over Olstinden peak" [ref=f1e491]
+            - generic [ref=f1e492]: "05"
+          - generic [ref=f1e493]:
+            - generic [ref=f1e494]: Caption
+            - textbox [ref=f1e495]: Aurora borealis curtain unfurling over Olstinden peak
+            - paragraph [ref=f1e496]: Reinebringen Ridgeline • 2 AM exposure
+          - generic [ref=f1e497]:
+            - generic [ref=f1e498]:
+              - button "Move Up" [ref=f1e499] [cursor=pointer]
+              - button "Move Down" [disabled] [ref=f1e502]
+            - button "Remove Frame" [ref=f1e505] [cursor=pointer]
+            - generic "Drag to reorder" [ref=f1e509]
+      - generic [ref=f1e517] [cursor=pointer]:
+        - paragraph [ref=f1e520]: Drop photos here or click to browse
+        - paragraph [ref=f1e521]: High-resolution scans or raw film negatives up to 50MB each. Color calibrated on upload.
+    - generic [ref=f1e522]:
+      - generic [ref=f1e523]:
+        - heading "The words" [level=2] [ref=f1e524]
+        - paragraph [ref=f1e525]: Short is good. A few sentences are plenty.
+      - generic [ref=f1e526]:
+        - generic [ref=f1e527]:
+          - generic [ref=f1e528]: Narrative dispatch
+          - textbox "Write quiet notes from the road..." [ref=f1e529]: Salt spray freezing on black volcanic shingles before midday. The mountains rear straight out of the Norwegian Sea, their granite faces cloaked in powder and sea mist. In Reine and Hamnøy, red rorbuer sit on weathered stilts over slate-green tidepools. Here the silence is interrupted only by the creak of timber and the distant crash of the Arctic swell.
+        - generic [ref=f1e530]:
+          - generic [ref=f1e531]: Formatted as quiet editorial prose on the public dispatch page.
+          - generic [ref=f1e532]: 59 words
+    - generic [ref=f1e533]:
+      - generic [ref=f1e534]:
+        - heading "This place is Published — active on the public atlas" [level=3] [ref=f1e537]
+        - paragraph [ref=f1e538]: All visitors can now discover this dispatch on the interactive map and read the visual essay.
+      - generic [ref=f1e539]:
+        - button "Save draft" [ref=f1e540] [cursor=pointer]
+        - button "Revert to Draft" [ref=f1e541] [cursor=pointer]
+  - contentinfo [ref=f1e305]:
+    - generic [ref=f1e306]:
+      - paragraph [ref=f1e307]: © 2026 Meridian Travel Journal. All entries and photographic negatives are preserved locally.
+      - navigation [ref=f1e308]:
+        - button "Public Site" [ref=f1e309] [cursor=pointer]
+        - button "Travel With Us Desk" [ref=f1e310] [cursor=pointer]
+        - generic [ref=f1e311]: Safe Storage Active

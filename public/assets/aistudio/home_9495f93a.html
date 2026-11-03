@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atlas — Photography Travel Explorer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,400;1,600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'sans-serif'],
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+          },
+          colors: {
+            atlas: {
+              red: '#E60023',
+              'red-hover': '#CC001F',
+              cream: '#F7F6F2',
+              'cream-card': '#EFECE6',
+              charcoal: '#1A1A18',
+              'charcoal-light': '#242421',
+              mute: '#71716B',
+              stone: '#8E8E86',
+              border: '#E2DFD7'
+            }
+          },
+          boxShadow: {
+            'card': '0 20px 40px -15px rgba(28, 25, 23, 0.15)',
+            'pin': '0 8px 18px -4px rgba(230, 0, 35, 0.45)',
+            'float': '0 12px 30px -8px rgba(0, 0, 0, 0.08)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { height: 6px; width: 6px; }
+    ::-webkit-scrollbar-track { background: #F7F6F2; }
+    ::-webkit-scrollbar-thumb { background: #D5D2C9; border-radius: 9999px; }
+    
+    .map-canvas {
+      background-color: #F4F2EC;
+      background-image: 
+        radial-gradient(#E2DFD6 1px, transparent 1px),
+        radial-gradient(#E5E1D8 1px, #F4F2EC 1px);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px 20px;
+    }
+
+    .pulse-ring {
+      animation: pulse-ring 2.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.6); opacity: 0.15; }
+      100% { transform: scale(1.9); opacity: 0; }
+    }
+  </style>
+</head>
+<body class="bg-atlas-cream text-atlas-charcoal font-sans antialiased selection:bg-atlas-red selection:text-white">
+
+  <!-- TOP SLIM FLOATING NAVIGATION BAR -->
+  <header class="fixed top-4 left-0 right-0 z-50 px-6 sm:px-10 pointer-events-none">
+    <div class="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
+      <!-- Wordmark -->
+      <a href="#" class="bg-white/85 backdrop-blur-md px-5 py-2.5 rounded-full border border-atlas-border shadow-float flex items-center gap-2.5 transition-transform hover:scale-[1.02]">
+        <div class="w-3 h-3 rounded-full bg-atlas-red animate-pulse"></div>
+        <span class="font-extrabold tracking-tight text-lg text-atlas-charcoal font-sans">Atlas</span>
+        <span class="text-xs uppercase tracking-widest text-atlas-mute pl-1.5 font-semibold border-l border-atlas-border hidden sm:inline">Explorer</span>
+      </a>
+
+      <!-- Center quiet text links -->
+      <nav class="bg-white/85 backdrop-blur-md px-6 py-2.5 rounded-full border border-atlas-border shadow-float hidden md:flex items-center gap-8">
+        <a href="#hero-map" class="text-sm font-semibold text-atlas-charcoal hover:text-atlas-red transition-colors flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-atlas-red"></span>
+          Explore
+        </a>
+        <a href="#philosophy" class="text-sm font-medium text-atlas-mute hover:text-atlas-charcoal transition-colors">Philosophy</a>
+        <a href="#road-strip" class="text-sm font-medium text-atlas-mute hover:text-atlas-charcoal transition-colors">Dispatches</a>
+      </nav>
+
+      <!-- Right Red CTA -->
+      <div class="flex items-center gap-3">
+        <button class="bg-atlas-red hover:bg-atlas-red-hover text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-pin transition-all hover:scale-[1.03] active:scale-95 flex items-center gap-2">
+          <span>Follow the Journey</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO CANVAS: FULL VIEWPORT MAP -->
+  <section id="hero-map" class="relative w-full h-[92vh] min-h-[640px] map-canvas overflow-hidden flex items-center justify-center border-b border-atlas-border">
+    
+    <!-- Floating Search Pill (Top Left of Map) -->
+    <div class="absolute top-24 left-6 sm:left-10 z-30 w-72 sm:w-80">
+      <div class="bg-white/95 backdrop-blur-md border border-atlas-border rounded-full py-2.5 px-4 shadow-float flex items-center gap-3 transition-all focus-within:ring-2 focus-within:ring-atlas-red/30 focus-within:border-atlas-red">
+        <svg class="w-4 h-4 text-atlas-mute shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input 
+          type="text" 
+          placeholder="Search places" 
+          class="w-full bg-transparent text-sm text-atlas-charcoal placeholder-atlas-mute focus:outline-none font-medium"
+        />
+        <kbd class="hidden sm:inline-block text-[10px] font-semibold text-atlas-mute bg-atlas-cream px-1.5 py-0.5 rounded border border-atlas-border">⌘K</kbd>
+      </div>
+
+      <!-- Quick filters underneath search -->
+      <div class="flex gap-1.5 mt-2.5 overflow-x-auto pb-1 text-xs">
+        <span class="bg-white/80 border border-atlas-border px-3 py-1 rounded-full text-atlas-charcoal font-medium shadow-sm hover:bg-white cursor-pointer transition-colors">High Altitude</span>
+        <span class="bg-white/80 border border-atlas-border px-3 py-1 rounded-full text-atlas-mute hover:text-atlas-charcoal hover:bg-white cursor-pointer transition-colors">Coastlines</span>
+        <span class="bg-white/80 border border-atlas-border px-3 py-1 rounded-full text-atlas-mute hover:text-atlas-charcoal hover:bg-white cursor-pointer transition-colors">Quiet Sanctuaries</span>
+      </div>
+    </div>
+
+    <!-- Map Canvas SVG: Clean Warm Cartographic Style with real Continental Projections -->
+    <div class="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none">
+      <svg class="w-full h-full max-w-[1700px] object-cover opacity-85 select-none" viewBox="0 0 1200 650" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Graticule grid lines -->
+        <g stroke="#E0DDD3" stroke-width="0.75" stroke-dasharray="3 4">
+          <line x1="50" y1="120" x2="1150" y2="120" />
+          <line x1="50" y1="240" x2="1150" y2="240" />
+          <line x1="50" y1="360" x2="1150" y2="360" />
+          <line x1="50" y1="480" x2="1150" y2="480" />
+          <line x1="200" y1="50" x2="200" y2="600" />
+          <line x1="400" y1="50" x2="400" y2="600" />
+          <line x1="600" y1="50" x2="600" y2="600" />
+          <line x1="800" y1="50" x2="800" y2="600" />
+          <line x1="1000" y1="50" x2="1000" y2="600" />
+        </g>
+
+        <!-- World Landmass Outlines (Desaturated Warm Taupe) -->
+        <!-- North America & Greenland -->
+        <path d="M120 110 C 140 90, 240 70, 300 100 C 350 125, 330 180, 280 210 C 240 235, 230 290, 200 320 C 180 340, 160 310, 140 260 C 110 230, 90 170, 120 110 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1.2" />
+        <path d="M330 70 C 360 65, 390 85, 370 120 C 350 140, 330 110, 330 70 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1" />
+        
+        <!-- South America -->
+        <path d="M250 340 C 290 350, 330 380, 320 430 C 310 490, 270 560, 250 580 C 235 560, 230 480, 235 430 C 235 380, 240 350, 250 340 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1.2" />
+
+        <!-- Europe & Scandinavia & UK/Iceland -->
+        <path d="M520 110 C 540 90, 570 100, 565 150 C 550 160, 520 150, 520 110 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1.2" />
+        <path d="M470 100 C 490 95, 485 115, 465 115 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1" />
+        <path d="M485 140 C 495 130, 510 145, 495 165 C 485 160, 480 145, 485 140 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1" />
+        <path d="M510 170 C 540 160, 580 165, 570 210 C 550 235, 520 220, 510 170 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1.2" />
+
+        <!-- Africa -->
+        <path d="M510 240 C 560 230, 630 250, 640 320 C 650 380, 620 450, 570 480 C 530 460, 510 390, 495 330 C 490 280, 495 250, 510 240 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1.2" />
+
+        <!-- Asia (Middle East, Russia, India, China, Japan) -->
+        <path d="M600 120 C 680 90, 850 100, 950 140 C 970 180, 930 250, 880 260 C 850 320, 780 340, 740 350 C 720 370, 680 310, 680 270 C 640 260, 600 210, 600 120 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1.2" />
+        <path d="M690 260 C 730 255, 750 290, 725 350 C 700 320, 685 285, 690 260 Z" fill="#EAE5DB" stroke="#D7D2C5" stroke-width="1.2" />
+        <path d="M960 170 C 975 160, 985 190, 970 230 C 955 220, 955 185, 960 170 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1" />
+
+        <!-- Australia & Oceania -->
+        <path d="M920 420 C 970 400, 1020 430, 1010 490 C 980 520, 910 510, 920 420 Z" fill="#E8E4DA" stroke="#D7D2C5" stroke-width="1.2" />
+      </svg>
+    </div>
+
+    <!-- PINS LAYER (Around 12 circular red map pins with small white dot centers) -->
+    <div class="relative w-full h-full max-w-[1200px] max-h-[650px] mx-auto pointer-events-auto">
+
+      <!-- 1. Iceland Pin -->
+      <div class="group absolute top-[18%] left-[39.5%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          Iceland
+        </div>
+      </div>
+
+      <!-- 2. Scotland Pin -->
+      <div class="group absolute top-[23%] left-[41.2%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          Scotland
+        </div>
+      </div>
+
+      <!-- 3. Norway (Lofoten) Pin -->
+      <div class="group absolute top-[19%] left-[45.5%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          Norway
+        </div>
+      </div>
+
+      <!-- 4. Italy Pin -->
+      <div class="group absolute top-[33%] left-[46.2%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          Italy
+        </div>
+      </div>
+
+      <!-- 5. Morocco Pin -->
+      <div class="group absolute top-[39%] left-[42.8%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          Morocco
+        </div>
+      </div>
+
+      <!-- 6. Jordan (Wadi Rum) Pin -->
+      <div class="group absolute top-[37%] left-[51.8%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          Jordan
+        </div>
+      </div>
+
+      <!-- 7. Mexico (Oaxaca) Pin -->
+      <div class="group absolute top-[43%] left-[17.2%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          Mexico
+        </div>
+      </div>
+
+      <!-- 8. Chile (Patagonia) Pin -->
+      <div class="group absolute top-[79%] left-[21.5%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          Chile
+        </div>
+      </div>
+
+      <!-- 9. Japan (Kyoto) Pin -->
+      <div class="group absolute top-[34%] left-[81.2%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          Japan
+        </div>
+      </div>
+
+      <!-- 10. Faroe Islands Pin -->
+      <div class="group absolute top-[16.5%] left-[42.4%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          Faroe Islands
+        </div>
+      </div>
+
+      <!-- 11. New Zealand Pin -->
+      <div class="group absolute top-[82%] left-[89%] -translate-x-1/2 -translate-y-1/2 cursor-pointer z-20">
+        <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center transition-transform hover:scale-125">
+          <div class="w-3.5 h-3.5 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center">
+            <div class="w-1 h-1 rounded-full bg-white"></div>
+          </div>
+        </div>
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1 bg-atlas-charcoal text-white text-[11px] rounded-md font-semibold whitespace-nowrap shadow-md pointer-events-none">
+          New Zealand
+        </div>
+      </div>
+
+      <!-- 12. SELECTED PIN OVER NORTHERN INDIA WITH FLOATING PLACE CARD -->
+      <div class="absolute top-[37%] left-[60.5%] -translate-x-1/2 -translate-y-1/2 z-40">
+        <!-- Pin Animation Rings -->
+        <div class="relative flex items-center justify-center">
+          <div class="absolute w-12 h-12 rounded-full bg-atlas-red/25 pulse-ring pointer-events-none"></div>
+          <div class="w-6 h-6 rounded-full bg-atlas-red/20 flex items-center justify-center">
+            <div class="w-4 h-4 rounded-full bg-atlas-red border-2 border-white shadow-pin flex items-center justify-center ring-4 ring-atlas-red/20">
+              <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FLOATING PLACE CARD: Ladakh, India -->
+        <div class="absolute bottom-9 left-1/2 -translate-x-1/2 w-64 sm:w-72 bg-white rounded-2xl p-2.5 shadow-card border border-atlas-border transition-all duration-300 hover:shadow-2xl">
+          <!-- Card Image: Mountain Landscape -->
+          <div class="relative h-44 w-full rounded-xl overflow-hidden bg-atlas-cream-card mb-3">
+            <img 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2FFiOS7raeZtD6lUAK5eZm_85dE_Hti1HEsNoJHn_MzUdlLe9Rr9vTO-F3Hc2EtbNLDeqUnvICDkOICUO8xMxzssrcCXvmsROCpYxxIgZ0egliP0yV-7I5hM4QoxXiuWkq5enjmN7gqrCRL1DVH2uumKCVPIbpQPZxhiOG9_pqPUCPUZrajs8c8En8lgG1vuSn16BQYFjE2DfYEVPKnIMfdVv-BmlehrIjOAp6k2f5mdM0Om_AMHeH4Z_JFFu2y89YqVKUepVF5I3" 
+              alt="Ladakh Mountain High Altitude"
+              class="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700"
+            />
+            <!-- Tiny overlay badge -->
+            <div class="absolute top-2.5 left-2.5 bg-atlas-charcoal/75 backdrop-blur-md text-white text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full">
+              Dispatch #14
+            </div>
+            <div class="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-sm p-1.5 rounded-full text-atlas-red hover:bg-white transition-colors cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="px-2 pb-1.5">
+            <div class="flex items-center gap-1.5 mb-1 text-atlas-red">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/>
+              </svg>
+              <h3 class="font-bold text-base text-atlas-charcoal leading-tight tracking-tight">Ladakh, India</h3>
+            </div>
+            
+            <p class="text-xs text-atlas-mute font-medium italic font-serif tracking-normal mb-3">
+              “six mornings above 4,000m”
+            </p>
+
+            <div class="flex items-center justify-between pt-2 border-t border-atlas-border text-[11px] text-atlas-mute">
+              <span class="font-mono">34.15° N, 77.57° E</span>
+              <a href="#road-strip" class="text-atlas-red font-bold hover:underline inline-flex items-center gap-0.5">
+                View Journal
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Bottom pointer anchor notch -->
+          <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-r border-b border-atlas-border transform rotate-45"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Map Info Indicator (Bottom Left) -->
+    <div class="absolute bottom-6 left-6 sm:left-10 z-20 flex items-center gap-3 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full border border-atlas-border text-xs text-atlas-charcoal font-medium shadow-sm">
+      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+      <span>12 active field dispatches</span>
+      <span class="text-atlas-border">|</span>
+      <span class="text-atlas-mute">Expedition Phase IV</span>
+    </div>
+
+    <!-- Subtle Zoom & Coordinate Controls (Bottom Right) -->
+    <div class="absolute bottom-6 right-6 sm:right-10 z-20 flex items-center gap-2">
+      <div class="bg-white/90 backdrop-blur-md border border-atlas-border rounded-full p-1 shadow-float flex flex-col gap-1">
+        <button class="w-8 h-8 rounded-full flex items-center justify-center text-atlas-charcoal hover:bg-atlas-cream-card transition-colors active:scale-95" title="Zoom in">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+          </svg>
+        </button>
+        <div class="w-4 h-[1px] bg-atlas-border mx-auto"></div>
+        <button class="w-8 h-8 rounded-full flex items-center justify-center text-atlas-charcoal hover:bg-atlas-cream-card transition-colors active:scale-95" title="Zoom out">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"></path>
+          </svg>
+        </button>
+      </div>
+      <button class="bg-white/90 backdrop-blur-md border border-atlas-border rounded-full w-10 h-10 flex items-center justify-center text-atlas-charcoal hover:bg-atlas-cream-card transition-colors shadow-float" title="Reset Projection">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
+      </button>
+    </div>
+
+  </section>
+
+  <!-- EDITORIAL INTERLUDE: MAGAZINE MANIFESTO -->
+  <section id="philosophy" class="max-w-7xl mx-auto px-6 sm:px-10 py-16 sm:py-20 flex flex-col md:flex-row items-baseline justify-between gap-8 border-b border-atlas-border">
+    <div class="max-w-xl">
+      <span class="text-xs uppercase tracking-widest text-atlas-red font-bold">Field Notes & Photographic Record</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-atlas-charcoal mt-2 tracking-tight">
+        A calm expedition instrument wrapped in quiet print chrome.
+      </h2>
+    </div>
+    <div class="max-w-md text-atlas-mute text-sm sm:text-base leading-relaxed font-normal">
+      <p>
+        Atlas rejects fast tourism. We catalog places reached with patience, documented on medium-format emulsion, and recorded with geographic fidelity. Every location marker corresponds to a finished visual essay.
+      </p>
+    </div>
+  </section>
+
+  <!-- SECTION 3: FRESH FROM THE ROAD -->
+  <section id="road-strip" class="py-16 sm:py-20 bg-atlas-cream">
+    <div class="max-w-7xl mx-auto px-6 sm:px-10">
+      
+      <!-- Section Header -->
+      <div class="flex items-end justify-between mb-8">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-2 h-2 rounded-full bg-atlas-red"></span>
+            <span class="text-xs uppercase font-bold tracking-widest text-atlas-mute">Curated Selection</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-atlas-charcoal tracking-tight">
+            Fresh From The Road
+          </h2>
+        </div>
+        <div class="hidden sm:flex items-center gap-2">
+          <span class="text-xs text-atlas-mute font-medium">Scroll to explore archives</span>
+          <div class="w-8 h-[1px] bg-atlas-border"></div>
+        </div>
+      </div>
+
+      <!-- Horizontal Strip of 5 Photo Tiles with Mixed Aspect Ratios & Tight Gutters -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        
+        <!-- Tile 1: Lofoten (Portrait 3:4) -->
+        <article class="group relative rounded-2xl overflow-hidden bg-atlas-cream-card aspect-[3/4] shadow-sm hover:shadow-xl transition-all duration-300">
+          <img 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8KRmv3nocauVt5p7GK-HJVjVk09L2rfio1-K4efWXqp3P-4UbHwOYNRPg_z_HgiOvPMtAe0EfJl5NlUfUp-hUfcoEwy2FCHH2QCKVI-pae5RsBgegxkhhITLWeVY8yv9RcFgPJrq5iPxfZ4gVr7jC6xJzSvSp9M4XG73kEjklQGsvi0fwT1oJ_8dVPOA-uH-a5dLG4a3joqqDso6vgDW1nlzA0HHfAEMa3meFfkZWFJVtRu0G7i1I1cfOywK6ENy1r9ClWvvgUysf" 
+            alt="Lofoten Islands, Norway"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent"></div>
+          
+          <!-- Top Tag and Tiny Red Save Icon -->
+          <div class="absolute top-3.5 inset-x-3.5 flex items-center justify-between">
+            <span class="bg-white/90 backdrop-blur-sm text-atlas-charcoal text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+              Lofoten
+            </span>
+            <button class="w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-atlas-red hover:bg-white transition-all shadow-sm active:scale-90" title="Save to Atlas">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Bottom Label -->
+          <div class="absolute bottom-3.5 inset-x-3.5 text-white">
+            <p class="text-[11px] text-white/70 uppercase tracking-widest font-mono">Norway · 68° N</p>
+            <h4 class="text-sm font-bold leading-snug">Arctic fjord winter cabins</h4>
+          </div>
+        </article>
+
+        <!-- Tile 2: Wadi Rum (4:5) -->
+        <article class="group relative rounded-2xl overflow-hidden bg-atlas-cream-card aspect-[3/4] shadow-sm hover:shadow-xl transition-all duration-300">
+          <img 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjaB6qFS62_cUbLSBhBxbJ3JeA7sT3SbNXSXgSBlACs1yR6KHIVEh6SXEvbnNm6mfppvnjX0g8oWhWLMTisuwJxPkvShHbQMxGPKkUS0poRBSmDHErkkgvLwP5WEGxM5fvhJ74AY7O9o_suOUKHZJ9EwWv_XM8aGPBEWNy9SIOxAAUHOLtzeIkip-qLCZ06j7pTbxqPmUM-fVOce5Ib4YXyq21LwvMxmeksXfQ7s-HyIXaGbpaGrQ3bNtJMETz2h8gFr_3XxtY-bQB" 
+            alt="Wadi Rum Desert, Jordan"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent"></div>
+          
+          <div class="absolute top-3.5 inset-x-3.5 flex items-center justify-between">
+            <span class="bg-white/90 backdrop-blur-sm text-atlas-charcoal text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+              Wadi Rum
+            </span>
+            <button class="w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-atlas-red hover:bg-white transition-all shadow-sm active:scale-90" title="Save to Atlas">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="absolute bottom-3.5 inset-x-3.5 text-white">
+            <p class="text-[11px] text-white/70 uppercase tracking-widest font-mono">Jordan · Red Sand</p>
+            <h4 class="text-sm font-bold leading-snug">Granite monolithic dusk</h4>
+          </div>
+        </article>
+
+        <!-- Tile 3: Kyoto (Portrait 3:4) -->
+        <article class="group relative rounded-2xl overflow-hidden bg-atlas-cream-card aspect-[3/4] shadow-sm hover:shadow-xl transition-all duration-300">
+          <img 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuClf_HBCa0B-3n5DUiMoBM3iRFnqbfVOdhkiLoA7YSsy11rI9UB3s09m5QH8rt8Pl-GqB8qG6GsBbReSIgj7ud84_Fy0P6U6wdeIQ0QGWn1L6bSAdT5fjS3SNQVAS-Xonr5jUZTkCxMM7Kua4ztuXAZX6WQENKVeioqB0bmexyRHbxRDLQFK9jbp01NdEiXAjKOFUvjGbxhflEE2XsJtNab78a4nnEFt_-_N6cHeGQjtAn-PFqc1nY5_tG4zCXcyRV0fZLV-8c1BRCS" 
+            alt="Kyoto Alleyways, Japan"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent"></div>
+          
+          <div class="absolute top-3.5 inset-x-3.5 flex items-center justify-between">
+            <span class="bg-white/90 backdrop-blur-sm text-atlas-charcoal text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+              Kyoto
+            </span>
+            <button class="w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-atlas-red hover:bg-white transition-all shadow-sm active:scale-90" title="Save to Atlas">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="absolute bottom-3.5 inset-x-3.5 text-white">
+            <p class="text-[11px] text-white/70 uppercase tracking-widest font-mono">Japan · Moss & Cedar</p>
+            <h4 class="text-sm font-bold leading-snug">Gion alleyways at 5 AM</h4>
+          </div>
+        </article>
+
+        <!-- Tile 4: Oaxaca (Square/Portrait aspect) -->
+        <article class="group relative rounded-2xl overflow-hidden bg-atlas-cream-card aspect-[3/4] shadow-sm hover:shadow-xl transition-all duration-300">
+          <img 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbbFnM-GQHBjcyHLI0iHioflIvHHEEQM0RqwqLE_kNvjII2vrvqp43K12f6WLZns415KwLPO-ch0trMH5jife6pjIz7yqOeh4398xdiCULpEzoC3JQJRfCyHSthPUWkSe4n1AIc3ZqGZD0vJhtzP63vHNfUfPejtj1E_V9RWbjPw1fXjD47cPw4G7o6Wx8iUuhpx0dHJw9Un6nWnw-XlIvKIrqBB5HNattm6h6Y250jrbmeBgCbuoyrL_OTX8JI4Az7bjSAEG6WT7B" 
+            alt="Oaxaca Agave & Sierra, Mexico"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent"></div>
+          
+          <div class="absolute top-3.5 inset-x-3.5 flex items-center justify-between">
+            <span class="bg-white/90 backdrop-blur-sm text-atlas-charcoal text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+              Oaxaca
+            </span>
+            <button class="w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-atlas-red hover:bg-white transition-all shadow-sm active:scale-90" title="Save to Atlas">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="absolute bottom-3.5 inset-x-3.5 text-white">
+            <p class="text-[11px] text-white/70 uppercase tracking-widest font-mono">Mexico · Highlands</p>
+            <h4 class="text-sm font-bold leading-snug">Agave fields & copal smoke</h4>
+          </div>
+        </article>
+
+        <!-- Tile 5: Faroe Islands (Portrait 3:4) -->
+        <article class="group relative rounded-2xl overflow-hidden bg-atlas-cream-card aspect-[3/4] shadow-sm hover:shadow-xl transition-all duration-300">
+          <img 
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDint0ZTswP9EjXY-U9dSbSSvgP79hT7a1wOY7pYx-5ijvKrOh7jQiGDdyHQQtUsHxzBIOFiNBUj1tLJjnJr_0onyi2PJXP5pbMKI5Wt-rkJ2JoNLnBgd0S2HCj_6BNSVu1jO3XnvtzkzaW3ZKVfkBAIQuR8kw4zT_Rdm25YACl-bicVQH8PptSvrqBO2P5im6IGWsFzy7M10rTvLnHzSpfGgjeomDDGAa1Ay4DnP_xlc6WFkOOLOptfK2EeIHCGP16f87p5n0b8mK" 
+            alt="Faroe Islands Sea Cliffs"
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent"></div>
+          
+          <div class="absolute top-3.5 inset-x-3.5 flex items-center justify-between">
+            <span class="bg-white/90 backdrop-blur-sm text-atlas-charcoal text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+              Faroe Islands
+            </span>
+            <button class="w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-atlas-red hover:bg-white transition-all shadow-sm active:scale-90" title="Save to Atlas">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="absolute bottom-3.5 inset-x-3.5 text-white">
+            <p class="text-[11px] text-white/70 uppercase tracking-widest font-mono">North Atlantic</p>
+            <h4 class="text-sm font-bold leading-snug">Kalsoy lighthouse under mist</h4>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER: DARK CHARCOAL BAND -->
+  <footer class="bg-atlas-charcoal text-white pt-16 pb-12 border-t border-atlas-charcoal-light">
+    <div class="max-w-7xl mx-auto px-6 sm:px-10">
+      
+      <!-- Newsletter Row -->
+      <div class="pb-14 border-b border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-atlas-red font-bold">Print & Dispatch Society</span>
+          <h3 class="text-2xl sm:text-3xl font-extrabold mt-1 tracking-tight">One postcard a month.</h3>
+          <p class="text-sm text-white/60 mt-1.5 font-normal max-w-md">
+            A single, high-resolution physical photo dispatch sent to your letterbox, with GPS coordinates and field notes.
+          </p>
+        </div>
+
+        <!-- Input and red pill subscribe button -->
+        <form onsubmit="event.preventDefault();" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 max-w-md w-full">
+          <div class="relative flex-1">
+            <input 
+              type="email" 
+              placeholder="Your email address" 
+              required
+              class="w-full bg-atlas-charcoal-light border border-white/15 rounded-full px-5 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:border-atlas-red focus:ring-1 focus:ring-atlas-red transition-all"
+            />
+          </div>
+          <button type="submit" class="bg-atlas-red hover:bg-atlas-red-hover text-white text-sm font-bold px-7 py-3 rounded-full transition-transform hover:scale-[1.02] active:scale-95 shadow-pin shrink-0">
+            Subscribe
+          </button>
+        </form>
+      </div>
+
+      <!-- Links Grid -->
+      <div class="py-12 grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-white/10">
+        
+        <!-- Brand column -->
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full bg-atlas-red"></div>
+            <span class="font-extrabold tracking-tight text-xl text-white">Atlas</span>
+          </div>
+          <p class="text-xs text-white/60 leading-relaxed">
+            A photography-first discovery atlas honoring quiet landscapes and genuine expedition notes. Built with care for curious travelers.
+          </p>
+        </div>
+
+        <!-- Column 1: Places -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-4">Places</h4>
+          <ul class="space-y-2.5 text-xs text-white/60">
+            <li><a href="#" class="hover:text-white transition-colors">Nordic Archipelagoes</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">High Altitude Ladakh</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Dolomites & Alpine Ridges</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Jordanian Basins</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">All 48 Cataloged Coordinates</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 2: Philosophy -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-4">Philosophy</h4>
+          <ul class="space-y-2.5 text-xs text-white/60">
+            <li><a href="#" class="hover:text-white transition-colors">The Slow Lens Manifesto</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Film Emulsion & Color Truth</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Leave No Trace Cartography</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contributor Code of Conduct</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: About -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-white mb-4">About</h4>
+          <ul class="space-y-2.5 text-xs text-white/60">
+            <li><a href="#" class="hover:text-white transition-colors">The Editorial Team</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Field Cameras & Gear</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Press & Archival Inquiries</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contact Dispatch Desk</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Copyright & Bottom Line -->
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-white/40 gap-4">
+        <div>
+          © 2026 Atlas Exploration Guild Ltd. All photographic dispatches reserved.
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="#" class="hover:text-white/70 transition-colors">Cartographic Privacy</a>
+          <a href="#" class="hover:text-white/70 transition-colors">Terms of Exploration</a>
+          <a href="#" class="hover:text-white/70 transition-colors">RSS Feed</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+</body>
+</html>
