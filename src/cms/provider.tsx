@@ -12,12 +12,11 @@
  *   also set `error` in context.
  * - `noop` (zero-diff save) is success: no commit, no retry, no warning.
  * - Draft edits never touch the network: they update in-memory state and the
- *   IndexedDB draft store only. Publishing is the single commit path.
- * - Every draft edit broadcasts an event via `subscribeEdits`; the admin shell's
- *   auto-publisher listens and schedules the debounced commit (auto-push).
+ *   IndexedDB draft store only. Publishing (the Publish button) is the single
+ *   commit path.
  * - A publish is safe against edits typed while it is in flight: the newest
  *   working value is stashed and restored as the next draft after the commit
- *   lands, so no keystroke is lost and the auto-publisher picks it up.
+ *   lands, so no keystroke is lost and the user can publish it next.
  */
 import {
   createContext,
@@ -68,12 +67,10 @@ export interface CmsApi {
   updatePlaceDraft(id: string, patch: Partial<PlaceValue>): void;
   updateSettingsDraft(name: SettingsName, patch: Record<string, unknown>): void;
   discardDraft(key: string): Promise<void>;
-  /** Subscribe to draft-edit events (`places/<id>`, `settings/<file>`). Returns an unsubscribe. */
-  subscribeEdits(listener: (key: DraftKey) => void): () => void;
   publishPlace(id: string): Promise<PublishResult>;
   publishSettings(name: SettingsName): Promise<PublishResult>;
   createPlace(value: PlaceValue): Promise<{ id: string }>;
-  uploadMedia(file: File, folder?: string): Promise<{ path: string }>;
+  uploadMedia(file: File, folder?: string, options?: { overwrite?: boolean }): Promise<{ path: string }>;
   lastPublish?: PublishInfo;
 }
 
@@ -184,8 +181,6 @@ export function CmsProvider({ children }: { children: ReactNode }) {
   // captured for each while that publish runs (consumed by `publishEntry`).
   const publishingRef = useRef(new Set<DraftKey>());
   const midflightRef = useRef(new Map<DraftKey, EntryValue>());
-  // Draft-edit listeners — the admin shell's auto-publisher subscribes here.
-  const editListenersRef = useRef(new Set<(key: DraftKey) => void>());
   const statusRef = useRef<CmsStatus>('booting');
   const signingOutRef = useRef(false);
 
@@ -201,18 +196,6 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       else next.delete(key);
       return next;
     });
-  }, []);
-
-  /** Broadcast a draft-edit event so the shell's auto-publisher can schedule a push. */
-  const notifyEdit = useCallback((key: DraftKey) => {
-    for (const listener of editListenersRef.current) listener(key);
-  }, []);
-
-  const subscribeEdits = useCallback((listener: (key: DraftKey) => void) => {
-    editListenersRef.current.add(listener);
-    return () => {
-      editListenersRef.current.delete(listener);
-    };
   }, []);
 
   /** Load every entry + draft from the client and rebuild the state. */
@@ -341,8 +324,8 @@ export function CmsProvider({ children }: { children: ReactNode }) {
 
         // Edits typed while the save was in flight were stashed (applyFresh just
         // overwrote the working value with the committed one). Restore the newest
-        // stashed value as the next draft so no keystroke is lost; the
-        // auto-publisher (or the user) commits it with the following save.
+        // stashed value as the next draft so no keystroke is lost; the user
+        // commits it with the next Publish.
         const stashed = midflightRef.current.get(key);
         midflightRef.current.delete(key);
         if (stashed !== undefined && !sameValue(stashed, result.entry.value)) {
@@ -457,9 +440,8 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       // value, and publishEntry restores the stash afterwards.
       if (publishingRef.current.has(key)) midflightRef.current.set(key, next as EntryValue);
       drafts.queueDraftSave(entry, next as EntryValue, key);
-      notifyEdit(key);
     },
-    [notifyEdit, setPlaceDraftFlag],
+    [setPlaceDraftFlag],
   );
 
   const updateSettingsDraft = useCallback(
@@ -476,9 +458,8 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       setPlaceDraftFlag(key, true);
       if (publishingRef.current.has(key)) midflightRef.current.set(key, next as EntryValue);
       drafts.queueDraftSave(entry, next as EntryValue, key);
-      notifyEdit(key);
     },
-    [notifyEdit, setPlaceDraftFlag],
+    [setPlaceDraftFlag],
   );
 
   /** Drop a draft and fall back to the last committed value. */
@@ -583,13 +564,13 @@ export function CmsProvider({ children }: { children: ReactNode }) {
     throw new Error(message);
   }, []);
 
-  const uploadMedia = useCallback(async (file: File, _folder?: string): Promise<{ path: string }> => {
+  const uploadMedia = useCallback(async (file: File, _folder?: string, options?: { overwrite?: boolean }): Promise<{ path: string }> => {
     // patcms v1 uploads into the configured media folder (`public/images`);
     // a per-upload destination override does not exist, so `folder` is accepted
     // but unused. The returned path is the public path to store in a field.
     const bytes = new Uint8Array(await file.arrayBuffer());
     try {
-      const uploaded = await cms.media.upload({ name: file.name, bytes });
+      const uploaded = await cms.media.upload({ name: file.name, bytes }, options || {});
       return { path: uploaded.publicPath };
     } catch (thrown) {
       // CONFLICT (path exists), VALIDATION (empty / >90 MiB / .svg) — the UI decides.
@@ -651,7 +632,6 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       updatePlaceDraft,
       updateSettingsDraft,
       discardDraft,
-      subscribeEdits,
       publishPlace,
       publishSettings,
       createPlace,
@@ -670,7 +650,6 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       updatePlaceDraft,
       updateSettingsDraft,
       discardDraft,
-      subscribeEdits,
       publishPlace,
       publishSettings,
       createPlace,

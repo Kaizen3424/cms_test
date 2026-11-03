@@ -13,6 +13,7 @@ import type { PlaceValue } from '../../../cms/provider';
 import { calculateAtlasMetrics, filterPlaces, type PlaceWithId } from '../../../lib/adminRules';
 import {
   DraftPill,
+  MediaPreview,
   PLACE_CATEGORIES,
   StatusBadge,
   inputMonoClass,
@@ -128,12 +129,13 @@ export function PlacesListScreen() {
                 href={`/admin/editor?id=${encodeURIComponent(place.id)}`}
                 className="relative aspect-[3/2] overflow-hidden bg-[#eeeeec] block cursor-pointer"
               >
-                <img
-                  src={place.heroImage}
-                  alt={place.name}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+                <div className="w-full h-full group-hover:scale-105 transition-transform duration-300">
+                  <MediaPreview
+                    src={place.heroImage}
+                    alt={place.name}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
                 <div className="absolute top-3.5 right-3.5 flex items-center gap-1.5">
                   <StatusBadge status={place.status} />
                   {row?.hasDraft && <DraftPill label="Edits" />}

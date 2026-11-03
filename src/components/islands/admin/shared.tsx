@@ -18,7 +18,6 @@ import { AlertTriangle, Check, Loader2, RotateCcw, Upload, X } from 'lucide-reac
 import { useCms } from '../../../cms/provider';
 import type { PlaceValue, PublishResult, SettingsName } from '../../../cms/provider';
 import { parseDraftKey } from '../../../cms/drafts';
-import { getAutoPushEnabled } from './autoPush';
 
 /** Mirrors `placeCategories` in src/lib/schema.ts (kept local to avoid bundling zod). */
 export const PLACE_CATEGORIES = [
@@ -38,6 +37,41 @@ export const inputClass =
   'w-full px-3.5 py-2.5 rounded-xl bg-[#fafaf8] border border-[#dcdcd5] text-sm font-medium text-[#1a1a1a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a1a1a]';
 export const inputMonoClass =
   'w-full px-3.5 py-2.5 rounded-xl bg-[#fafaf8] border border-[#dcdcd5] text-xs font-mono text-[#1a1a1a] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a1a1a]';
+
+/* ------------------------------ upload errors ----------------------------- */
+
+/** True when patcms rejected the upload because that filename already exists. */
+function isConflictError(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    (error as { code?: unknown }).code === 'CONFLICT'
+  );
+}
+
+/** Plain-English text for an upload failure — never leaks the raw CMS message. */
+function describeUploadError(error: unknown, filename: string): string {
+  if (isConflictError(error)) {
+    return `"${filename}" already exists in the media library and was not replaced.`;
+  }
+  const code =
+    typeof error === 'object' && error !== null ? (error as { code?: unknown }).code : undefined;
+  switch (code) {
+    case 'VALIDATION':
+      return `"${filename}" could not be uploaded. Use a PNG, JPG, or WebP under 90 MB (SVG files are not allowed).`;
+    case 'AUTH_EXPIRED':
+    case 'AUTH_REQUIRED':
+      return 'Your session expired — sign in again to upload.';
+    case 'FORBIDDEN':
+      return 'That access key cannot write to this repository. Check its scopes.';
+    case 'RATE_LIMIT':
+      return 'GitHub rate limit reached. Wait a moment and retry.';
+    case 'NETWORK':
+      return 'Network error while uploading. Check your connection and retry.';
+    default:
+      return error instanceof Error ? error.message : 'Upload failed — try again.';
+  }
+}
 
 /* --------------------------------- toasts --------------------------------- */
 
@@ -125,31 +159,16 @@ export interface PublishFlow {
   conflict: ConflictInfo | null;
   validation: ValidationInfo | null;
   publish(key: string, action: () => Promise<PublishResult>, successMessage: string): Promise<void>;
-  /**
-   * Schedule a debounced auto-push for `key`: `action` runs ~2.5s after the
-   * last call for that key, committing the entry to the branch (each commit
-   * triggers a Cloudflare Workers build). No-op when auto-push is off or
-   * paused for the key.
-   */
-  autoPush(key: string, action: () => Promise<PublishResult>, successMessage: string): void;
   resolveConflict(choice: 'keep-mine' | 'load-server'): Promise<void>;
   dismissConflict(): void;
   dismissValidation(): void;
 }
-
-/** Debounce window for auto-push, counted from the last edit of the entry. */
-const AUTO_PUSH_DELAY_MS = 2500;
 
 /**
  * Runs a `publishPlace` / `publishSettings` call and routes the four
  * `PublishResult` outcomes to the right UX: success/noop toasts, a validation
  * dialog listing issue paths, or a conflict dialog with keep/discard actions.
  * Transport failures throw out of the provider and land here as error toasts.
- *
- * Auto-pushed publishes differ from manual ones only in feedback: `noop` is
- * silent, validation failures toast instead of opening a dialog (the next
- * edit burst retries), and a conflict pauses auto-push for that key until a
- * human resolves the dialog.
  */
 function usePublishFlowState(): PublishFlow {
   const cms = useCms();
@@ -157,48 +176,19 @@ function usePublishFlowState(): PublishFlow {
   const [busy, setBusy] = useState(false);
   const [conflict, setConflict] = useState<ConflictInfo | null>(null);
   const [validation, setValidation] = useState<ValidationInfo | null>(null);
-  const busyRef = useRef(false);
-  const timersRef = useRef(new Map<string, ReturnType<typeof setTimeout>>());
-  /** Keys whose auto-push hit a conflict and waits for a human decision. */
-  const pausedRef = useRef(new Set<string>());
-
-  // Drop pending auto-push timers when the app unmounts. Drafts persist in
-  // IndexedDB, so nothing is lost — the next edit re-schedules the push.
-  useEffect(() => {
-    const timers = timersRef.current;
-    return () => {
-      timers.forEach((timer) => clearTimeout(timer));
-      timers.clear();
-    };
-  }, []);
 
   const publish = useCallback(
-    async (
-      key: string,
-      action: () => Promise<PublishResult>,
-      successMessage: string,
-      options?: { auto?: boolean },
-    ) => {
-      const auto = options?.auto === true;
-      if (!auto) pausedRef.current.delete(key); // a deliberate publish re-enables auto-push
-      busyRef.current = true;
+    async (key: string, action: () => Promise<PublishResult>, successMessage: string) => {
       setBusy(true);
       try {
         const result = await action();
         if (result.status === 'saved') {
           showToast(successMessage, 'success');
         } else if (result.status === 'noop') {
-          if (!auto) showToast('No changes to publish', 'info');
+          showToast('No changes to publish', 'info');
         } else if (result.status === 'validation') {
-          if (auto) {
-            // The draft is safe; the next auto-push retries once it validates.
-            showToast('Auto-push held — fix the validation errors, then Publish.', 'error');
-          } else {
-            setValidation({ issues: result.issues });
-          }
+          setValidation({ issues: result.issues });
         } else {
-          // Conflict: stop auto-push for this key until a human resolves it.
-          pausedRef.current.add(key);
           setConflict({
             key,
             fields: result.fields,
@@ -209,37 +199,10 @@ function usePublishFlowState(): PublishFlow {
       } catch (thrown) {
         showToast(thrown instanceof Error ? thrown.message : 'Publishing failed — try again.', 'error');
       } finally {
-        busyRef.current = false;
         setBusy(false);
       }
     },
     [showToast],
-  );
-
-  const autoPush = useCallback(
-    (key: string, action: () => Promise<PublishResult>, successMessage: string) => {
-      if (!getAutoPushEnabled() || pausedRef.current.has(key)) return;
-      const existing = timersRef.current.get(key);
-      if (existing) clearTimeout(existing);
-      // One debounce per key: bursts of edits keep pushing the fire time out,
-      // then a single commit lands once the user pauses. If another publish is
-      // still in flight when the timer fires, re-arm briefly instead of
-      // stacking two saves of the same entry.
-      const schedule = (delay: number, attempt: number): void => {
-        const timer = setTimeout(() => {
-          timersRef.current.delete(key);
-          if (!getAutoPushEnabled()) return; // toggled off while the debounce ran
-          if (busyRef.current) {
-            if (attempt < 5) schedule(1500, attempt + 1);
-            return; // give up quietly; the next edit re-schedules
-          }
-          void publish(key, action, successMessage, { auto: true });
-        }, delay);
-        timersRef.current.set(key, timer);
-      };
-      schedule(AUTO_PUSH_DELAY_MS, 0);
-    },
-    [publish],
   );
 
   const resolveConflict = useCallback(
@@ -247,7 +210,6 @@ function usePublishFlowState(): PublishFlow {
       const active = conflict;
       if (!active) return;
       setConflict(null);
-      pausedRef.current.delete(active.key);
       if (choice === 'load-server') {
         await cms.discardDraft(active.key);
         showToast('Loaded the server version — your local draft was discarded.', 'info');
@@ -285,28 +247,26 @@ function usePublishFlowState(): PublishFlow {
       conflict,
       validation,
       publish,
-      autoPush,
       resolveConflict,
       dismissConflict,
       dismissValidation,
     }),
-    [busy, conflict, validation, publish, autoPush, resolveConflict, dismissConflict, dismissValidation],
+    [busy, conflict, validation, publish, resolveConflict, dismissConflict, dismissValidation],
   );
 }
 
 const PublishFlowContext = createContext<PublishFlow | null>(null);
 
-/** Provides the single app-wide publish/auto-push flow. */
+/** Provides the single app-wide publish flow. */
 export function PublishFlowProvider({ children }: { children: ReactNode }) {
   const flow = usePublishFlowState();
   return <PublishFlowContext.Provider value={flow}>{children}</PublishFlowContext.Provider>;
 }
 
 /**
- * The shared publish/auto-push flow. One instance lives in the
- * `PublishFlowProvider` (AdminApp), so every screen and the auto-push agent
- * share one `busy` flag, one conflict/validation state, and one timer set
- * that survives navigation between admin screens.
+ * The shared publish flow. One instance lives in the `PublishFlowProvider`
+ * (AdminApp), so every screen shares one `busy` flag and one
+ * conflict/validation state that survives navigation between admin screens.
  */
 export function usePublishFlow(): PublishFlow {
   const flow = useContext(PublishFlowContext);
@@ -542,11 +502,23 @@ export function UploadButton({
   const handleFile = async (file: File) => {
     setUploading(true);
     try {
-      const { path } = await cms.uploadMedia(file);
+      let path: string;
+      try {
+        ({ path } = await cms.uploadMedia(file));
+      } catch (thrown) {
+        // Same filename already exists in the media library — offer a replace.
+        if (!isConflictError(thrown)) throw thrown;
+        const replace = window.confirm(
+          `"${file.name}" already exists in the media library. Replace it with the selected file?\n\n` +
+            'Tip: prefer a new filename — browsers may keep showing the old image for a while.',
+        );
+        if (!replace) return;
+        ({ path } = await cms.uploadMedia(file, undefined, { overwrite: true }));
+      }
       onUploaded(path);
       showToast('Image uploaded to the media library', 'success');
     } catch (thrown) {
-      showToast(thrown instanceof Error ? thrown.message : 'Upload failed', 'error');
+      showToast(describeUploadError(thrown, file.name), 'error');
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = '';
@@ -637,6 +609,93 @@ export function formatClock(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+/* --------------------------- media preview ---------------------------- */
+
+/**
+ * Always-visible image preview that never shows a silent grey box.
+ * Every value change triggers a fresh fetch (cache-busted with a version
+ * counter) so a stale browser-cached 404 (the deploy-lag poison from the
+ * old immutable `/images/*` header rule) can never mask a new image. If
+ * the image still fails to load, an explicit "Not on live site" badge
+ * appears instead of leaving the placeholder background visible forever.
+ */
+export function MediaPreview({
+  src,
+  alt,
+  class: className = '',
+}: {
+  src?: string;
+  alt: string;
+  class?: string;
+}) {
+  const [version, setVersion] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    if (!src) return;
+    setLoaded(false);
+    setError(false);
+    setVersion((v) => v + 1);
+  }, [src]);
+
+  if (!src) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-xs text-[#8c8c83]">
+        No image yet
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="absolute inset-0 bg-[#eae9e5] flex flex-col items-center justify-center gap-1 px-1 text-center">
+        <span className="text-[10px] font-semibold text-[#71716b] uppercase tracking-wider bg-white px-2 py-1 rounded border border-[#dcdcd5]">
+          Not on live site
+        </span>
+        <button
+          type="button"
+          onClick={() => {
+            setError(false);
+            setLoaded(false);
+            setVersion((v) => v + 1);
+          }}
+          className="text-[10px] font-semibold text-[#e60023] hover:underline cursor-pointer"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  // Cache-bust: every value change fetches a fresh URL, so a browser-cached
+  // 404 (from the deploy window after an upload) can never mask the new image.
+  // Query strings are ignored by static assets served through Cloudflare Workers.
+  const sep = src.startsWith('data:') ? '' : src.includes('?') ? '&' : '?';
+  const displaySrc = src.startsWith('data:') ? src : `${src}${sep}v=${version}`;
+
+  return (
+    <>
+      {!loaded && (
+        <div className="absolute inset-0 bg-[#f5f5f0] animate-pulse" aria-hidden="true" />
+      )}
+      {/* Cache-bust: a value change fetches a fresh URL, so a browser-cached
+          404 (from the deploy window right after an upload) can never mask
+          the new image. Query strings are ignored by the static asset layer. */}
+      <img
+        src={displaySrc}
+        alt={alt}
+        onLoad={() => {
+          setLoaded(true);
+          setError(false);
+        }}
+        onError={() => setError(true)}
+        className={`transition-opacity duration-200 ${loaded ? 'opacity-100' : 'opacity-0'} ${className}`}
+      />
+    </>
+  );
 }
 
 /** Collision-safe id for locally created list items (frames, tenets, outposts). */

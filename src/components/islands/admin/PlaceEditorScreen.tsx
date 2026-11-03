@@ -2,10 +2,8 @@
  * Place editor — port of the legacy AdminEditorView. Every keystroke lands in
  * the patcms draft buffer (cms.updatePlaceDraft — no save button, no network);
  * "Discard Draft" reverts to the committed value and "Publish" commits via
- * cms.publishPlace. With auto-push on (the default), the shell's agent commits
- * the draft ~2.5s after the last edit without pressing anything. Adds
- * cover-image/frame uploads and introLines editing per the new content shape.
- * Without ?id= it renders a place picker.
+ * cms.publishPlace. Adds cover-image/frame uploads and introLines editing per
+ * the new content shape. Without ?id= it renders a place picker.
  */
 import { useState } from 'react';
 import type { SubmitEvent } from 'react';
@@ -23,13 +21,16 @@ import type { PlaceRow } from '../../../cms/provider';
 import type { PhotoFrameContent, PlaceValue } from '../../../cms/types';
 import { reorderFrames } from '../../../lib/adminRules';
 import {
+  ConflictDialog,
   DiscardButton,
   DraftPill,
   ImageField,
+  MediaPreview,
   PLACE_CATEGORIES,
   PublishButton,
   StatusBadge,
   UploadButton,
+  ValidationDialog,
   inputClass,
   inputMonoClass,
   labelClass,
@@ -37,7 +38,6 @@ import {
   usePublishFlow,
   useToast,
 } from './shared';
-import { useAutoPushEnabled } from './autoPush';
 
 export function PlaceEditorScreen({ placeId }: { placeId?: string }) {
   const cms = useCms();
@@ -133,7 +133,6 @@ function Editor({ row }: { row: PlaceRow }) {
   const cms = useCms();
   const showToast = useToast();
   const flow = usePublishFlow();
-  const [autoPush] = useAutoPushEnabled();
   const place = row.value;
   const draftKey = `places/${row.id}`;
 
@@ -246,17 +245,9 @@ function Editor({ row }: { row: PlaceRow }) {
         {/* Reassuring Draft Notice */}
         <div className="flex items-center gap-2 text-xs font-normal text-[#808078] pt-0.5">
           <Check className="w-3.5 h-3.5 text-[#50a773]" />
-          <span>
-            {autoPush
-              ? 'Edits push to GitHub automatically a moment after you stop typing'
-              : 'Edits are kept as local drafts on this device'}
-          </span>
+          <span>Edits are kept as local drafts on this device</span>
           <span className="text-[#b5b5ad]">•</span>
-          <span className="text-[#a0a098]">
-            {autoPush
-              ? 'Cloudflare redeploys the live site with every push'
-              : 'Publish to commit them to the live site'}
-          </span>
+          <span className="text-[#a0a098]">Publish to commit them to the live site</span>
         </div>
       </div>
 
@@ -417,17 +408,11 @@ function Editor({ row }: { row: PlaceRow }) {
               Preview
             </span>
             <div className="relative rounded-2xl overflow-hidden aspect-[3/2] bg-[#eeeee9] border border-[#dcdcd5]">
-              {place.heroImage ? (
-                <img
-                  src={place.heroImage}
-                  alt={place.heroAlt ?? place.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-xs text-[#8c8c83]">
-                  No cover image yet
-                </div>
-              )}
+              <MediaPreview
+                src={place.heroImage}
+                alt={place.heroAlt ?? place.name}
+                class="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
@@ -508,11 +493,10 @@ function Editor({ row }: { row: PlaceRow }) {
               >
                 {/* Thumbnail */}
                 <div className="relative w-full md:w-36 h-28 md:h-24 rounded-xl overflow-hidden bg-[#e0e0db] flex-shrink-0">
-                  <img
+                  <MediaPreview
                     src={frame.url}
                     alt={frame.caption}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
+                    class="w-full h-full object-cover"
                   />
                   <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[10px] font-mono font-medium text-white">
                     {String(index + 1).padStart(2, '0')}
@@ -720,6 +704,16 @@ function Editor({ row }: { row: PlaceRow }) {
         </div>
       </section>
 
+      {flow.conflict && (
+        <ConflictDialog
+          conflict={flow.conflict}
+          onResolve={(choice) => void flow.resolveConflict(choice)}
+          onDismiss={flow.dismissConflict}
+        />
+      )}
+      {flow.validation && (
+        <ValidationDialog validation={flow.validation} onDismiss={flow.dismissValidation} />
+      )}
     </main>
   );
 }

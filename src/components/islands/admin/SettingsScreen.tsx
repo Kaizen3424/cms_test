@@ -25,11 +25,13 @@ import type {
   PhilosophySettings,
   SettingsName,
 } from '../../../cms/provider';
-import { useAutoPushEnabled } from './autoPush';
 import {
+  ConflictDialog,
   DiscardButton,
   ImageField,
+  MediaPreview,
   PublishButton,
+  ValidationDialog,
   cardClass,
   inputClass,
   labelClass,
@@ -48,7 +50,6 @@ export function SettingsScreen({ file }: { file: SettingsName }) {
   const cms = useCms();
   const showToast = useToast();
   const flow = usePublishFlow();
-  const [autoPush] = useAutoPushEnabled();
   const draftKey = `settings/${file}`;
   const hasDraft = cms.draftKeys.has(draftKey);
 
@@ -127,9 +128,7 @@ export function SettingsScreen({ file }: { file: SettingsName }) {
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#e60023] animate-pulse"></span>
             <span className="text-xs sm:text-sm font-semibold">
-              {autoPush
-                ? 'Auto-push will commit these changes to GitHub shortly.'
-                : 'You have unpublished draft changes to this page.'}
+              You have unpublished draft changes to this page.
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -150,6 +149,17 @@ export function SettingsScreen({ file }: { file: SettingsName }) {
             </button>
           </div>
         </div>
+      )}
+
+      {flow.conflict && (
+        <ConflictDialog
+          conflict={flow.conflict}
+          onResolve={(choice) => void flow.resolveConflict(choice)}
+          onDismiss={flow.dismissConflict}
+        />
+      )}
+      {flow.validation && (
+        <ValidationDialog validation={flow.validation} onDismiss={flow.dismissValidation} />
       )}
     </main>
   );
@@ -459,11 +469,10 @@ function HomeSettingsContent() {
               >
                 {/* Thumbnail */}
                 <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#e0e0db] flex-shrink-0">
-                  <img
+                  <MediaPreview
                     src={row.value.heroImage}
                     alt={row.value.name}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
+                    class="w-full h-full object-cover"
                   />
                   <span className="absolute bottom-1 left-1 px-1 py-0.5 rounded bg-black/60 text-[9px] font-mono text-white">
                     {row.value.frames.length}f
@@ -739,17 +748,11 @@ function PhilosophySettingsContent() {
               Image Preview
             </span>
             <div className="relative rounded-2xl overflow-hidden aspect-[16/10] bg-[#eeeee9] border border-[#dcdcd5]">
-              {value.interludeImageUrl ? (
-                <img
-                  src={value.interludeImageUrl}
-                  alt="Interlude preview"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-xs text-[#8c8c83]">
-                  No interlude image yet
-                </div>
-              )}
+              <MediaPreview
+                src={value.interludeImageUrl}
+                alt="Interlude preview"
+                class="w-full h-full object-cover"
+              />
               <div className="absolute top-2 left-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full font-mono">
                 {value.interludeTag}
               </div>
