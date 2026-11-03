@@ -2,8 +2,10 @@
  * Place editor — port of the legacy AdminEditorView. Every keystroke lands in
  * the patcms draft buffer (cms.updatePlaceDraft — no save button, no network);
  * "Discard Draft" reverts to the committed value and "Publish" commits via
- * cms.publishPlace. Adds cover-image/frame uploads and introLines editing per
- * the new content shape. Without ?id= it renders a place picker.
+ * cms.publishPlace. With auto-push on (the default), the shell's agent commits
+ * the draft ~2.5s after the last edit without pressing anything. Adds
+ * cover-image/frame uploads and introLines editing per the new content shape.
+ * Without ?id= it renders a place picker.
  */
 import { useState } from 'react';
 import type { SubmitEvent } from 'react';
@@ -21,7 +23,6 @@ import type { PlaceRow } from '../../../cms/provider';
 import type { PhotoFrameContent, PlaceValue } from '../../../cms/types';
 import { reorderFrames } from '../../../lib/adminRules';
 import {
-  ConflictDialog,
   DiscardButton,
   DraftPill,
   ImageField,
@@ -29,7 +30,6 @@ import {
   PublishButton,
   StatusBadge,
   UploadButton,
-  ValidationDialog,
   inputClass,
   inputMonoClass,
   labelClass,
@@ -37,6 +37,7 @@ import {
   usePublishFlow,
   useToast,
 } from './shared';
+import { useAutoPushEnabled } from './autoPush';
 
 export function PlaceEditorScreen({ placeId }: { placeId?: string }) {
   const cms = useCms();
@@ -132,6 +133,7 @@ function Editor({ row }: { row: PlaceRow }) {
   const cms = useCms();
   const showToast = useToast();
   const flow = usePublishFlow();
+  const [autoPush] = useAutoPushEnabled();
   const place = row.value;
   const draftKey = `places/${row.id}`;
 
@@ -244,9 +246,17 @@ function Editor({ row }: { row: PlaceRow }) {
         {/* Reassuring Draft Notice */}
         <div className="flex items-center gap-2 text-xs font-normal text-[#808078] pt-0.5">
           <Check className="w-3.5 h-3.5 text-[#50a773]" />
-          <span>Edits are kept as local drafts on this device</span>
+          <span>
+            {autoPush
+              ? 'Edits push to GitHub automatically a moment after you stop typing'
+              : 'Edits are kept as local drafts on this device'}
+          </span>
           <span className="text-[#b5b5ad]">•</span>
-          <span className="text-[#a0a098]">Publish to commit them to the live site</span>
+          <span className="text-[#a0a098]">
+            {autoPush
+              ? 'Cloudflare redeploys the live site with every push'
+              : 'Publish to commit them to the live site'}
+          </span>
         </div>
       </div>
 
@@ -710,16 +720,6 @@ function Editor({ row }: { row: PlaceRow }) {
         </div>
       </section>
 
-      {flow.conflict && (
-        <ConflictDialog
-          conflict={flow.conflict}
-          onResolve={(choice) => void flow.resolveConflict(choice)}
-          onDismiss={flow.dismissConflict}
-        />
-      )}
-      {flow.validation && (
-        <ValidationDialog validation={flow.validation} onDismiss={flow.dismissValidation} />
-      )}
     </main>
   );
 }

@@ -14,10 +14,18 @@ import type { SubmitEvent } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { CmsProvider, useCms } from '../../cms/provider';
 import type { SettingsName } from '../../cms/provider';
+import { parseDraftKey } from '../../cms/drafts';
 import { DashboardScreen } from './admin/DashboardScreen';
 import { PlaceEditorScreen } from './admin/PlaceEditorScreen';
 import { SettingsScreen } from './admin/SettingsScreen';
-import { ToastProvider } from './admin/shared';
+import {
+  ConflictDialog,
+  PublishFlowProvider,
+  ValidationDialog,
+  ToastProvider,
+  usePublishFlow,
+} from './admin/shared';
+import { useAutoPushEnabled } from './admin/autoPush';
 
 type AdminRoute =
   | { screen: 'dashboard' }
@@ -143,6 +151,79 @@ function SignInCard() {
   );
 }
 
+/**
+ * Auto-push agent — the always-mounted listener that turns draft edits into
+ * GitHub commits. Every `updatePlaceDraft` / `updateSettingsDraft` broadcast
+ * schedules a debounced publish of that entry (~2.5s after the last edit);
+ * each commit lands on `main` and triggers a Cloudflare Workers build, so the
+ * live site follows the admin panel automatically. Conflicts and validation
+ * problems surface through the shared publish flow's dialogs and toasts.
+ *
+ * Renders nothing itself except the shared conflict/validation dialogs, which
+ * must be visible no matter which admin screen is open when an auto-push
+ * needs attention.
+ */
+function AutoPublishAgent() {
+  const { subscribeEdits, publishPlace, publishSettings } = useCms();
+  const flow = usePublishFlow();
+  const [autoPush] = useAutoPushEnabled();
+
+  useEffect(() => {
+    if (!autoPush) return;
+    return subscribeEdits((key) => {
+      const parsed = parseDraftKey(key);
+      if (!parsed) return;
+      const action =
+        parsed.collection === 'places'
+          ? () => publishPlace(parsed.id)
+          : () => publishSettings(parsed.id as SettingsName);
+      flow.autoPush(key, action, 'Pushed to GitHub — deploying to the live site');
+    });
+  }, [autoPush, subscribeEdits, publishPlace, publishSettings, flow]);
+
+  return (
+    <>
+      {flow.conflict && (
+        <ConflictDialog
+          conflict={flow.conflict}
+          onResolve={(choice) => void flow.resolveConflict(choice)}
+          onDismiss={flow.dismissConflict}
+        />
+      )}
+      {flow.validation && (
+        <ValidationDialog validation={flow.validation} onDismiss={flow.dismissValidation} />
+      )}
+    </>
+  );
+}
+
+/** Navbar switch for the auto-push preference (persisted in localStorage). */
+function AutoPushToggle() {
+  const [enabled, setEnabled] = useAutoPushEnabled();
+  return (
+    <button
+      type="button"
+      onClick={() => setEnabled(!enabled)}
+      title={
+        enabled
+          ? 'Auto-push is on — edits commit to GitHub a moment after you stop typing'
+          : 'Auto-push is off — edits stay as local drafts until you press Publish'
+      }
+      className={`inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold py-1.5 px-3 sm:px-4 rounded-full border shadow-sm whitespace-nowrap transition-colors cursor-pointer ${
+        enabled
+          ? 'text-[#1a5c3a] border-[#bfe3cd] bg-[#eef7f1] hover:bg-[#e3f1e8]'
+          : 'text-[#71716b] border-[#dcdcd5] bg-white hover:bg-[#eeeee9]'
+      }`}
+    >
+      <span
+        className={`w-2 h-2 rounded-full ${enabled ? 'bg-emerald-500' : 'bg-[#c2c2b8]'}`}
+        aria-hidden="true"
+      ></span>
+      <span>{enabled ? 'Auto-push on' : 'Auto-push off'}</span>
+    </button>
+  );
+}
+
 function AdminNavbar({ route }: { route: AdminRoute }) {
   const cms = useCms();
   return (
@@ -178,8 +259,9 @@ function AdminNavbar({ route }: { route: AdminRoute }) {
           </nav>
         </div>
 
-        {/* Right actions: view the public site, sign out */}
+        {/* Right actions: auto-push, view the public site, sign out */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <AutoPushToggle />
           <a
             href="/"
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#52524d] hover:text-[#1a1a1a] transition-colors py-1.5 px-3 sm:px-4 rounded-full border border-[#dcdcd5] bg-white hover:bg-[#eeeee9] shadow-sm whitespace-nowrap"
@@ -216,6 +298,7 @@ function AdminShell() {
   return (
     <div className="min-h-screen bg-[#f7f6f2] text-[#1a1a18]">
       <AdminNavbar route={route} />
+      <AutoPublishAgent />
       {route.screen === 'dashboard' && <DashboardScreen />}
       {route.screen === 'settings' && <SettingsScreen file={route.file} />}
       {route.screen === 'editor' && <PlaceEditorScreen placeId={route.placeId} />}
@@ -227,7 +310,9 @@ export default function AdminApp() {
   return (
     <CmsProvider>
       <ToastProvider>
-        <AdminShell />
+        <PublishFlowProvider>
+          <AdminShell />
+        </PublishFlowProvider>
       </ToastProvider>
     </CmsProvider>
   );

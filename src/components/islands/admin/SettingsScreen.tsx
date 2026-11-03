@@ -25,12 +25,11 @@ import type {
   PhilosophySettings,
   SettingsName,
 } from '../../../cms/provider';
+import { useAutoPushEnabled } from './autoPush';
 import {
-  ConflictDialog,
   DiscardButton,
   ImageField,
   PublishButton,
-  ValidationDialog,
   cardClass,
   inputClass,
   labelClass,
@@ -49,6 +48,7 @@ export function SettingsScreen({ file }: { file: SettingsName }) {
   const cms = useCms();
   const showToast = useToast();
   const flow = usePublishFlow();
+  const [autoPush] = useAutoPushEnabled();
   const draftKey = `settings/${file}`;
   const hasDraft = cms.draftKeys.has(draftKey);
 
@@ -127,7 +127,9 @@ export function SettingsScreen({ file }: { file: SettingsName }) {
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#e60023] animate-pulse"></span>
             <span className="text-xs sm:text-sm font-semibold">
-              You have unpublished draft changes to this page.
+              {autoPush
+                ? 'Auto-push will commit these changes to GitHub shortly.'
+                : 'You have unpublished draft changes to this page.'}
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -148,17 +150,6 @@ export function SettingsScreen({ file }: { file: SettingsName }) {
             </button>
           </div>
         </div>
-      )}
-
-      {flow.conflict && (
-        <ConflictDialog
-          conflict={flow.conflict}
-          onResolve={(choice) => void flow.resolveConflict(choice)}
-          onDismiss={flow.dismissConflict}
-        />
-      )}
-      {flow.validation && (
-        <ValidationDialog validation={flow.validation} onDismiss={flow.dismissValidation} />
       )}
     </main>
   );

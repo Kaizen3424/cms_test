@@ -13,6 +13,11 @@
  * - `noop` (zero-diff save) is success: no commit, no retry, no warning.
  * - Draft edits never touch the network: they update in-memory state and the
  *   IndexedDB draft store only. Publishing is the single commit path.
+ * - Every draft edit broadcasts an event via `subscribeEdits`; the admin shell's
+ *   auto-publisher listens and schedules the debounced commit (auto-push).
+ * - A publish is safe against edits typed while it is in flight: the newest
+ *   working value is stashed and restored as the next draft after the commit
+ *   lands, so no keystroke is lost and the auto-publisher picks it up.
  */
 import {
   createContext,
@@ -63,6 +68,8 @@ export interface CmsApi {
   updatePlaceDraft(id: string, patch: Partial<PlaceValue>): void;
   updateSettingsDraft(name: SettingsName, patch: Record<string, unknown>): void;
   discardDraft(key: string): Promise<void>;
+  /** Subscribe to draft-edit events (`places/<id>`, `settings/<file>`). Returns an unsubscribe. */
+  subscribeEdits(listener: (key: DraftKey) => void): () => void;
   publishPlace(id: string): Promise<PublishResult>;
   publishSettings(name: SettingsName): Promise<PublishResult>;
   createPlace(value: PlaceValue): Promise<{ id: string }>;
@@ -173,6 +180,12 @@ export function CmsProvider({ children }: { children: ReactNode }) {
   const settingsValuesRef = useRef<SettingsValues>(EMPTY_SETTINGS);
   // Remote entries to rebase onto after a conflict (keyed by draft key).
   const conflictBaseRef = useRef(new Map<string, Entry>());
+  // Draft keys with a publish currently in flight, and the newest working value
+  // captured for each while that publish runs (consumed by `publishEntry`).
+  const publishingRef = useRef(new Set<DraftKey>());
+  const midflightRef = useRef(new Map<DraftKey, EntryValue>());
+  // Draft-edit listeners — the admin shell's auto-publisher subscribes here.
+  const editListenersRef = useRef(new Set<(key: DraftKey) => void>());
   const statusRef = useRef<CmsStatus>('booting');
   const signingOutRef = useRef(false);
 
@@ -188,6 +201,18 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       else next.delete(key);
       return next;
     });
+  }, []);
+
+  /** Broadcast a draft-edit event so the shell's auto-publisher can schedule a push. */
+  const notifyEdit = useCallback((key: DraftKey) => {
+    for (const listener of editListenersRef.current) listener(key);
+  }, []);
+
+  const subscribeEdits = useCallback((listener: (key: DraftKey) => void) => {
+    editListenersRef.current.add(listener);
+    return () => {
+      editListenersRef.current.delete(listener);
+    };
   }, []);
 
   /** Load every entry + draft from the client and rebuild the state. */
@@ -256,62 +281,90 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       entry: Entry,
       value: EntryValue,
       applyFresh: (fresh: Entry) => void,
+      applyWorking: (value: EntryValue) => void,
     ): Promise<PublishResult> => {
-      // Land any pending debounced draft write first so it cannot race the delete below.
-      await drafts.flushDraft(key);
-
-      const check = await cms.entries.validate(entry, value);
-      if (!check.ok) {
-        return {
-          status: 'validation',
-          issues: check.issues.map((issue) => ({ path: issue.path, message: issue.message })),
-        };
-      }
-
-      let result: SaveResult;
+      // Mark the flight and reset the mid-flight stash: only edits that arrive
+      // DURING this publish may restore themselves after it lands.
+      publishingRef.current.add(key);
+      midflightRef.current.delete(key);
       try {
-        result = await cms.entries.save(entry, value);
-      } catch (thrown) {
-        const message = describeCmsError(thrown);
-        setError(message);
-        throw thrown;
-      }
+        // Land any pending debounced draft write first so it cannot race the delete below.
+        await drafts.flushDraft(key);
 
-      if (result.status === 'conflict') {
-        // Keep the remote entry as the base for the follow-up merged save and for
-        // draft writes, so the next save diffs against the reconciled tree.
-        conflictBaseRef.current.set(key, result.current);
-        if (collection === 'places') placeEntriesRef.current.set(id, result.current);
-        else settingsEntriesRef.current.set(id as SettingsName, result.current);
-        return {
-          status: 'conflict',
-          fields: conflictFields(result.current, result.local),
-          current: result.current.value,
-          local: result.local,
-        };
-      }
+        const check = await cms.entries.validate(entry, value);
+        if (!check.ok) {
+          // No commit happened; the working value in state is still authoritative.
+          midflightRef.current.delete(key);
+          return {
+            status: 'validation',
+            issues: check.issues.map((issue) => ({ path: issue.path, message: issue.message })),
+          };
+        }
 
-      // Success (saved or noop). patcms 0.1.0 does not delete the draft itself
-      // (docs say it does) — delete it here, and cancel any queued write.
-      drafts.cancelDraft(key);
-      conflictBaseRef.current.delete(key);
-      try {
-        await cms.drafts.delete({ collection, slug: id });
-      } catch {
-        // Best effort: a leftover draft is harmless (it equals the committed value).
+        let result: SaveResult;
+        try {
+          result = await cms.entries.save(entry, value);
+        } catch (thrown) {
+          midflightRef.current.delete(key);
+          const message = describeCmsError(thrown);
+          setError(message);
+          throw thrown;
+        }
+
+        if (result.status === 'conflict') {
+          // applyFresh never ran, so the working value already includes any
+          // mid-flight edits — the stash would be stale. Drop it.
+          midflightRef.current.delete(key);
+          // Keep the remote entry as the base for the follow-up merged save and for
+          // draft writes, so the next save diffs against the reconciled tree.
+          conflictBaseRef.current.set(key, result.current);
+          if (collection === 'places') placeEntriesRef.current.set(id, result.current);
+          else settingsEntriesRef.current.set(id as SettingsName, result.current);
+          return {
+            status: 'conflict',
+            fields: conflictFields(result.current, result.local),
+            current: result.current.value,
+            local: result.local,
+          };
+        }
+
+        // Success (saved or noop). patcms 0.1.0 does not delete the draft itself
+        // (docs say it does) — delete it here, and cancel any queued write.
+        drafts.cancelDraft(key);
+        conflictBaseRef.current.delete(key);
+        try {
+          await cms.drafts.delete({ collection, slug: id });
+        } catch {
+          // Best effort: a leftover draft is harmless (it equals the committed value).
+        }
+        applyFresh(result.entry);
+
+        // Edits typed while the save was in flight were stashed (applyFresh just
+        // overwrote the working value with the committed one). Restore the newest
+        // stashed value as the next draft so no keystroke is lost; the
+        // auto-publisher (or the user) commits it with the following save.
+        const stashed = midflightRef.current.get(key);
+        midflightRef.current.delete(key);
+        if (stashed !== undefined && !sameValue(stashed, result.entry.value)) {
+          applyWorking(stashed);
+          setPlaceDraftFlag(key, true);
+          drafts.queueDraftSave(result.entry, stashed, key);
+        } else {
+          setPlaceDraftFlag(key, false);
+        }
+        setLastPublish(
+          result.status === 'saved'
+            ? {
+                sha: result.commitSha,
+                url: `https://github.com/${cms.repository.owner}/${cms.repository.repo}/commit/${result.commitSha}`,
+                at: new Date().toISOString(),
+              }
+            : { at: new Date().toISOString() },
+        );
+        return result.status === 'saved' ? { status: 'saved', sha: result.commitSha } : { status: 'noop' };
+      } finally {
+        publishingRef.current.delete(key);
       }
-      applyFresh(result.entry);
-      setPlaceDraftFlag(key, false);
-      setLastPublish(
-        result.status === 'saved'
-          ? {
-              sha: result.commitSha,
-              url: `https://github.com/${cms.repository.owner}/${cms.repository.repo}/commit/${result.commitSha}`,
-              at: new Date().toISOString(),
-            }
-          : { at: new Date().toISOString() },
-      );
-      return result.status === 'saved' ? { status: 'saved', sha: result.commitSha } : { status: 'noop' };
     },
     [setPlaceDraftFlag],
   );
@@ -322,17 +375,35 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       if (!entry) throw new Error(`Unknown place: ${id}`);
       const key = drafts.draftKey('places', id);
       const value = placeValuesRef.current.get(id) ?? (entry.value as unknown as PlaceValue);
-      return publishEntry(key, 'places', id, entry, value as EntryValue, (fresh) => {
-        placeEntriesRef.current.set(fresh.slug, fresh);
-        const freshValue = fresh.value as unknown as PlaceValue;
-        placeValuesRef.current.set(fresh.slug, freshValue);
-        setPlaces((prev) =>
-          sortPlaces([
-            ...prev.filter((row) => row.id !== fresh.slug),
-            { id: fresh.slug, value: freshValue, hasDraft: false },
-          ]),
-        );
-      });
+      return publishEntry(
+        key,
+        'places',
+        id,
+        entry,
+        value as EntryValue,
+        (fresh) => {
+          placeEntriesRef.current.set(fresh.slug, fresh);
+          const freshValue = fresh.value as unknown as PlaceValue;
+          placeValuesRef.current.set(fresh.slug, freshValue);
+          setPlaces((prev) =>
+            sortPlaces([
+              ...prev.filter((row) => row.id !== fresh.slug),
+              { id: fresh.slug, value: freshValue, hasDraft: false },
+            ]),
+          );
+        },
+        (next) => {
+          // Restore a mid-flight edit as the working draft (hasDraft is set by
+          // publishEntry via setPlaceDraftFlag).
+          placeValuesRef.current.set(id, next as unknown as PlaceValue);
+          setPlaces((prev) =>
+            sortPlaces([
+              ...prev.filter((row) => row.id !== id),
+              { id, value: next as unknown as PlaceValue, hasDraft: true },
+            ]),
+          );
+        },
+      );
     },
     [publishEntry],
   );
@@ -344,12 +415,24 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       const key = drafts.draftKey('settings', name);
       const value =
         settingsValuesRef.current[name] ?? (entry.value as unknown as Record<string, unknown>);
-      return publishEntry(key, 'settings', name, entry, value as EntryValue, (fresh) => {
-        settingsEntriesRef.current.set(name, fresh);
-        const freshValue = fresh.value as unknown as Record<string, unknown>;
-        settingsValuesRef.current = { ...settingsValuesRef.current, [name]: freshValue };
-        setSettings((prev) => ({ ...prev, [name]: freshValue }));
-      });
+      return publishEntry(
+        key,
+        'settings',
+        name,
+        entry,
+        value as EntryValue,
+        (fresh) => {
+          settingsEntriesRef.current.set(name, fresh);
+          const freshValue = fresh.value as unknown as Record<string, unknown>;
+          settingsValuesRef.current = { ...settingsValuesRef.current, [name]: freshValue };
+          setSettings((prev) => ({ ...prev, [name]: freshValue }));
+        },
+        (next) => {
+          const workingValue = next as unknown as Record<string, unknown>;
+          settingsValuesRef.current = { ...settingsValuesRef.current, [name]: workingValue };
+          setSettings((prev) => ({ ...prev, [name]: workingValue }));
+        },
+      );
     },
     [publishEntry],
   );
@@ -369,9 +452,14 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       placeValuesRef.current.set(id, next);
       setPlaces((prev) => prev.map((row) => (row.id === id ? { ...row, value: next, hasDraft: true } : row)));
       setPlaceDraftFlag(key, true);
+      // While a publish of this entry is in flight, remember the newest working
+      // value: the publish's applyFresh overwrites state with the committed
+      // value, and publishEntry restores the stash afterwards.
+      if (publishingRef.current.has(key)) midflightRef.current.set(key, next as EntryValue);
       drafts.queueDraftSave(entry, next as EntryValue, key);
+      notifyEdit(key);
     },
-    [setPlaceDraftFlag],
+    [notifyEdit, setPlaceDraftFlag],
   );
 
   const updateSettingsDraft = useCallback(
@@ -386,9 +474,11 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       settingsValuesRef.current = { ...settingsValuesRef.current, [name]: next };
       setSettings((prev) => ({ ...prev, [name]: next }));
       setPlaceDraftFlag(key, true);
+      if (publishingRef.current.has(key)) midflightRef.current.set(key, next as EntryValue);
       drafts.queueDraftSave(entry, next as EntryValue, key);
+      notifyEdit(key);
     },
-    [setPlaceDraftFlag],
+    [notifyEdit, setPlaceDraftFlag],
   );
 
   /** Drop a draft and fall back to the last committed value. */
@@ -561,6 +651,7 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       updatePlaceDraft,
       updateSettingsDraft,
       discardDraft,
+      subscribeEdits,
       publishPlace,
       publishSettings,
       createPlace,
@@ -579,6 +670,7 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       updatePlaceDraft,
       updateSettingsDraft,
       discardDraft,
+      subscribeEdits,
       publishPlace,
       publishSettings,
       createPlace,

@@ -9,6 +9,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -17,6 +18,7 @@ import { AlertTriangle, Check, Loader2, RotateCcw, Upload, X } from 'lucide-reac
 import { useCms } from '../../../cms/provider';
 import type { PlaceValue, PublishResult, SettingsName } from '../../../cms/provider';
 import { parseDraftKey } from '../../../cms/drafts';
+import { getAutoPushEnabled } from './autoPush';
 
 /** Mirrors `placeCategories` in src/lib/schema.ts (kept local to avoid bundling zod). */
 export const PLACE_CATEGORIES = [
@@ -123,36 +125,80 @@ export interface PublishFlow {
   conflict: ConflictInfo | null;
   validation: ValidationInfo | null;
   publish(key: string, action: () => Promise<PublishResult>, successMessage: string): Promise<void>;
+  /**
+   * Schedule a debounced auto-push for `key`: `action` runs ~2.5s after the
+   * last call for that key, committing the entry to the branch (each commit
+   * triggers a Cloudflare Workers build). No-op when auto-push is off or
+   * paused for the key.
+   */
+  autoPush(key: string, action: () => Promise<PublishResult>, successMessage: string): void;
   resolveConflict(choice: 'keep-mine' | 'load-server'): Promise<void>;
   dismissConflict(): void;
   dismissValidation(): void;
 }
+
+/** Debounce window for auto-push, counted from the last edit of the entry. */
+const AUTO_PUSH_DELAY_MS = 2500;
 
 /**
  * Runs a `publishPlace` / `publishSettings` call and routes the four
  * `PublishResult` outcomes to the right UX: success/noop toasts, a validation
  * dialog listing issue paths, or a conflict dialog with keep/discard actions.
  * Transport failures throw out of the provider and land here as error toasts.
+ *
+ * Auto-pushed publishes differ from manual ones only in feedback: `noop` is
+ * silent, validation failures toast instead of opening a dialog (the next
+ * edit burst retries), and a conflict pauses auto-push for that key until a
+ * human resolves the dialog.
  */
-export function usePublishFlow(): PublishFlow {
+function usePublishFlowState(): PublishFlow {
   const cms = useCms();
   const showToast = useToast();
   const [busy, setBusy] = useState(false);
   const [conflict, setConflict] = useState<ConflictInfo | null>(null);
   const [validation, setValidation] = useState<ValidationInfo | null>(null);
+  const busyRef = useRef(false);
+  const timersRef = useRef(new Map<string, ReturnType<typeof setTimeout>>());
+  /** Keys whose auto-push hit a conflict and waits for a human decision. */
+  const pausedRef = useRef(new Set<string>());
+
+  // Drop pending auto-push timers when the app unmounts. Drafts persist in
+  // IndexedDB, so nothing is lost — the next edit re-schedules the push.
+  useEffect(() => {
+    const timers = timersRef.current;
+    return () => {
+      timers.forEach((timer) => clearTimeout(timer));
+      timers.clear();
+    };
+  }, []);
 
   const publish = useCallback(
-    async (key: string, action: () => Promise<PublishResult>, successMessage: string) => {
+    async (
+      key: string,
+      action: () => Promise<PublishResult>,
+      successMessage: string,
+      options?: { auto?: boolean },
+    ) => {
+      const auto = options?.auto === true;
+      if (!auto) pausedRef.current.delete(key); // a deliberate publish re-enables auto-push
+      busyRef.current = true;
       setBusy(true);
       try {
         const result = await action();
         if (result.status === 'saved') {
           showToast(successMessage, 'success');
         } else if (result.status === 'noop') {
-          showToast('No changes to publish', 'info');
+          if (!auto) showToast('No changes to publish', 'info');
         } else if (result.status === 'validation') {
-          setValidation({ issues: result.issues });
+          if (auto) {
+            // The draft is safe; the next auto-push retries once it validates.
+            showToast('Auto-push held — fix the validation errors, then Publish.', 'error');
+          } else {
+            setValidation({ issues: result.issues });
+          }
         } else {
+          // Conflict: stop auto-push for this key until a human resolves it.
+          pausedRef.current.add(key);
           setConflict({
             key,
             fields: result.fields,
@@ -163,10 +209,37 @@ export function usePublishFlow(): PublishFlow {
       } catch (thrown) {
         showToast(thrown instanceof Error ? thrown.message : 'Publishing failed — try again.', 'error');
       } finally {
+        busyRef.current = false;
         setBusy(false);
       }
     },
     [showToast],
+  );
+
+  const autoPush = useCallback(
+    (key: string, action: () => Promise<PublishResult>, successMessage: string) => {
+      if (!getAutoPushEnabled() || pausedRef.current.has(key)) return;
+      const existing = timersRef.current.get(key);
+      if (existing) clearTimeout(existing);
+      // One debounce per key: bursts of edits keep pushing the fire time out,
+      // then a single commit lands once the user pauses. If another publish is
+      // still in flight when the timer fires, re-arm briefly instead of
+      // stacking two saves of the same entry.
+      const schedule = (delay: number, attempt: number): void => {
+        const timer = setTimeout(() => {
+          timersRef.current.delete(key);
+          if (!getAutoPushEnabled()) return; // toggled off while the debounce ran
+          if (busyRef.current) {
+            if (attempt < 5) schedule(1500, attempt + 1);
+            return; // give up quietly; the next edit re-schedules
+          }
+          void publish(key, action, successMessage, { auto: true });
+        }, delay);
+        timersRef.current.set(key, timer);
+      };
+      schedule(AUTO_PUSH_DELAY_MS, 0);
+    },
+    [publish],
   );
 
   const resolveConflict = useCallback(
@@ -174,6 +247,7 @@ export function usePublishFlow(): PublishFlow {
       const active = conflict;
       if (!active) return;
       setConflict(null);
+      pausedRef.current.delete(active.key);
       if (choice === 'load-server') {
         await cms.discardDraft(active.key);
         showToast('Loaded the server version — your local draft was discarded.', 'info');
@@ -202,15 +276,42 @@ export function usePublishFlow(): PublishFlow {
     [cms, conflict, publish, showToast],
   );
 
-  return {
-    busy,
-    conflict,
-    validation,
-    publish,
-    resolveConflict,
-    dismissConflict: () => setConflict(null),
-    dismissValidation: () => setValidation(null),
-  };
+  const dismissConflict = useCallback(() => setConflict(null), []);
+  const dismissValidation = useCallback(() => setValidation(null), []);
+
+  return useMemo(
+    () => ({
+      busy,
+      conflict,
+      validation,
+      publish,
+      autoPush,
+      resolveConflict,
+      dismissConflict,
+      dismissValidation,
+    }),
+    [busy, conflict, validation, publish, autoPush, resolveConflict, dismissConflict, dismissValidation],
+  );
+}
+
+const PublishFlowContext = createContext<PublishFlow | null>(null);
+
+/** Provides the single app-wide publish/auto-push flow. */
+export function PublishFlowProvider({ children }: { children: ReactNode }) {
+  const flow = usePublishFlowState();
+  return <PublishFlowContext.Provider value={flow}>{children}</PublishFlowContext.Provider>;
+}
+
+/**
+ * The shared publish/auto-push flow. One instance lives in the
+ * `PublishFlowProvider` (AdminApp), so every screen and the auto-push agent
+ * share one `busy` flag, one conflict/validation state, and one timer set
+ * that survives navigation between admin screens.
+ */
+export function usePublishFlow(): PublishFlow {
+  const flow = useContext(PublishFlowContext);
+  if (!flow) throw new Error('usePublishFlow must be used within a PublishFlowProvider');
+  return flow;
 }
 
 /* --------------------------------- dialogs -------------------------------- */
