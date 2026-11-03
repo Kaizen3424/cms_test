@@ -1,9 +1,16 @@
 const SITE_NAME = 'Atlas — Photography Travel Explorer';
-const SITE_URL = 'https://atlas.example.workers.dev';
+const SITE_URL = 'https://atlas.scantest.workers.dev';
 
 export function absoluteUrl(path: string, site?: URL | string): string {
-  const base = site ? String(site) : SITE_URL;
-  return new URL(path, base).href;
+  const url = new URL(path, site ? String(site) : SITE_URL);
+  // The asset server serves directory pages slash-less (wrangler
+  // `html_handling: drop-trailing-slash`), so canonical URLs must be
+  // slash-less too. Only normalize relative paths — remote image URLs
+  // pass through untouched.
+  if (path.startsWith('/') && url.pathname.length > 1) {
+    url.pathname = url.pathname.replace(/\/+$/, '');
+  }
+  return url.href;
 }
 
 export function organizationJsonLd(site?: URL | string) {

@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { absoluteUrl } from '../lib/seo';
 
 interface Props {
   title: string;
@@ -17,10 +18,8 @@ const {
   noindex = false,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://atlas.example.workers.dev').href;
-const ogImage = image
-  ? new URL(image, Astro.site ?? 'https://atlas.example.workers.dev').href
-  : undefined;
+const canonical = absoluteUrl(Astro.url.pathname, Astro.site);
+const ogImage = image ? absoluteUrl(image, Astro.site) : undefined;
 const siteName = 'Atlas — Photography Travel Explorer';
 ---
 
