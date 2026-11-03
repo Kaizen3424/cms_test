@@ -1,0 +1,66 @@
+{
+  "name": "Kyoto",
+  "country": "Japan",
+  "region": "East Asia",
+  "coordinatesText": "35.01° N, 135.76° E",
+  "lat": 35.01,
+  "lng": 135.76,
+  "mapX": 81.2,
+  "mapY": 34,
+  "status": "published",
+  "dispatchNumber": 6,
+  "category": "Quiet Sanctuaries",
+  "oneLineFragment": "Gion alleyways at 5 AM before the paper lanterns go out.",
+  "narrativeStory": "Before the delivery vans and tourist crowds arrive, the stone paving of Gion and Shirakawa holds a gentle sheen of morning damp.\n\nThe scent of damp hinoki cypress, charcoal grills, and moss gardens drifts through bamboo lattices. Eleven medium-format negatives capturing the stillness between old traditions and passing seasons.",
+  "heroImage": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Kyoto, Japan",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "Higashiyama Footpaths • Machiya Architecture",
+  "introLines": [
+    "Wet granite flags reflecting paper lanterns.",
+    "Cypress wood sliding doors shut tight against the dawn.",
+    "Eleven exposures of quiet urban architecture."
+  ],
+  "frames": [
+    {
+      "id": "kyoto-1",
+      "url": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Solitary pedestrian in Gion alleyway at 5am",
+      "locationDetail": "Gion Kobu • 120 format emulsion",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "kyoto-2",
+      "url": "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Sagano bamboo grove murmuring under light autumn drizzle",
+      "locationDetail": "Arashiyama • Bamboo Sanctuaries",
+      "aspect": "3/4",
+      "format": "Color Film 160"
+    },
+    {
+      "id": "kyoto-3",
+      "url": "https://images.unsplash.com/photo-1528164344705-475426879c0d?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Vermilion torii gates stretching into sacred mountain mist",
+      "locationDetail": "Fushimi Inari Taisha • Predawn Ascent",
+      "aspect": "3/4",
+      "format": "Medium Format Color"
+    },
+    {
+      "id": "kyoto-4",
+      "url": "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Raked gravel and moss islands inside secluded temple courtyard",
+      "locationDetail": "Ryoan-ji Zen Garden • Higashiyama",
+      "aspect": "4/3",
+      "format": "Black & White Fine Grain"
+    },
+    {
+      "id": "kyoto-5",
+      "url": "https://images.unsplash.com/photo-1538669715315-155099bfa881?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Shirakawa canal willows brushing stone footbridge at dusk",
+      "locationDetail": "Gion Shirakawa • Machiya District",
+      "aspect": "16/9",
+      "format": "120 Color Emulsion"
+    }
+  ]
+}

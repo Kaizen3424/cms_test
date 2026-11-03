@@ -1,0 +1,237 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { ContactSettings } from '@/lib/schema';
+
+interface Props {
+  places: CollectionEntry<'places'>[];
+  contact: ContactSettings;
+}
+
+const { places, contact } = Astro.props;
+
+// The React view defaulted the destination select to "Ladakh"; keep that
+// default when the place exists, otherwise fall back to the first dispatch.
+const defaultDestination = 'Ladakh';
+const selectedDestination = places.some((p) => p.data.name === defaultDestination)
+  ? defaultDestination
+  : (places[0]?.data.name ?? 'Multi-Region Expedition');
+---
+
+<div class="lg:col-span-7 bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-10 border border-[#e2dfd7] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.04)]">
+  <form data-inquiry-form data-inquiry-fields class="space-y-5 sm:space-y-6">
+    <div>
+      <h2 class="text-lg sm:text-xl font-bold text-[#1a1a18] tracking-tight">
+        {contact.formTitle}
+      </h2>
+      <p class="text-xs text-[#71716b] mt-0.5">
+        {contact.formSubtitle}
+      </p>
+    </div>
+
+    {/* Name & Email */}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="space-y-1.5">
+        <label for="inquiry-full-name" class="text-xs font-bold text-[#2a2a26] uppercase tracking-wider">
+          Full Name *
+        </label>
+        <input
+          type="text"
+          id="inquiry-full-name"
+          name="fullName"
+          required
+          placeholder="Eleanor Vance"
+          class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-[#fafaf8] border border-[#dcdcd5] text-sm text-[#1a1a18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a1a18] transition-all"
+        />
+      </div>
+      <div class="space-y-1.5">
+        <label for="inquiry-email" class="text-xs font-bold text-[#2a2a26] uppercase tracking-wider">
+          Email Address *
+        </label>
+        <input
+          type="email"
+          id="inquiry-email"
+          name="email"
+          required
+          placeholder="eleanor@domain.com"
+          class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-[#fafaf8] border border-[#dcdcd5] text-sm text-[#1a1a18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a1a18] transition-all"
+        />
+      </div>
+    </div>
+
+    {/* Phone & Destination */}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="space-y-1.5">
+        <label for="inquiry-phone" class="text-xs font-bold text-[#2a2a26] uppercase tracking-wider">
+          Phone Number (Optional)
+        </label>
+        <input
+          type="tel"
+          id="inquiry-phone"
+          name="phone"
+          placeholder="+1 (555) 019-2834"
+          class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-[#fafaf8] border border-[#dcdcd5] text-sm text-[#1a1a18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a1a18] transition-all"
+        />
+      </div>
+      <div class="space-y-1.5">
+        <label for="inquiry-destination" class="text-xs font-bold text-[#2a2a26] uppercase tracking-wider">
+          Destination of Interest
+        </label>
+        <select
+          id="inquiry-destination"
+          name="destination"
+          class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-[#fafaf8] border border-[#dcdcd5] text-sm text-[#1a1a18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a1a18] transition-all cursor-pointer"
+        >
+          {places.map((p) => (
+            <option value={p.data.name} selected={p.data.name === selectedDestination}>
+              {p.data.name}, {p.data.country} ({p.data.category})
+            </option>
+          ))}
+          <option value="Multi-Region Expedition">Multi-Region Expedition</option>
+          <option value="Custom Route">Custom Route</option>
+        </select>
+      </div>
+    </div>
+
+    {/* Season & Party Size */}
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="space-y-1.5">
+        <label for="inquiry-travel-season" class="text-xs font-bold text-[#2a2a26] uppercase tracking-wider">
+          Preferred Timing
+        </label>
+        <select
+          id="inquiry-travel-season"
+          name="travelSeason"
+          class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-[#fafaf8] border border-[#dcdcd5] text-sm text-[#1a1a18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a1a18] transition-all cursor-pointer"
+        >
+          <option value="Autumn 2026" selected>Autumn 2026</option>
+          <option value="Winter 2026 / 2027">Winter 2026 / 2027</option>
+          <option value="Spring 2027">Spring 2027</option>
+          <option value="Summer 2027">Summer 2027</option>
+          <option value="Flexible Window">Dates are flexible</option>
+        </select>
+      </div>
+      <div class="space-y-1.5">
+        <label for="inquiry-group-size" class="text-xs font-bold text-[#2a2a26] uppercase tracking-wider">
+          Travel Party
+        </label>
+        <select
+          id="inquiry-group-size"
+          name="groupSize"
+          class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-[#fafaf8] border border-[#dcdcd5] text-sm text-[#1a1a18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a1a18] transition-all cursor-pointer"
+        >
+          <option value="Solo Traveler">Solo Traveler</option>
+          <option value="2 Travelers" selected>2 Travelers (Couple / Companions)</option>
+          <option value="Small Group (3-6)">Small Group (3-6 Travelers)</option>
+          <option value="Private Expedition (7+)">Private Expedition (7+)</option>
+        </select>
+      </div>
+    </div>
+
+    {/* Primary Interest */}
+    <div class="space-y-1.5">
+      <label for="inquiry-interest" class="text-xs font-bold text-[#2a2a26] uppercase tracking-wider">
+        Travel Focus
+      </label>
+      <select
+        id="inquiry-interest"
+        name="interest"
+        class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-[#fafaf8] border border-[#dcdcd5] text-sm text-[#1a1a18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a1a18] transition-all cursor-pointer"
+      >
+        <option value="Landscape Photography & Slow Travel" selected>
+          Landscape Photography & Slow Travel
+        </option>
+        <option value="High-Altitude Trekking & Wilderness">
+          High-Altitude Trekking & Wilderness
+        </option>
+        <option value="Cultural Sanctuaries & Heritage Architecture">
+          Cultural Sanctuaries & Heritage Architecture
+        </option>
+        <option value="Coastal Solitude & Archipelago Crossing">
+          Coastal Solitude & Archipelago Crossing
+        </option>
+      </select>
+    </div>
+
+    {/* Message / Notes */}
+    <div class="space-y-1.5">
+      <label for="inquiry-message" class="text-xs font-bold text-[#2a2a26] uppercase tracking-wider">
+        Tell Us About Your Vision
+      </label>
+      <textarea
+        id="inquiry-message"
+        name="message"
+        rows="4"
+        placeholder="Tell us what you hope to experience, physical pace preferences, or specific photographic interests..."
+        class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3.5 rounded-xl bg-[#fafaf8] border border-[#dcdcd5] text-sm text-[#1a1a18] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1a1a18] transition-all"></textarea>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-[#e60023] hover:bg-[#cc001f] text-white font-bold py-3 sm:py-3.5 rounded-full text-xs sm:text-sm shadow-[0_8px_18px_-4px_rgba(230,0,35,0.45)] transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+    >
+      <span>Submit Travel Inquiry</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="w-4 h-4"
+        aria-hidden="true"
+      >
+        <path d="M5 12h14"></path>
+        <path d="m12 5 7 7-7 7"></path>
+      </svg>
+    </button>
+  </form>
+
+  {/* Success panel: bare wrapper so the `hidden` attribute is not overridden
+      by the flex utility classes on the inner panel. */}
+  <div data-inquiry-success hidden>
+    <div class="py-10 sm:py-12 flex flex-col items-center justify-center text-center space-y-4">
+      <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-7 h-7 sm:w-8 sm:h-8"
+          aria-hidden="true"
+        >
+          <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
+          <path d="m9 11 3 3L22 4"></path>
+        </svg>
+      </div>
+      <h3 class="text-xl sm:text-2xl font-bold text-[#1a1a18]">
+        Expedition Inquiry Received
+      </h3>
+      <p class="text-xs sm:text-sm text-[#71716b] max-w-md leading-relaxed">
+        Thank you, <span class="font-semibold text-[#1a1a18]" data-inquiry-name>traveler</span>. One of our destination specialists will review your vision for <span class="font-semibold text-[#1a1a18]" data-inquiry-destination>your destination</span> and contact you at <span class="font-semibold text-[#1a1a18]" data-inquiry-email>your email</span> within 24 hours.
+      </p>
+      <div class="pt-4 flex items-center gap-3 flex-wrap justify-center">
+        <button
+          type="button"
+          data-inquiry-reset
+          class="px-5 sm:px-6 py-2.5 rounded-full border border-[#dcdcd5] text-xs font-semibold text-[#1a1a18] hover:bg-[#fafaf8] cursor-pointer"
+        >
+          Submit Another Inquiry
+        </button>
+        <a
+          href="/"
+          class="px-5 sm:px-6 py-2.5 rounded-full bg-[#e60023] text-white text-xs font-semibold hover:bg-[#cc001f] cursor-pointer"
+        >
+          Back to Map
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

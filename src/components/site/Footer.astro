@@ -1,0 +1,144 @@
+---
+const pathname = Astro.url.pathname;
+
+const isHome = pathname === '/';
+const isPhilosophy = pathname.startsWith('/philosophy');
+const isContact = pathname.startsWith('/contact');
+---
+
+<footer class="bg-[#1c1c19] text-[#dadad3] pt-14 pb-10 border-t border-black">
+  <div class="max-w-6xl mx-auto px-6 sm:px-10">
+    {/* Main Grid: Clean 3-column layout */}
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-[#33332e]">
+      {/* Col 1: Brand & Ethos (5 cols) */}
+      <div class="md:col-span-5 space-y-3">
+        <div class="flex items-center gap-2">
+          <div class="w-2.5 h-2.5 rounded-full bg-[#e60023]"></div>
+          <span class="font-extrabold tracking-tight text-xl text-white">
+            Meridian Travel
+          </span>
+        </div>
+        <p class="text-xs text-[#91918c] leading-relaxed max-w-sm">
+          A bespoke expedition agency dedicated to quiet landscapes, slow travel, and medium-format photographic documentation.
+        </p>
+        <div class="pt-2 text-xs text-[#b5b5ad] space-y-1">
+          <div class="flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-3.5 h-3.5 text-[#e60023]"
+              aria-hidden="true"
+            >
+              <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
+              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            </svg>
+            <a href="mailto:expeditions@meridiantravel.com" class="hover:text-white transition-colors">
+              expeditions@meridiantravel.com
+            </a>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-3.5 h-3.5 text-[#e60023]"
+              aria-hidden="true"
+            >
+              <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path>
+            </svg>
+            <span>+1 (800) 492-8527</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Col 2: Navigation Pages (4 cols) */}
+      <div class="md:col-span-4 space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-white">
+          Pages
+        </h4>
+        <ul class="space-y-2.5 text-xs text-[#91918c]">
+          <li>
+            <a
+              href="/"
+              class="hover:text-white transition-colors cursor-pointer"
+              aria-current={isHome ? 'page' : undefined}
+            >
+              Explore World Map
+            </a>
+          </li>
+          <li>
+            <a
+              href="/philosophy"
+              class="hover:text-white transition-colors cursor-pointer"
+              aria-current={isPhilosophy ? 'page' : undefined}
+            >
+              Our Philosophy
+            </a>
+          </li>
+          <li>
+            <a
+              href="/contact"
+              class="text-[#e60023] hover:underline font-semibold cursor-pointer"
+              aria-current={isContact ? 'page' : undefined}
+            >
+              Travel With Us (Inquiries & Routes) →
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* Col 3: Featured Expeditions (3 cols) */}
+      <div class="md:col-span-3 space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-white">
+          Featured Routes
+        </h4>
+        <ul class="space-y-2.5 text-xs text-[#91918c]">
+          <li>
+            <a href="/place/ladakh" class="hover:text-white transition-colors cursor-pointer">
+              Ladakh, India
+            </a>
+          </li>
+          <li>
+            <a href="/place/lofoten" class="hover:text-white transition-colors cursor-pointer">
+              Lofoten, Norway
+            </a>
+          </li>
+          <li>
+            <a href="/place/wadi-rum" class="hover:text-white transition-colors cursor-pointer">
+              Wadi Rum, Jordan
+            </a>
+          </li>
+          <li>
+            <a href="/place/kyoto" class="hover:text-white transition-colors cursor-pointer">
+              Kyoto, Japan
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    {/* Clean Bottom Line */}
+    <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#71716b] gap-3">
+      <div>
+        © 2026 Meridian Travel Guild Ltd. Handcrafted expeditions worldwide.
+      </div>
+      <div class="flex items-center gap-5">
+        <span class="hover:text-white/70 transition-colors cursor-pointer">Privacy Policy</span>
+        <span class="hover:text-white/70 transition-colors cursor-pointer">Terms of Travel</span>
+      </div>
+    </div>
+  </div>
+</footer>

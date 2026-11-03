@@ -1,0 +1,43 @@
+{
+  "badge": "Our Philosophy",
+  "heroTitle": "We go slow,\nand we stay long.",
+  "heroSubtitle": "No itineraries. No top-tens. Just places, and the light on them.",
+  "manifestoParagraphs": [
+    "We photograph first, and write only when the dust has settled. Images tell truths that adjectives quickly dilute. By giving precedence to the eye over the pen, we allow the landscape to speak on its own unhurried terms.",
+    "We stay long enough that a place stops performing for us. The first day reveals only expectations; the tenth day reveals the rhythm of water boiling over dried juniper, sheep bells echoing off cold granite, and the long patience of wind.",
+    "Silence does the storytelling. Most travel writing fills the quiet with recommendations and prices. We prefer the quiet itself—documenting high mountain passes, empty coastlines, and dawn light as quiet physical facts."
+  ],
+  "principles": [
+    {
+      "id": "p1",
+      "num": "01",
+      "title": "Photographs first",
+      "description": "Every entry begins with light on emulsion. Words are strictly secondary annotations."
+    },
+    {
+      "id": "p2",
+      "num": "02",
+      "title": "Fewer words",
+      "description": "If a sentence doesn't deepen the atmosphere of a frame, we strike it from the page."
+    },
+    {
+      "id": "p3",
+      "num": "03",
+      "title": "No lists, no rankings",
+      "description": "We catalog coordinates, not hierarchies. Every landscape has its own singular gravity."
+    },
+    {
+      "id": "p4",
+      "num": "04",
+      "title": "Leave things out",
+      "description": "The secret trail remains unposted. Discovery belongs to the traveler who walks there."
+    }
+  ],
+  "interludeImageUrl": "https://lh3.googleusercontent.com/aida/AEtjO1VitY7JOzoNFDFLMHrQl4N8kc_3gdSBQquE21M2jC26g7Q3wWvB3Gubl8YFLnhCKGJ12RQE6RlfI3W2b56Z5oKEAczrGhx9xnYBje_SodfkisalbPXSqqfykhwPye_W8Ub_f-oDEMvuHFUePAr8UjLGPKVEMGokDsL_orTM8ooMGeZgLsp3uoJpWFe01D2SOCffIF5EoZt8ULBTpZphk9YyZVUMS59bWRcdroKZjHbrIrBGCZ3BBSmooqjQ",
+  "interludeTag": "34.1526° N, 77.5771° E · DISPATCH #14 INTERLUDE",
+  "interludeLocation": "somewhere past the last village, Ladakh",
+  "interludeFilmNote": "Medium format emulsion · Dawn",
+  "pullQuote": "“The map is not the point. The morning is.”",
+  "closingHeadline": "The journey continues on the map.",
+  "closingSubtext": "Every destination cataloged is an invitation to witness the world unhurried."
+}

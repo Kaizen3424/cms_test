@@ -1,0 +1,62 @@
+---
+import { getImageSet, sortedVariants, toSrcset } from '../../lib/images';
+
+interface Props {
+  src: string;
+  alt: string;
+  class?: string;
+  sizes?: string;
+  widths?: number[];
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  decoding?: 'async' | 'sync' | 'auto';
+  style?: string;
+}
+
+const {
+  src,
+  alt,
+  class: className,
+  sizes = '100vw',
+  widths,
+  loading = 'lazy',
+  fetchpriority = 'auto',
+  decoding = 'async',
+  style,
+} = Astro.props;
+
+const set = getImageSet(src);
+const avif = set ? sortedVariants(set.avif, widths) : [];
+const jpg = set ? sortedVariants(set.jpg, widths) : [];
+const fallback = set?.fallback ?? src;
+---
+
+{
+  set && avif.length > 0 ? (
+    <picture>
+      <source type="image/avif" srcset={toSrcset(avif)} sizes={sizes} />
+      {jpg.length > 0 && <source type="image/jpeg" srcset={toSrcset(jpg)} sizes={sizes} />}
+      <img
+        src={fallback}
+        alt={alt}
+        class={className}
+        style={style}
+        width={set.width}
+        height={set.height}
+        loading={loading}
+        fetchpriority={fetchpriority}
+        decoding={decoding}
+      />
+    </picture>
+  ) : (
+    <img
+      src={src}
+      alt={alt}
+      class={className}
+      style={style}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      decoding={decoding}
+    />
+  )
+}

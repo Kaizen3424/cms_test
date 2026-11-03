@@ -1,0 +1,87 @@
+---
+const pathname = Astro.url.pathname;
+
+const isHome = pathname === '/';
+const isPhilosophy = pathname.startsWith('/philosophy');
+const isContact = pathname.startsWith('/contact');
+
+const navLinkClass = (active: boolean) =>
+  `px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
+    active ? 'bg-[#f4f2ec] text-[#1a1a18]' : 'text-[#71716b] hover:text-[#1a1a18]'
+  }`;
+---
+
+<header class="fixed top-3 sm:top-6 left-0 right-0 z-50 px-3 sm:px-8 pointer-events-none">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+    {/* Tourism Brand Wordmark Pill */}
+    <a
+      href="/"
+      class="pointer-events-auto bg-white/95 backdrop-blur-md px-3 sm:px-5 py-2 sm:py-2.5 rounded-full border border-[#e2dfd7] shadow-[0_12px_30px_-8px_rgba(0,0,0,0.08)] flex items-center gap-2 transition-transform hover:scale-[1.02] cursor-pointer flex-shrink-0"
+    >
+      <div class="w-2.5 h-2.5 rounded-full bg-[#e60023] animate-pulse"></div>
+      <span class="font-extrabold tracking-tight text-xs sm:text-base text-[#1a1a18]">
+        Meridian Travel
+      </span>
+      <span class="hidden md:inline text-[11px] uppercase tracking-widest text-[#71716b] pl-2 font-semibold border-l border-[#e2dfd7]">
+        Explorer
+      </span>
+    </a>
+
+    {/* Center Pill Nav Links */}
+    <nav class="pointer-events-auto bg-white/95 backdrop-blur-md px-1.5 sm:px-4 py-1.5 rounded-full border border-[#e2dfd7] shadow-[0_12px_30px_-8px_rgba(0,0,0,0.08)] flex items-center gap-0.5 sm:gap-2">
+      <a
+        href="/"
+        class={navLinkClass(isHome)}
+        aria-current={isHome ? 'page' : undefined}
+      >
+        {isHome && <span class="w-1.5 h-1.5 rounded-full bg-[#e60023]"></span>}
+        Explore
+      </a>
+
+      <a
+        href="/philosophy"
+        class={navLinkClass(isPhilosophy)}
+        aria-current={isPhilosophy ? 'page' : undefined}
+      >
+        {isPhilosophy && <span class="w-1.5 h-1.5 rounded-full bg-[#e60023]"></span>}
+        Philosophy
+      </a>
+
+      <a
+        href="/contact"
+        class={navLinkClass(isContact)}
+        aria-current={isContact ? 'page' : undefined}
+      >
+        {isContact && <span class="w-1.5 h-1.5 rounded-full bg-[#e60023]"></span>}
+        Contact
+      </a>
+    </nav>
+
+    {/* Right Red CTA: Travel with us */}
+    <div class="pointer-events-auto flex items-center gap-2 flex-shrink-0">
+      <a
+        href="/contact"
+        class="bg-[#e60023] hover:bg-[#cc001f] text-white text-xs sm:text-sm font-bold px-3 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-[0_8px_18px_-4px_rgba(230,0,35,0.45)] transition-all hover:scale-[1.03] active:scale-95 flex items-center gap-1 sm:gap-2 cursor-pointer"
+      >
+        <span class="hidden xs:inline">Travel with us</span>
+        <span class="xs:hidden">Travel</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-3.5 h-3.5"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14"></path>
+          <path d="m12 5 7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>

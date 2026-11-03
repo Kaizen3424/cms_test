@@ -1,0 +1,21 @@
+{
+  "manifestoTag": "Field Notes & Photographic Record",
+  "manifestoTitle": "A calm expedition instrument wrapped in quiet print chrome.",
+  "manifestoBody": "Meridian Travel rejects fast tourism. We curate places reached with patience, documented on medium-format emulsion, and recorded with geographic fidelity. Every location marker corresponds to a finished visual essay and guided route.",
+  "manifestoCtaText": "Read Our Philosophy",
+  "curatedBadge": "Curated Selection",
+  "curatedTitle": "Fresh From The Road",
+  "curatedSubtitle": "Click any frame to view journal",
+  "curatedPlaceIds": [
+    "ladakh",
+    "lofoten",
+    "wadi-rum",
+    "kyoto"
+  ],
+  "offerBannerEnabled": true,
+  "offerBannerBadge": "Autumn & Winter 2026 Expeditions",
+  "offerBannerTitle": "Private Alpine & Desert Routes Now Open for Booking",
+  "offerBannerDescription": "Complimentary private charter transit and Hasselblad negative prints included with all early bespoke commissions.",
+  "offerBannerCtaText": "Inquire for Route Details",
+  "offerBannerCtaLink": "contact"
+}

@@ -1,0 +1,82 @@
+{
+  "name": "Ladakh",
+  "country": "India",
+  "region": "Himalayas, Asia",
+  "coordinatesText": "34.1526° N, 77.5771° E",
+  "lat": 34.1526,
+  "lng": 77.5771,
+  "mapX": 60.5,
+  "mapY": 37,
+  "status": "published",
+  "dispatchNumber": 14,
+  "category": "High Altitude",
+  "oneLineFragment": "Six mornings above 4,000m.",
+  "narrativeStory": "Thin air that tastes of dry granite and crushed juniper. Tattered prayer flags snapping against an indifferent, violet dawn. Cold mornings before the pass awakens, measured only in boiling tea.\n\nWe stayed long enough for the rock face to lose its performance and become stone again. The sheep bells echo down the scree before the light even touches the valley floor.",
+  "heroImage": "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Ladakh, India",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "High Altitude Cold Desert Plateau • Indus River Valley",
+  "introLines": [
+    "Thin air that tastes of dry granite and crushed juniper.",
+    "Tattered prayer flags snapping against an indifferent, violet dawn.",
+    "Cold mornings before the pass awakens, measured only in boiling tea."
+  ],
+  "frames": [
+    {
+      "id": "ladakh-1",
+      "url": "https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Cliffside monastery at first light",
+      "locationDetail": "Diskit Ridge • 120 format emulsion",
+      "aspect": "4/3",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "ladakh-2",
+      "url": "https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?auto=format&fit=crop&w=1400&q=80",
+      "caption": "The pass was closed by fresh scree",
+      "locationDetail": "Khardung La Approach • 5,359m elevation",
+      "aspect": "3/4",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "ladakh-3",
+      "url": "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Yak butter tea at 5am",
+      "locationDetail": "Changthang stone hearth • Morning dispatch",
+      "aspect": "3/4",
+      "format": "Medium Format Emulsion"
+    },
+    {
+      "id": "ladakh-4",
+      "url": "https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Cobalt water trapped between golden scree and silent sky",
+      "locationDetail": "Pangong Tso Basin • 4,225m",
+      "aspect": "16/9",
+      "format": "120 Format Color Emulsion"
+    },
+    {
+      "id": "ladakh-5",
+      "url": "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Nomad shepherd weathering high plateau winds",
+      "locationDetail": "Rupshu Plateau • High Himalayan pasture",
+      "aspect": "3/4",
+      "format": "Black & White Emulsion"
+    },
+    {
+      "id": "ladakh-6",
+      "url": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1400&q=80",
+      "caption": "First light brushing the barren ridges",
+      "locationDetail": "Nubra Valley Descent • 4,800m",
+      "aspect": "4/3",
+      "format": "120 Format Emulsion"
+    },
+    {
+      "id": "ladakh-7",
+      "url": "https://images.unsplash.com/photo-1517824806704-9040b037703b?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Five colors in constant movement",
+      "locationDetail": "Wind Prayers • High Monastery Ridge",
+      "aspect": "3/4",
+      "format": "Medium Format Emulsion"
+    }
+  ]
+}

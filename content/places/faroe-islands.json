@@ -1,0 +1,66 @@
+{
+  "name": "Faroe Islands",
+  "country": "North Atlantic",
+  "region": "North Atlantic",
+  "coordinatesText": "62.27° N, 6.78° W",
+  "lat": 62.27,
+  "lng": -6.78,
+  "mapX": 42.4,
+  "mapY": 16.5,
+  "status": "published",
+  "dispatchNumber": 15,
+  "category": "Coastlines",
+  "oneLineFragment": "Kalsoy lighthouse under mist and sea swell.",
+  "narrativeStory": "Wind strong enough to make tears freeze on the eyelids. The promontory at Kallur feels like the ragged hem of the inhabited world.\n\nSeabirds wheel through the gale, nesting in vertical clefts where the surf beats itself into white meringue five hundred meters below.",
+  "heroImage": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Faroe Islands, North Atlantic",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "Kallur Promontory • Kalsoy Island",
+  "introLines": [
+    "Gale force gusts sweeping across sod-roofed villages.",
+    "Precipitous basalt sea cliffs lost in low cloud.",
+    "Seven frames exposed in freezing oceanic salt drizzle."
+  ],
+  "frames": [
+    {
+      "id": "faroe-1",
+      "url": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Kallur lighthouse standing solitary on sheer sea crag",
+      "locationDetail": "Kalsoy North Ridge • 62.27° N",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "faroe-2",
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Múlafossur waterfall plunging into raging Atlantic surf",
+      "locationDetail": "Gásadalur Cliffs • Vágar Island",
+      "aspect": "3/4",
+      "format": "Medium Format Film"
+    },
+    {
+      "id": "faroe-3",
+      "url": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Grass turf roofs blending into Saksun tidal lagoon hills",
+      "locationDetail": "Saksun Settlement • Streymoy",
+      "aspect": "4/3",
+      "format": "Color Negative 200"
+    },
+    {
+      "id": "faroe-4",
+      "url": "https://images.unsplash.com/photo-1507272931001-fc06c17e4f43?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Drangarnir sea stacks resisting relentless North Atlantic swells",
+      "locationDetail": "Tindhólmur Channel • Storm Light",
+      "aspect": "16/9",
+      "format": "Heavy Weather Film Stock"
+    },
+    {
+      "id": "faroe-5",
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Atlantic puffin roosting upon vertical basalt precipice",
+      "locationDetail": "Mykines Headland • Sea Spray Cleft",
+      "aspect": "3/4",
+      "format": "Medium Format Telephoto"
+    }
+  ]
+}

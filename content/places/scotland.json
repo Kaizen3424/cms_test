@@ -1,0 +1,66 @@
+{
+  "name": "Scotland",
+  "country": "United Kingdom",
+  "region": "Europe",
+  "coordinatesText": "57.32° N, 4.42° W",
+  "lat": 57.32,
+  "lng": -4.42,
+  "mapX": 41.2,
+  "mapY": 23,
+  "status": "published",
+  "dispatchNumber": 4,
+  "category": "Highlands",
+  "oneLineFragment": "Heather-cloaked glens and rain-scoured granite lochs.",
+  "narrativeStory": "Peat smoke drifting from remote stone crofts as evening falls over Glen Coe. The clouds cling to the razor ridges of the Cuillin, dropping sheets of cold rain that scent the air with heather and bog myrtle.\n\nHere the geology is dramatic and brooding, worn smooth by ancient glaciers and centuries of Atlantic squalls.",
+  "heroImage": "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Scotland, United Kingdom",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "Isle of Skye & The Western Highlands",
+  "introLines": [
+    "Heather moors under low maritime rain.",
+    "Loch water cold as slate reflecting ancient pines.",
+    "Eight frames recorded through shifting Atlantic squalls."
+  ],
+  "frames": [
+    {
+      "id": "scotland-1",
+      "url": "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "The Quiraing landslip emerging from dense Isle of Skye fog",
+      "locationDetail": "Trotternish Ridge • 57.58° N",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "scotland-2",
+      "url": "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Three Sisters peaks catching fleeting shaft of Highland sun",
+      "locationDetail": "Glen Coe Pass • Bidean nam Bian",
+      "aspect": "3/4",
+      "format": "Medium Format Color"
+    },
+    {
+      "id": "scotland-3",
+      "url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Solitary stone croft chimney smoke beside deep slate waters",
+      "locationDetail": "Loch Shiel • Glenfinnan Outskirts",
+      "aspect": "4/3",
+      "format": "Tri-X Black & White"
+    },
+    {
+      "id": "scotland-4",
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Ancient Caledonian Scots pine sentinel in peat bog mist",
+      "locationDetail": "Glen Affric • Ancient Forest Reserve",
+      "aspect": "16/9",
+      "format": "Color Emulsion 160"
+    },
+    {
+      "id": "scotland-5",
+      "url": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Old Man of Storr basalt needle pointing into storm cloud",
+      "locationDetail": "Isle of Skye • Dawn Dispatch",
+      "aspect": "3/4",
+      "format": "120 Roll Film"
+    }
+  ]
+}

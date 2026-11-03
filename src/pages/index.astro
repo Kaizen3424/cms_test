@@ -1,0 +1,123 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/site/Navbar.astro';
+import Footer from '../components/site/Footer.astro';
+import WorldMapSection from '../components/site/WorldMapSection.astro';
+import CuratedGrid from '../components/site/CuratedGrid.astro';
+import { getHomeSettings } from '@/lib/content';
+
+const all = await getCollection('places');
+const places = all
+  .filter((p) => p.data.status === 'published')
+  .sort((a, b) => a.data.dispatchNumber - b.data.dispatchNumber);
+const home = getHomeSettings();
+const curated = home.curatedPlaceIds
+  .map((id) => places.find((p) => p.id === id))
+  .filter((p): p is (typeof places)[number] => Boolean(p));
+---
+
+<Layout
+  title="Atlas — Photography Travel Explorer"
+  description="An expedition journal and cartographic explorer cataloging slow travel, high-altitude landscapes, and medium-format photo essays."
+  image={places[0]?.data.heroImage}
+>
+  <div class="min-h-screen flex flex-col justify-between selection:bg-[#e60023] selection:text-white bg-[#f7f6f2] text-[#1a1a18]">
+    <Navbar />
+    <main class="flex-1 flex flex-col">
+      {/* 1. HERO CANVAS: FULL VIEWPORT INTERACTIVE 2D FLAT WORLD MAP */}
+      <WorldMapSection places={places} />
+
+      {/* 2. SEASONAL OFFER & ANNOUNCEMENT BANNER */}
+      {home.offerBannerEnabled && (
+        <section class="bg-[#181816] border-b border-[#2d2d27] text-white">
+          <div class="max-w-7xl mx-auto px-6 sm:px-10 py-5 sm:py-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+              <span class="self-start sm:self-auto inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e60023]/25 border border-[#e60023]/40 text-[#ff7082] text-xs font-bold uppercase tracking-wider flex-shrink-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#e60023] animate-pulse"></span>
+                {home.offerBannerBadge}
+              </span>
+              <div>
+                <h3 class="text-sm sm:text-base font-bold text-white tracking-tight">
+                  {home.offerBannerTitle}
+                </h3>
+                <p class="text-xs text-[#9d9d93] mt-0.5 max-w-2xl leading-normal">
+                  {home.offerBannerDescription}
+                </p>
+              </div>
+            </div>
+
+            <a
+              href="/contact"
+              class="self-start md:self-auto inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#e60023] hover:bg-[#cc001f] text-white text-xs sm:text-sm font-bold shadow-[0_4px_14px_rgba(230,0,35,0.4)] transition-all hover:scale-[1.02] active:scale-95 flex-shrink-0 cursor-pointer"
+            >
+              <span>{home.offerBannerCtaText}</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-3.5 h-3.5"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </section>
+      )}
+
+      {/* 3. EDITORIAL INTERLUDE: MAGAZINE MANIFESTO */}
+      <section
+        id="philosophy"
+        class="max-w-7xl mx-auto px-6 sm:px-10 py-16 sm:py-20 flex flex-col md:flex-row items-baseline justify-between gap-8 border-b border-[#e2dfd7]"
+      >
+        <div class="max-w-xl">
+          <span class="text-xs uppercase tracking-widest text-[#e60023] font-bold">
+            {home.manifestoTag}
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-[#1a1a18] mt-2 tracking-tight">
+            {home.manifestoTitle}
+          </h2>
+        </div>
+        <div class="max-w-md text-[#71716b] text-sm sm:text-base leading-relaxed font-normal space-y-4">
+          <p>{home.manifestoBody}</p>
+          <div>
+            <a
+              href="/philosophy"
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-[#e60023] hover:underline cursor-pointer"
+            >
+              <span>{home.manifestoCtaText}</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-3.5 h-3.5"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. SECTION: FRESH FROM THE ROAD (CURATED SELECTION) */}
+      <CuratedGrid places={curated} />
+    </main>
+    <Footer />
+  </div>
+</Layout>

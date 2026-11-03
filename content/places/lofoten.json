@@ -1,0 +1,66 @@
+{
+  "name": "Lofoten",
+  "country": "Norway",
+  "region": "Nordic Europe",
+  "coordinatesText": "68.20° N, 13.95° E",
+  "lat": 68.2,
+  "lng": 13.95,
+  "mapX": 45.5,
+  "mapY": 19,
+  "status": "published",
+  "dispatchNumber": 11,
+  "category": "Coastlines",
+  "oneLineFragment": "Arctic fjord winter cabins and cod drying racks in the sea wind.",
+  "narrativeStory": "Salt spray freezing on black volcanic shingles before midday. The mountains rear straight out of the Norwegian Sea, their granite faces cloaked in powder and sea mist.\n\nIn Reine and Hamnøy, red rorbuer sit on weathered stilts over slate-green tidepools. Here the silence is interrupted only by the creak of timber and the distant crash of the Arctic swell.",
+  "heroImage": "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Lofoten, Norway",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "Arctic Archipelago • Norwegian Sea",
+  "introLines": [
+    "Salt spray freezing on black volcanic shingles.",
+    "Granite peaks shearing through low maritime cloud.",
+    "Nine frames exposed in the twilight of 68 degrees north."
+  ],
+  "frames": [
+    {
+      "id": "lofoten-1",
+      "url": "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Reinefjord under heavy morning blizzard",
+      "locationDetail": "Hamnøy Bridge • 68.14° N",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "lofoten-2",
+      "url": "https://images.unsplash.com/photo-1507272931001-fc06c17e4f43?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Arctic fjord winter cabins on weathered timber stilts",
+      "locationDetail": "Reine Fishermen settlement • Vestfjorden coast",
+      "aspect": "3/4",
+      "format": "Medium Format Color"
+    },
+    {
+      "id": "lofoten-3",
+      "url": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Wooden cod drying racks standing empty against the gale",
+      "locationDetail": "Å i Lofoten • Sea Promontory",
+      "aspect": "4/3",
+      "format": "Black & White Tri-X"
+    },
+    {
+      "id": "lofoten-4",
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Haukland beach turquoise surf breaking on snowbank",
+      "locationDetail": "Vestvågøy Northern Shore • Polar Noon",
+      "aspect": "16/9",
+      "format": "Medium Format Color Emulsion"
+    },
+    {
+      "id": "lofoten-5",
+      "url": "https://images.unsplash.com/photo-1529963183134-61a90db47eaf?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Aurora borealis curtain unfurling over Olstinden peak",
+      "locationDetail": "Reinebringen Ridgeline • 2 AM exposure",
+      "aspect": "3/4",
+      "format": "Long Exposure 800 ISO"
+    }
+  ]
+}

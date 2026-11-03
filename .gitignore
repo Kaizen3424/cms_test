@@ -6,3 +6,11 @@ coverage/
 *.log
 .env*
 !.env.example
+.cache/
+
+# Astro
+.astro/
+.wrangler/
+
+# Image pipeline scratch space (masters are re-downloadable from the manifest)
+.cache/

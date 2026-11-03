@@ -1,0 +1,66 @@
+{
+  "name": "New Zealand",
+  "country": "New Zealand",
+  "region": "Oceania",
+  "coordinatesText": "43.59° S, 170.14° E",
+  "lat": -43.59,
+  "lng": 170.14,
+  "mapX": 89,
+  "mapY": 82,
+  "status": "published",
+  "dispatchNumber": 12,
+  "category": "High Altitude",
+  "oneLineFragment": "Aoraki Southern Alps glacial valleys and braided river gravel.",
+  "narrativeStory": "Milky glacial runoff pouring down the Hooker Valley towards Tasman Lake. The Southern Alps form an insurmountable backbone against the Tasman Sea, catching colossal precipitation that forms permanent ice shelves.\n\nAlpine kea parrots call across the scree basins, while the morning light casts long sharp shadows across the braided riverbeds.",
+  "heroImage": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "New Zealand, New Zealand",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "Aoraki / Mount Cook National Park • Southern Alps",
+  "introLines": [
+    "Tussock slopes shivering in fierce alpine wind.",
+    "Braided glacier rivers flowing to grey moraine lakes.",
+    "Eight frames documenting the Southern Alps glacier terminus."
+  ],
+  "frames": [
+    {
+      "id": "nz-1",
+      "url": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Aoraki peak towering above Mueller glacier moraine",
+      "locationDetail": "Hooker Valley Track • 43.59° S",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "nz-2",
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Swing bridge crossing roaring meltwater torrents",
+      "locationDetail": "Hooker River Gorge • Southern Alps",
+      "aspect": "3/4",
+      "format": "Medium Format Color"
+    },
+    {
+      "id": "nz-3",
+      "url": "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Icebergs drifting on milky grey Tasman terminal lake",
+      "locationDetail": "Tasman Glacier • Moraine Lookout",
+      "aspect": "4/3",
+      "format": "Fine Grain Color Film"
+    },
+    {
+      "id": "nz-4",
+      "url": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Kea alpine parrot perched upon granite boulder above cloud line",
+      "locationDetail": "Sealy Tarns Trail • 1,300m elevation",
+      "aspect": "3/4",
+      "format": "Medium Format Film"
+    },
+    {
+      "id": "nz-5",
+      "url": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Wild purple lupins framing turquoise waters of Lake Tekapo",
+      "locationDetail": "Mackenzie Basin • High Country",
+      "aspect": "16/9",
+      "format": "120 Color Emulsion"
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+---
+import ResponsiveImage from '../media/ResponsiveImage.astro';
+import { getHomeSettings } from '../../lib/content';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  places: CollectionEntry<'places'>[];
+}
+
+const { places } = Astro.props;
+const home = getHomeSettings();
+---
+
+<section id="road-strip" class="py-16 sm:py-20 bg-[#f7f6f2]">
+  <div class="max-w-7xl mx-auto px-6 sm:px-10">
+    {/* Section Header */}
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="w-2 h-2 rounded-full bg-[#e60023]"></span>
+          <span class="text-xs uppercase font-bold tracking-widest text-[#71716b]">
+            {home.curatedBadge}
+          </span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-[#1a1a18] tracking-tight">
+          {home.curatedTitle}
+        </h2>
+      </div>
+      <div class="hidden sm:flex items-center gap-2">
+        <span class="text-xs text-[#71716b] font-medium">
+          {home.curatedSubtitle}
+        </span>
+        <div class="w-8 h-[1px] bg-[#e2dfd7]"></div>
+      </div>
+    </div>
+
+    {/* Grid of Curated Photo Tiles */}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      {places.map((place) => (
+        <a
+          href={`/place/${place.id}`}
+          class="group relative rounded-2xl overflow-hidden bg-[#efece6] aspect-[3/4] shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer"
+        >
+          <ResponsiveImage
+            src={place.data.heroImage}
+            alt={place.data.name}
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            sizes="(min-width: 1024px) 18vw, (min-width: 768px) 30vw, (min-width: 640px) 50vw, 100vw"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+          {/* Top Tag and Save Icon */}
+          <div class="absolute top-3.5 inset-x-3.5 flex items-center justify-between z-10">
+            <span class="bg-white/90 backdrop-blur-sm text-[#1a1a18] text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
+              {place.data.name}
+            </span>
+            <button
+              type="button"
+              data-save-place={place.id}
+              data-place-name={place.data.name}
+              aria-pressed="false"
+              aria-label="Save to your Atlas"
+              title="Save to Atlas"
+              class="w-7 h-7 rounded-full backdrop-blur-sm flex items-center justify-center transition-all shadow-sm active:scale-90 bg-white/90 text-[#e60023] hover:bg-white aria-pressed:bg-[#e60023] aria-pressed:text-white"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-3.5 h-3.5"
+                aria-hidden="true"
+              >
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+              </svg>
+            </button>
+          </div>
+
+          {/* Bottom Label */}
+          <div class="absolute bottom-3.5 inset-x-3.5 text-white z-10">
+            <p class="text-[11px] text-white/70 uppercase tracking-widest font-mono">
+              {place.data.country} · {place.data.coordinatesText.split(',')[0]}
+            </p>
+            <h4 class="text-sm font-bold leading-snug line-clamp-1 mt-0.5">
+              {place.data.frames[0]?.caption || place.data.oneLineFragment}
+            </h4>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

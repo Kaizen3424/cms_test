@@ -1,0 +1,66 @@
+{
+  "name": "Italy",
+  "country": "Italy",
+  "region": "Europe",
+  "coordinatesText": "46.41° N, 11.85° E",
+  "lat": 46.41,
+  "lng": 11.85,
+  "mapX": 46.2,
+  "mapY": 33,
+  "status": "published",
+  "dispatchNumber": 7,
+  "category": "High Altitude",
+  "oneLineFragment": "Dolomite limestone towers blushing pink at enrosadira.",
+  "narrativeStory": "The sheer pinnacles of Tre Cime di Lavaredo and the Odle range rising out of subalpine larch forests. As dusk settles, the pale calcium-magnesium rock catches the last rays of sunlight, igniting into fire and rose before cooling to ash.\n\nAlpine dairy huts (malghe) smell of wood smoke and cowhide, carrying echoes of mountain transhumance.",
+  "heroImage": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Italy, Italy",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "Dolomite Alps • South Tyrol & Trentino",
+  "introLines": [
+    "Limestone crags glowing in evening enrosadira.",
+    "Larch needles turning pure gold in late October.",
+    "Ten medium-format frames exposed along high ferrata paths."
+  ],
+  "frames": [
+    {
+      "id": "italy-1",
+      "url": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Tre Cime di Lavaredo pinnacles blushing pink at enrosadira",
+      "locationDetail": "Rifugio Locatelli Ridge • 2,450m",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "italy-2",
+      "url": "https://images.unsplash.com/photo-1507272931001-fc06c17e4f43?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Emerald waters of Lago di Braies beneath Croda del Becco",
+      "locationDetail": "Prags Dolomites • Wooden Boathouse",
+      "aspect": "3/4",
+      "format": "Medium Format Color"
+    },
+    {
+      "id": "italy-3",
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Knife-edge Seceda ridge dropping into rolling cloud valleys",
+      "locationDetail": "Val Gardena • 2,519m crest",
+      "aspect": "4/3",
+      "format": "Color Negative 200"
+    },
+    {
+      "id": "italy-4",
+      "url": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Wooden hay barns dotting the vast meadows of Alpe di Siusi",
+      "locationDetail": "Seiser Alm • Mount Schlern backdrop",
+      "aspect": "16/9",
+      "format": "Landscape 120 Emulsion"
+    },
+    {
+      "id": "italy-5",
+      "url": "https://images.unsplash.com/photo-1476610182048-b716b8518aae?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Passo Giau hairpins winding through ancient larch forests",
+      "locationDetail": "Cortina d’Ampezzo • 2,236m pass",
+      "aspect": "3/4",
+      "format": "Medium Format Film"
+    }
+  ]
+}

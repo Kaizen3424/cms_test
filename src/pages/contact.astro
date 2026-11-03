@@ -1,0 +1,233 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/site/Navbar.astro';
+import Footer from '../components/site/Footer.astro';
+import InquiryForm from '../components/site/InquiryForm.astro';
+import { getContactSettings } from '@/lib/content';
+
+const contact = getContactSettings();
+const places = (await getCollection('places'))
+  .filter((p) => p.data.status === 'published')
+  .sort((a, b) => a.data.dispatchNumber - b.data.dispatchNumber);
+---
+
+<Layout
+  title="Travel With Us — Atlas"
+  description={contact.subtitle}
+>
+  <div class="min-h-screen flex flex-col justify-between selection:bg-[#e60023] selection:text-white bg-[#f7f6f2] text-[#1a1a18]">
+    <Navbar />
+
+    <main class="flex-1 flex flex-col">
+      <div class="w-full pt-28 sm:pt-36 pb-20 sm:pb-24 flex-grow bg-[#f7f6f2] text-[#1a1a18]">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 md:px-10">
+          {/* Header */}
+          <div class="max-w-3xl mb-10 sm:mb-14">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#f0f0eb] border border-[#e4e4dd] text-[10px] sm:text-[11px] font-bold tracking-[0.18em] text-[#e60023] uppercase mb-4">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#e60023]"></span>
+              {contact.badge}
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#1a1a18] leading-[1.1]">
+              {contact.title}
+            </h1>
+            <p class="text-sm sm:text-lg text-[#71716b] mt-3 leading-relaxed">
+              {contact.subtitle}
+            </p>
+          </div>
+
+          {/* 2-Column Layout: Booking Form + Direct Contact Information */}
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
+            {/* Left Form: 7 cols */}
+            <InquiryForm places={places} contact={contact} />
+
+            {/* Right Column: Contact Details, Field Offices, Service Guarantees (5 cols) */}
+            <div class="lg:col-span-5 space-y-6">
+              {/* Direct Contact Card */}
+              <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-[#e2dfd7] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] space-y-5">
+                <h3 class="text-base sm:text-lg font-bold text-[#1a1a18] tracking-tight flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="w-5 h-5 text-[#e60023]"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                  </svg>
+                  <span>{contact.hqDeskTitle}</span>
+                </h3>
+
+                <div class="space-y-3.5 text-sm">
+                  <div class="flex items-start gap-3 text-[#52524d]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="w-4 h-4 text-[#e60023] shrink-0 mt-0.5"
+                      aria-hidden="true"
+                    >
+                      <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
+                      <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                    </svg>
+                    <div>
+                      <div class="text-xs text-[#8c8c83] uppercase tracking-wider font-semibold">
+                        Direct Inquiries
+                      </div>
+                      <a
+                        href={`mailto:${contact.inquiryEmail}`}
+                        class="font-medium text-[#1a1a18] hover:underline break-all"
+                      >
+                        {contact.inquiryEmail}
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start gap-3 text-[#52524d]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="w-4 h-4 text-[#e60023] shrink-0 mt-0.5"
+                      aria-hidden="true"
+                    >
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    <div>
+                      <div class="text-xs text-[#8c8c83] uppercase tracking-wider font-semibold">
+                        Telephone
+                      </div>
+                      <div class="font-medium text-[#1a1a18]">
+                        {contact.tollFreePhone} <span class="text-xs text-[#71716b]">(Toll Free)</span>
+                      </div>
+                      <div class="font-medium text-[#71716b] text-xs">
+                        {contact.internationalPhone} <span class="text-[#8c8c83]">(International Desk)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-start gap-3 text-[#52524d]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="w-4 h-4 text-[#e60023] shrink-0 mt-0.5"
+                      aria-hidden="true"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <div>
+                      <div class="text-xs text-[#8c8c83] uppercase tracking-wider font-semibold">
+                        Operational Hours
+                      </div>
+                      <div class="text-xs text-[#71716b]">
+                        {contact.operatingHours}
+                      </div>
+                      <div class="text-[11px] text-emerald-700 font-medium">
+                        {contact.liveMonitoringNote}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Field Outposts Card */}
+              <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-[#e2dfd7] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] space-y-4">
+                <h3 class="text-xs sm:text-sm font-bold text-[#1a1a18] uppercase tracking-wider flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="w-4 h-4 text-[#e60023]"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <span>Regional Field Outposts</span>
+                </h3>
+
+                <div class="space-y-3 divide-y divide-[#eeeeea] text-xs text-[#71716b]">
+                  {contact.outposts.map((outpost) => (
+                    <div class="pt-2.5 first:pt-0">
+                      <div class="font-bold text-[#1a1a18] text-xs sm:text-sm">{outpost.name}</div>
+                      <p class="mt-0.5">{outpost.address}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Travel Ethos Guarantee */}
+              <div class="bg-[#f0f0eb] rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-[#e4e4dd] space-y-3">
+                <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#1a1a18]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="w-4 h-4 text-[#e60023]"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
+                  </svg>
+                  <span>{contact.brandPromiseTitle}</span>
+                </div>
+                <ul class="text-xs text-[#62625b] space-y-2 leading-relaxed">
+                  {contact.brandPromises.map((promise) => (
+                    <li class="flex items-start gap-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-[#e60023] mt-1 shrink-0"></span>
+                      <span>{promise}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>
+
+<script>
+  import '../scripts/inquiry';
+</script>

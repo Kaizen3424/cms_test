@@ -1,0 +1,66 @@
+{
+  "name": "Chile",
+  "country": "Chile",
+  "region": "South America",
+  "coordinatesText": "51.25° S, 72.88° W",
+  "lat": -51.25,
+  "lng": -72.88,
+  "mapX": 21.5,
+  "mapY": 79,
+  "status": "published",
+  "dispatchNumber": 10,
+  "category": "High Altitude",
+  "oneLineFragment": "Torres del Paine granite horns reflected in glacial turquoise lakes.",
+  "narrativeStory": "Fierce Patagonian westerlies bending the stunted lenga trees until they grow horizontally. The Cuernos del Paine rise two thousand vertical meters above milky glacial lakes, their dark sedimentary caps contrasting sharply with pale granite towers.\n\nHerds of wild guanaco graze the windswept pampa, watching the shadow of condors glide across the gravel steppe.",
+  "heroImage": "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Chile, Chile",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "Patagonian Ice Fields & Torres del Paine",
+  "introLines": [
+    "Winds that flatten the steppe grass in seconds.",
+    "Granite horns rising above milky turquoise ice fields.",
+    "Nine frames exposed in extreme sub-antarctic conditions."
+  ],
+  "frames": [
+    {
+      "id": "chile-1",
+      "url": "https://images.unsplash.com/photo-1527004013197-933c4bb611b3?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Torres del Paine granite towers reflected in Lake Pehoé",
+      "locationDetail": "Paine Massif • Southern Patagonia",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "chile-2",
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Grey Glacier cobalt ice face calving into icebergs",
+      "locationDetail": "Southern Patagonian Ice Field • 51.25° S",
+      "aspect": "3/4",
+      "format": "Medium Format Color"
+    },
+    {
+      "id": "chile-3",
+      "url": "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Stunted lenga tree forest twisted by endless westerlies",
+      "locationDetail": "Valle del Francés • Glacial moraine",
+      "aspect": "4/3",
+      "format": "Black & White Emulsion"
+    },
+    {
+      "id": "chile-4",
+      "url": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Guanaco herd alert upon golden tussock steppe at dawn",
+      "locationDetail": "Laguna Amarga • Pampa border",
+      "aspect": "16/9",
+      "format": "Color Negative 200"
+    },
+    {
+      "id": "chile-5",
+      "url": "https://images.unsplash.com/photo-1476610182048-b716b8518aae?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Dramatic lenticular cloud hovering above Cuernos del Paine",
+      "locationDetail": "Nordenskjöld Lookout • Patagonian Storm",
+      "aspect": "3/4",
+      "format": "120 Roll Film"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "name": "Oaxaca",
+  "country": "Mexico",
+  "region": "Latin America",
+  "coordinatesText": "17.07° N, 96.72° W",
+  "lat": 17.07,
+  "lng": -96.72,
+  "mapX": 17.2,
+  "mapY": 43,
+  "status": "published",
+  "dispatchNumber": 9,
+  "category": "Highlands",
+  "oneLineFragment": "Agave fields & copal smoke in the Sierra Madre foothills.",
+  "narrativeStory": "The blue spikes of espadín and tobalá puncture the red clay slopes of the Central Valleys. Smoke from earthen pit ovens curls toward the Sierra Madre crests like ancient offering smoke.\n\nIn small palenques, donkey-driven tahona stones crush roasted hearts into fermenting fibers. Life here moves to the rhythm of season rains and woodsmoke.",
+  "heroImage": "https://images.unsplash.com/photo-1518638150340-f706e86654de?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Oaxaca, Mexico",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "Sierra Madre del Sur • Valles Centrales",
+  "introLines": [
+    "Clay dust raised by pack mules on mountain ridges.",
+    "Sweet fragrance of caramelized agave hearts cooling under palm mats.",
+    "Six medium-format rolls preserved from the dry season."
+  ],
+  "frames": [
+    {
+      "id": "oaxaca-1",
+      "url": "https://images.unsplash.com/photo-1518638150340-f706e86654de?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Mule trail through cultivated agave terraces",
+      "locationDetail": "Santiago Matatlán • Sierra foothills",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "oaxaca-2",
+      "url": "https://images.unsplash.com/photo-1512813195386-6cf811ad3542?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Roasted agave piñas smoking inside conical earthen pit",
+      "locationDetail": "Artisanal Palenque • Valles Centrales",
+      "aspect": "3/4",
+      "format": "Color Negative 400"
+    },
+    {
+      "id": "oaxaca-3",
+      "url": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Hand-dyed cochineal and indigo wool yarns drying in mountain sun",
+      "locationDetail": "Teotitlán del Valle • Weaver Courtyard",
+      "aspect": "4/3",
+      "format": "Medium Format Color"
+    },
+    {
+      "id": "oaxaca-4",
+      "url": "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Copal incense drifting across colonial stone arches at Santo Domingo",
+      "locationDetail": "Oaxaca Centro • Morning Mass",
+      "aspect": "3/4",
+      "format": "Monochrome Roll Film"
+    },
+    {
+      "id": "oaxaca-5",
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Sun rays piercing cloud bank over Hierve el Agua mineral cascades",
+      "locationDetail": "San Lorenzo Albarradas • 1,800m",
+      "aspect": "16/9",
+      "format": "120 Landscape Emulsion"
+    }
+  ]
+}

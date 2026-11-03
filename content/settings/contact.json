@@ -1,0 +1,37 @@
+{
+  "badge": "Bespoke Tourism & Guided Expeditions",
+  "title": "Travel With Us.",
+  "subtitle": "We curate small-group expeditions and tailored itineraries to the world's most quietly extraordinary landscapes. Reach out to our expedition desk to join an upcoming route or commission a private journey.",
+  "formTitle": "Start Your Expedition Planning",
+  "formSubtitle": "No automated responses. Every route is crafted directly by our field team.",
+  "hqDeskTitle": "Expedition Headquarters Desk",
+  "inquiryEmail": "expeditions@meridiantravel.com",
+  "tollFreePhone": "+1 (800) 492-8527",
+  "internationalPhone": "+44 20 7946 0912",
+  "operatingHours": "Monday – Friday: 08:00 – 18:00 GMT",
+  "liveMonitoringNote": "Live journey satellite monitoring 24/7",
+  "outposts": [
+    {
+      "id": "outpost-leh",
+      "name": "Leh Basecamp, Ladakh",
+      "address": "Old Fort Road, Leh 194101, High Himalayas"
+    },
+    {
+      "id": "outpost-svolvaer",
+      "name": "Svolvær Outpost, Norway",
+      "address": "Fiskergata 14, 8300 Lofoten Archipelago"
+    },
+    {
+      "id": "outpost-kyoto",
+      "name": "Kyoto Atelier, Japan",
+      "address": "Shirakawa-suji, Higashiyama-ku, Kyoto"
+    }
+  ],
+  "brandPromiseTitle": "The Meridian Travel Promise",
+  "brandPromises": [
+    "Small party cap: Maximum 6 travelers per expedition",
+    "Full carbon & environmental preservation contribution",
+    "Authentic, unscripted local homestays & private refuges",
+    "Dedicated photography and regional field leader on all routes"
+  ]
+}

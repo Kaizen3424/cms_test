@@ -1,0 +1,66 @@
+{
+  "name": "Iceland",
+  "country": "Iceland",
+  "region": "North Atlantic",
+  "coordinatesText": "64.96° N, 19.02° W",
+  "lat": 64.96,
+  "lng": -19.02,
+  "mapX": 39.5,
+  "mapY": 18,
+  "status": "published",
+  "dispatchNumber": 3,
+  "category": "Coastlines",
+  "oneLineFragment": "Black volcanic sands and glacial tongues under low northern sun.",
+  "narrativeStory": "Steam rising from geothermal fissures across black basalt gravel fields. The silence of the Icelandic highlands is absolute, broken only by the calving roar of Vatnajökull.\n\nGlacial melt streams weave braided ribbons of cobalt across obsidian sandbars before vanishing into the icy froth of the Atlantic.",
+  "heroImage": "https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Iceland, Iceland",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "Southern Volcanic Coast & Glacial Lagoons",
+  "introLines": [
+    "Black volcanic sands stretching toward grey horizon.",
+    "Glacial lagoons holding thousand-year-old blue ice.",
+    "Rhyolite mountains glowing under midnight sun."
+  ],
+  "frames": [
+    {
+      "id": "iceland-1",
+      "url": "https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Diamond beach ice crystals stranded on black volcanic sand",
+      "locationDetail": "Breiðamerkursandur • Jökulsárlón",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "iceland-2",
+      "url": "https://images.unsplash.com/photo-1476610182048-b716b8518aae?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Skógafoss waterfall spray catching low arctic morning light",
+      "locationDetail": "South Coast Cliffs • 63.53° N",
+      "aspect": "3/4",
+      "format": "Medium Format Color"
+    },
+    {
+      "id": "iceland-3",
+      "url": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Rhyolite ridges of Landmannalaugar painted in ochre and moss",
+      "locationDetail": "Fjallabak Nature Reserve • Highland Trail",
+      "aspect": "4/3",
+      "format": "Color Negative 100"
+    },
+    {
+      "id": "iceland-4",
+      "url": "https://images.unsplash.com/photo-1529963183134-61a90db47eaf?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Reynisfjara basalt sea stacks emerging from thunderous white foam",
+      "locationDetail": "Vík í Mýrdal • Atlantic Shore",
+      "aspect": "16/9",
+      "format": "Monochrome Emulsion"
+    },
+    {
+      "id": "iceland-5",
+      "url": "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Ancient sod turf church nestled beneath glacier tongues",
+      "locationDetail": "Hofskirkja • Öræfi Region",
+      "aspect": "3/4",
+      "format": "120 Roll Film"
+    }
+  ]
+}

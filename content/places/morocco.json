@@ -1,0 +1,66 @@
+{
+  "name": "Morocco",
+  "country": "Morocco",
+  "region": "North Africa",
+  "coordinatesText": "31.06° N, 7.91° W",
+  "lat": 31.06,
+  "lng": -7.91,
+  "mapX": 42.8,
+  "mapY": 39,
+  "status": "published",
+  "dispatchNumber": 5,
+  "category": "Highlands",
+  "oneLineFragment": "Walnut groves and adobe ramparts in the High Atlas.",
+  "narrativeStory": "Terraced barley fields clinging to the steep gorges of the Toubkal massif. Berber villages built of sundried mud and red river clay seem to grow directly out of the mountain bedrock.\n\nMule caravans climb the rocky mule passes, carrying sacks of dried figs, mint bundles, and hand-woven kilims between remote mountain valleys.",
+  "heroImage": "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Morocco, Morocco",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "High Atlas Massif • Imlil & Toubkal Valley",
+  "introLines": [
+    "Adobe walls baked in harsh sunlight against snow peaks.",
+    "Mint tea steeped with sage in high stone passes.",
+    "Seven frames documenting ancient mountain Berber settlements."
+  ],
+  "frames": [
+    {
+      "id": "morocco-1",
+      "url": "https://images.unsplash.com/photo-1489749798305-4fea3ae63d43?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Adobe Berber village perched upon cliff terraces of Imlil",
+      "locationDetail": "Toubkal Valley • 1,740m elevation",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "morocco-2",
+      "url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Walnut groves along rushing mountain meltwater irrigation canals",
+      "locationDetail": "Aremd Village • High Atlas",
+      "aspect": "3/4",
+      "format": "Medium Format Color"
+    },
+    {
+      "id": "morocco-3",
+      "url": "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Pack mules resting beneath shade of clay kasbah ramparts",
+      "locationDetail": "Tizi n’Tichka approach • 2,260m",
+      "aspect": "4/3",
+      "format": "Color Negative 400"
+    },
+    {
+      "id": "morocco-4",
+      "url": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Handwoven saffron and madder wool blankets drying on clay roof",
+      "locationDetail": "High Atlas Artisan Home • 31.06° N",
+      "aspect": "3/4",
+      "format": "Warm Tone Emulsion"
+    },
+    {
+      "id": "morocco-5",
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Sunset raking over snowfields of Mount Toubkal",
+      "locationDetail": "Summit Ridge • 4,167m peak view",
+      "aspect": "16/9",
+      "format": "120 Film Stock"
+    }
+  ]
+}

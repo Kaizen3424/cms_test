@@ -1,0 +1,66 @@
+{
+  "name": "Wadi Rum",
+  "country": "Jordan",
+  "region": "Middle East",
+  "coordinatesText": "29.57° N, 35.42° E",
+  "lat": 29.57,
+  "lng": 35.42,
+  "mapX": 51.8,
+  "mapY": 37,
+  "status": "published",
+  "dispatchNumber": 8,
+  "category": "Deserts",
+  "oneLineFragment": "Granite monolithic dusk and ochre ripples.",
+  "narrativeStory": "The desert here has no soft transitions. When the sun slips behind the monolithic sandstone massifs, the ambient temperature falls in minutes.\n\nThe iron sand glows maroon, then rust, then disappears into cold velvet black. Bedouin campfires whisper cedar and cardamon into the still evening sky.",
+  "heroImage": "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1600&q=80",
+  "heroAlt": "Wadi Rum, Jordan",
+  "updatedAt": "2026-11-03T00:00:00.000Z",
+  "subtitle": "Valley of the Moon • Sandstone Massifs",
+  "introLines": [
+    "Iron sand that shifts like liquid red dye.",
+    "Echoes between sheer cliffs of Jebel Rum.",
+    "Eight frames recorded under unclouded solar radiation."
+  ],
+  "frames": [
+    {
+      "id": "wadirum-1",
+      "url": "https://images.unsplash.com/photo-1547234935-80c7145ec969?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Sunset raking over Burdah rock canyon",
+      "locationDetail": "Seven Pillars Valley • Sandstone Monolith",
+      "aspect": "16/9",
+      "format": "120 Format Roll Film"
+    },
+    {
+      "id": "wadirum-2",
+      "url": "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Granite monolithic dusk casting mile-long shadows",
+      "locationDetail": "Jebel Khazali Base • 29.57° N",
+      "aspect": "3/4",
+      "format": "Color Negative 400"
+    },
+    {
+      "id": "wadirum-3",
+      "url": "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Bedouin camel tracks etched in untouched red sand ripples",
+      "locationDetail": "Disah Dune Fields • Early Morning Sun",
+      "aspect": "4/3",
+      "format": "Medium Format Film"
+    },
+    {
+      "id": "wadirum-4",
+      "url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Natural sandstone arch carved by millenia of desert wind",
+      "locationDetail": "Um Fruth Rock Bridge • 120 Emulsion",
+      "aspect": "3/4",
+      "format": "Ektachrome 100"
+    },
+    {
+      "id": "wadirum-5",
+      "url": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1400&q=80",
+      "caption": "Quiet hearth embers under an unpolluted Milky Way arch",
+      "locationDetail": "Bedouin Bivouac • Southern Jordan",
+      "aspect": "16/9",
+      "format": "Night Emulsion Exposure"
+    }
+  ]
+}
