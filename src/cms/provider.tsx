@@ -29,23 +29,41 @@ import {
 } from 'react';
 import type { ReactNode } from 'react';
 import { canonicalJson, isCMSError } from 'patcms';
-import type { Entry, EntryValue, JsonValue, SaveResult } from 'patcms';
+import type {
+  Entry,
+  EntryValue,
+  JsonValue,
+  RestoreResult,
+  SaveManyItem,
+  SaveManyResult,
+  SaveResult,
+} from 'patcms';
 import { describeCmsError, restoreSession, signIn as authSignIn, signOut as authSignOut, watchAuthStatus } from './auth';
 import { cms } from './client';
 import * as drafts from './drafts';
 import type { DraftKey } from './drafts';
 import type {
+  BulkPublishResult,
   CmsStatus,
   ContactSettings,
   HomeSettings,
   PhilosophySettings,
+  PlaceRevision,
   PlaceValue,
   PublishInfo,
   PublishResult,
+  RestorePlaceResult,
   SettingsName,
 } from './types';
 
-export type { CmsStatus, PublishResult, SettingsName } from './types';
+export type {
+  BulkPublishResult,
+  CmsStatus,
+  PlaceRevision,
+  PublishResult,
+  RestorePlaceResult,
+  SettingsName,
+} from './types';
 export type { PlaceValue, HomeSettings, PhilosophySettings, ContactSettings } from './types';
 
 export interface PlaceRow {
@@ -69,6 +87,14 @@ export interface CmsApi {
   discardDraft(key: string): Promise<void>;
   publishPlace(id: string): Promise<PublishResult>;
   publishSettings(name: SettingsName): Promise<PublishResult>;
+  /** Publish several places as ONE all-or-nothing commit (patcms 0.2.0 saveMany). */
+  publishMany(ids: string[]): Promise<BulkPublishResult>;
+  /** Commits that touched one place, newest first (one GitHub request per page). */
+  placeHistory(id: string, limit?: number): Promise<PlaceRevision[]>;
+  /** Read an older version without writing. */
+  placeAtRevision(id: string, commitSha: string): Promise<PlaceValue>;
+  /** Write an older version's exact bytes as a NEW commit. */
+  restorePlace(id: string, commitSha: string, message?: string): Promise<RestorePlaceResult>;
   createPlace(value: PlaceValue): Promise<{ id: string }>;
   uploadMedia(file: File, folder?: string, options?: { overwrite?: boolean }): Promise<{ path: string }>;
   /**
@@ -156,6 +182,12 @@ function conflictFields(current: Entry, local: EntryValue): string[] {
     .filter((field) => field.type !== 'divider' && field.type !== 'slug' && field.type !== 'hidden')
     .map((field) => field.name)
     .filter((name) => !sameValue(current.value[name], local[name]));
+}
+
+/** Field issues from a patcms VALIDATION error, in the shape the UI renders. */
+function validationIssues(error: unknown): Array<{ path: string; message: string }> {
+  if (!isCMSError(error) || !error.issues) return [];
+  return error.issues.map((issue) => ({ path: issue.path, message: issue.message }));
 }
 
 function sortPlaces(rows: PlaceRow[]): PlaceRow[] {
@@ -427,6 +459,193 @@ export function CmsProvider({ children }: { children: ReactNode }) {
     [publishEntry],
   );
 
+  /** Adopt freshly committed place entries and clear their now-stale drafts. */
+  const applyFreshPlaces = useCallback(
+    (freshEntries: readonly Entry[]) => {
+      if (freshEntries.length === 0) return;
+      const bySlug = new Map(freshEntries.map((entry) => [entry.slug, entry]));
+      for (const [slug, fresh] of bySlug) {
+        placeEntriesRef.current.set(slug, fresh);
+        placeValuesRef.current.set(slug, fresh.value as unknown as PlaceValue);
+        const key = drafts.draftKey('places', slug);
+        drafts.cancelDraft(key);
+        void drafts.deleteDraft(key).catch(() => {
+          // Best effort: a leftover draft equals the committed value.
+        });
+        setPlaceDraftFlag(key, false);
+        conflictBaseRef.current.delete(key);
+        midflightRef.current.delete(key);
+      }
+      setPlaces((prev) => {
+        const next = prev.map((row) => {
+          const fresh = bySlug.get(row.id);
+          return fresh
+            ? { id: row.id, value: fresh.value as unknown as PlaceValue, hasDraft: false }
+            : row;
+        });
+        for (const [slug, fresh] of bySlug) {
+          if (!next.some((row) => row.id === slug)) {
+            next.push({ id: slug, value: fresh.value as unknown as PlaceValue, hasDraft: false });
+          }
+        }
+        return sortPlaces(next);
+      });
+    },
+    [setPlaceDraftFlag],
+  );
+
+  const publishMany = useCallback(
+    async (ids: string[]): Promise<BulkPublishResult> => {
+      const items: SaveManyItem[] = [];
+      const seen = new Set<string>();
+      for (const id of ids) {
+        if (seen.has(id)) continue;
+        seen.add(id);
+        const entry = placeEntriesRef.current.get(id);
+        if (!entry) continue;
+        const value = placeValuesRef.current.get(id) ?? (entry.value as unknown as PlaceValue);
+        items.push({ entry, value: value as EntryValue });
+      }
+      if (items.length === 0) return { status: 'noop', count: 0 };
+
+      // Mark the flight so updatePlaceDraft stashes edits typed during the
+      // commit; applyFreshPlaces would otherwise overwrite them with the
+      // committed value and the user would lose a keystroke.
+      const keys = items.map((item) => drafts.draftKey('places', (item.entry as Entry).slug));
+      for (const key of keys) {
+        publishingRef.current.add(key);
+        midflightRef.current.delete(key);
+      }
+
+      // Land pending debounced draft writes so they cannot race the draft delete
+      // after the commit. saveMany validates the whole batch before writing.
+      await drafts.flushAllDrafts();
+      let result: SaveManyResult;
+      try {
+        result = await cms.entries.saveMany(items);
+      } catch (thrown) {
+        for (const key of keys) midflightRef.current.delete(key);
+        setError(describeCmsError(thrown));
+        if (isCMSError(thrown) && thrown.code === 'VALIDATION') {
+          return { status: 'validation', issues: validationIssues(thrown) };
+        }
+        throw thrown;
+      } finally {
+        for (const key of keys) publishingRef.current.delete(key);
+      }
+
+      if (result.status === 'conflict') {
+        for (const key of keys) midflightRef.current.delete(key);
+        const stale = result.conflicts.map((conflict) => {
+          const entry = conflict.current;
+          return {
+            id: conflict.slug,
+            path: conflict.path,
+            current: entry ? (entry.value as unknown as PlaceValue) : undefined,
+          };
+        });
+        setError('Nothing was published — a selected place changed on GitHub first.');
+        return { status: 'conflict', conflicts: stale };
+      }
+
+      // Snapshot mid-flight edits before applyFreshPlaces clears them.
+      const stashes = new Map<DraftKey, EntryValue>();
+      for (const key of keys) {
+        const stashed = midflightRef.current.get(key);
+        if (stashed !== undefined) stashes.set(key, stashed);
+        midflightRef.current.delete(key);
+      }
+      applyFreshPlaces(result.entries);
+      // Restore any edits typed during the commit as the next local draft.
+      for (const item of items) {
+        const id = (item.entry as Entry).slug;
+        const key = drafts.draftKey('places', id);
+        const stashed = stashes.get(key);
+        const committed = placeValuesRef.current.get(id) ?? (item.value as unknown as PlaceValue);
+        if (stashed !== undefined && !sameValue(stashed, committed)) {
+          placeValuesRef.current.set(id, stashed as unknown as PlaceValue);
+          setPlaces((prev) =>
+            sortPlaces([
+              ...prev.filter((row) => row.id !== id),
+              { id, value: stashed as unknown as PlaceValue, hasDraft: true },
+            ]),
+          );
+          setPlaceDraftFlag(key, true);
+          const fresh = placeEntriesRef.current.get(id);
+          if (fresh) drafts.queueDraftSave(fresh, stashed, key);
+        }
+      }
+      const sha = result.status === 'saved' ? result.commitSha : undefined;
+      setLastPublish({
+        sha,
+        url: sha
+          ? `https://github.com/${cms.repository.owner}/${cms.repository.repo}/commit/${sha}`
+          : undefined,
+        at: new Date().toISOString(),
+      });
+      return {
+        status: result.status === 'saved' ? 'saved' : 'noop',
+        sha,
+        count: items.length,
+      };
+    },
+    [applyFreshPlaces],
+  );
+
+  const placeHistory = useCallback(async (id: string, limit = 20): Promise<PlaceRevision[]> => {
+    const entry = placeEntriesRef.current.get(id);
+    if (!entry) throw new Error(`Unknown place: ${id}`);
+    const revisions = await cms.entries.history(entry, { limit });
+    return revisions.map((revision) => ({
+      commitSha: revision.commitSha,
+      message: revision.message,
+      authoredAt: revision.authoredAt,
+      authorName: revision.authorName,
+    }));
+  }, []);
+
+  const placeAtRevision = useCallback(async (id: string, commitSha: string): Promise<PlaceValue> => {
+    const entry = placeEntriesRef.current.get(id);
+    if (!entry) throw new Error(`Unknown place: ${id}`);
+    const old = await cms.entries.atRevision(entry, commitSha);
+    return old.value as unknown as PlaceValue;
+  }, []);
+
+  const restorePlace = useCallback(
+    async (id: string, commitSha: string, message?: string): Promise<RestorePlaceResult> => {
+      const entry = placeEntriesRef.current.get(id);
+      if (!entry) throw new Error(`Unknown place: ${id}`);
+      await drafts.flushDraft(drafts.draftKey('places', id));
+      let result: RestoreResult;
+      try {
+        result = await cms.entries.restore(entry, commitSha, message ? { message } : undefined);
+      } catch (thrown) {
+        setError(describeCmsError(thrown));
+        if (isCMSError(thrown) && thrown.code === 'VALIDATION') {
+          return { status: 'validation', issues: validationIssues(thrown) };
+        }
+        throw thrown;
+      }
+
+      if (result.status === 'conflict') {
+        setError('Nothing was restored — the place changed on GitHub first.');
+        return { status: 'conflict', current: result.current.value as unknown as PlaceValue };
+      }
+
+      applyFreshPlaces([result.entry]);
+      const sha = result.status === 'restored' ? result.commitSha : undefined;
+      if (sha) {
+        setLastPublish({
+          sha,
+          url: `https://github.com/${cms.repository.owner}/${cms.repository.repo}/commit/${sha}`,
+          at: new Date().toISOString(),
+        });
+      }
+      return result.status === 'restored' ? { status: 'restored', sha } : { status: 'noop' };
+    },
+    [applyFreshPlaces],
+  );
+
   /** Merge a patch into the working copy (and the IndexedDB draft). No network. */
   const updatePlaceDraft = useCallback(
     (id: string, patch: Partial<PlaceValue>) => {
@@ -653,6 +872,10 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       discardDraft,
       publishPlace,
       publishSettings,
+      publishMany,
+      placeHistory,
+      placeAtRevision,
+      restorePlace,
       createPlace,
       uploadMedia,
       getMediaBlob,
@@ -672,6 +895,10 @@ export function CmsProvider({ children }: { children: ReactNode }) {
       discardDraft,
       publishPlace,
       publishSettings,
+      publishMany,
+      placeHistory,
+      placeAtRevision,
+      restorePlace,
       createPlace,
       uploadMedia,
       getMediaBlob,

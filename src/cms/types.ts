@@ -29,3 +29,28 @@ export interface PublishInfo {
   url?: string;
   at: string;
 }
+
+/** One commit in an entry's history, newest first (patcms `Revision`). */
+export interface PlaceRevision {
+  commitSha: string;
+  message: string;
+  authoredAt?: string;
+  authorName?: string;
+}
+
+/** Result of an all-or-nothing bulk publish (patcms `saveMany`). */
+export type BulkPublishResult =
+  | { status: 'saved'; sha?: string; count: number }
+  | { status: 'noop'; count: number }
+  | {
+      status: 'conflict';
+      conflicts: Array<{ id: string; path: string; current?: unknown }>;
+    }
+  | { status: 'validation'; issues: Array<{ path: string; message: string }> };
+
+/** Result of restoring an older version of an entry. */
+export type RestorePlaceResult =
+  | { status: 'restored'; sha?: string }
+  | { status: 'noop' }
+  | { status: 'conflict'; current: unknown }
+  | { status: 'validation'; issues: Array<{ path: string; message: string }> };

@@ -13,7 +13,7 @@
         "astro": "^7.4.5",
         "d3-geo": "^3.1.1",
         "lucide-react": "^0.546.0",
-        "patcms": "^0.1.0",
+        "patcms": "^0.2.0",
         "react": "^19.0.1",
         "react-dom": "^19.0.1",
         "topojson-client": "^3.1.0",
@@ -686,7 +686,7 @@
 
     "package-manager-detector": ["package-manager-detector@1.9.0", "", {}, "sha512-zAMfbta9nPA8AKkA4WdmNAT8R8s6Dk0/xwPsqNnRidMFcLo1YkLuPDTgs2f64XdzS8vbLNnoJ+uUIkgbz7oRHA=="],
 
-    "patcms": ["patcms@0.1.0", "", { "dependencies": { "idb-keyval": "6.3.0", "zod": "4.6.7" } }, "sha512-CMZcmnjfpaEgyAIYJugeOSodKF4ITB5nF72wyV8fXD2lwMfKj5bSaQL3i9Fvn7zUr/HGpYXCqrBRH+koPe/nNw=="],
+    "patcms": ["patcms@0.2.0", "", { "dependencies": { "idb-keyval": "6.3.0", "zod": "4.6.7" } }, "sha512-b2iSK667QROEI7jmm4rUstHreGgQpjaa7dAMGGswPFcoI6AbdH3pxv2auN6ZcVgCyzrTmWVlqFWZ8CgiDET7kQ=="],
 
     "path-browserify": ["path-browserify@1.0.1", "", {}, "sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g=="],
 

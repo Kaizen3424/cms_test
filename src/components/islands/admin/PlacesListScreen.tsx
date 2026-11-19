@@ -26,6 +26,56 @@ export function PlacesListScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [creating, setCreating] = useState(false);
+  const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
+  const [bulkBusy, setBulkBusy] = useState(false);
+  const showToast = useToast();
+
+  const toggleSelected = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleBulkPublish = async () => {
+    if (bulkBusy || selected.size === 0) return;
+    setBulkBusy(true);
+    try {
+      const result = await cms.publishMany([...selected]);
+      if (result.status === 'conflict') {
+        const names = result.conflicts.map((conflict) => conflict.id).join(', ');
+        showToast(
+          `Nothing was published — these changed on GitHub first: ${names || 'unknown'}`,
+          'error',
+        );
+        return;
+      }
+      if (result.status === 'validation') {
+        const first = result.issues[0];
+        showToast(
+          first ? `Nothing was published — ${first.path}: ${first.message}` : 'Nothing was published — invalid content',
+          'error',
+        );
+        return;
+      }
+      showToast(
+        result.status === 'noop'
+          ? 'Nothing changed — the selected places already match GitHub.'
+          : `Published ${result.count} place${result.count === 1 ? '' : 's'} in one commit.`,
+        result.status === 'noop' ? 'info' : 'success',
+      );
+      setSelected(new Set());
+    } catch (thrown) {
+      showToast(
+        thrown instanceof Error ? thrown.message : 'Bulk publish failed — try again.',
+        'error',
+      );
+    } finally {
+      setBulkBusy(false);
+    }
+  };
 
   const placeRows = useMemo<PlaceWithId[]>(
     () => cms.places.map((row) => ({ ...row.value, id: row.id })),
@@ -114,6 +164,36 @@ export function PlacesListScreen() {
         </div>
       </section>
 
+      {/* 2b. Bulk publish bar — appears once at least one place is selected. */}
+      {selected.size > 0 && (
+        <section className="mb-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 rounded-2xl bg-[#1a1c1b] px-5 py-3 text-white">
+          <div className="text-sm">
+            <strong>{selected.size}</strong> place{selected.size === 1 ? '' : 's'} selected
+            <span className="block text-xs text-white/60">
+              One all-or-nothing commit. If any file changed on GitHub, nothing is written.
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSelected(new Set())}
+              disabled={bulkBusy}
+              className="px-4 py-2 rounded-full text-xs font-semibold text-white/80 hover:bg-white/10 transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              onClick={() => void handleBulkPublish()}
+              disabled={bulkBusy}
+              className="px-5 py-2 rounded-full bg-[#e60023] hover:bg-[#cc001f] text-xs font-semibold transition-colors disabled:opacity-60 disabled:cursor-wait cursor-pointer"
+            >
+              {bulkBusy ? 'Publishing…' : `Publish selected (${selected.size})`}
+            </button>
+          </div>
+        </section>
+      )}
+
       {/* 3. Places Grid: 3-column Editorial Cards */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2 pb-12">
         {filteredPlaces.map((place) => {
@@ -122,8 +202,27 @@ export function PlacesListScreen() {
           return (
             <article
               key={place.id}
-              className="group bg-white rounded-2xl border border-[#e2e3e1] overflow-hidden flex flex-col hover:border-[#dadad8] transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]"
+              className="group relative bg-white rounded-2xl border border-[#e2e3e1] overflow-hidden flex flex-col hover:border-[#dadad8] transition-all duration-200 shadow-[0_1px_3px_rgba(0,0,0,0.02)]"
             >
+              {/* Bulk selection — one commit for all selected places (patcms 0.2.0 saveMany). */}
+              <label
+                className={`absolute top-3.5 left-3.5 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer shadow-sm ${
+                  selected.has(place.id)
+                    ? 'bg-[#1a1c1b] text-white'
+                    : 'bg-white/95 text-[#1a1c1b] border border-[#e2e3e1]'
+                }`}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <input
+                  type="checkbox"
+                  checked={selected.has(place.id)}
+                  onChange={() => toggleSelected(place.id)}
+                  className="accent-[#e60023] cursor-pointer"
+                  aria-label={`Select ${place.name} for bulk publish`}
+                />
+                Select
+              </label>
+
               {/* Card Image */}
               <a
                 href={`/admin/editor?id=${encodeURIComponent(place.id)}`}

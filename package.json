@@ -21,7 +21,7 @@
     "astro": "^7.4.5",
     "d3-geo": "^3.1.1",
     "lucide-react": "^0.546.0",
-    "patcms": "^0.1.0",
+    "patcms": "^0.2.0",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "topojson-client": "^3.1.0",

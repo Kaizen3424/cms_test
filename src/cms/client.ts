@@ -9,7 +9,7 @@
  * - Construction is offline; no network call happens until an operation runs.
  */
 import { createCMS } from 'patcms';
-import { createIdbDraftStore, createIdbTokenStore } from 'patcms/web';
+import { createIdbContentStore, createIdbDraftStore, createIdbTokenStore } from 'patcms/web';
 import { config } from './config';
 
 export const cms = createCMS({
@@ -17,4 +17,7 @@ export const cms = createCMS({
   repository: { owner: 'Kaizen3424', repo: 'cms_test', branch: 'main' },
   tokenStore: createIdbTokenStore(),
   drafts: createIdbDraftStore(),
+  // 0.2.0: keep raw entry text on the device (keyed by path + blob sha), so a
+  // warm open skips every unchanged document. Wiped on sign-out / clearCache().
+  contentStore: createIdbContentStore(),
 });

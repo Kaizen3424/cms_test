@@ -12,12 +12,15 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
+  Eye,
   GripVertical,
+  History,
   Plus,
+  RotateCcw,
   Trash2,
 } from 'lucide-react';
 import { useCms } from '../../../cms/provider';
-import type { PlaceRow } from '../../../cms/provider';
+import type { PlaceRevision, PlaceRow } from '../../../cms/provider';
 import type { PhotoFrameContent, PlaceValue } from '../../../cms/types';
 import { reorderFrames } from '../../../lib/adminRules';
 import {
@@ -704,6 +707,8 @@ function Editor({ row }: { row: PlaceRow }) {
         </div>
       </section>
 
+      <HistoryPanel placeId={row.id} placeName={place.name} />
+
       {flow.conflict && (
         <ConflictDialog
           conflict={flow.conflict}
@@ -716,4 +721,187 @@ function Editor({ row }: { row: PlaceRow }) {
       )}
     </main>
   );
+}
+
+/* --------------------------- history & restore ---------------------------- */
+
+/** Patcms 0.2.0 history/restore, exposed per place. One commit page = one request. */
+function HistoryPanel({ placeId, placeName }: { placeId: string; placeName: string }) {
+  const cms = useCms();
+  const showToast = useToast();
+  const [revisions, setRevisions] = useState<PlaceRevision[] | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
+  const [busySha, setBusySha] = useState<string | undefined>(undefined);
+  const [preview, setPreview] = useState<{
+    sha: string;
+    name: string;
+    status: string;
+    fragment: string;
+  } | undefined>(undefined);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      setRevisions(await cms.placeHistory(placeId));
+    } catch (thrown) {
+      showToast(thrown instanceof Error ? thrown.message : 'Could not load history', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showPreview = async (sha: string) => {
+    setPreview(undefined);
+    try {
+      const old = await cms.placeAtRevision(placeId, sha);
+      setPreview({
+        sha,
+        name: old.name,
+        status: old.status,
+        fragment: old.oneLineFragment ?? '',
+      });
+    } catch (thrown) {
+      showToast(thrown instanceof Error ? thrown.message : 'Could not read that version', 'error');
+    }
+  };
+
+  const restore = async (sha: string, message: string) => {
+    const ok = window.confirm(
+      `Restore "${placeName}" to the version from ${formatRevisionDate(message)}?\n\n` +
+        'This writes the old content as a NEW commit — history is not rewritten. ' +
+        'You can restore again to undo it.',
+    );
+    if (!ok) return;
+    setBusySha(sha);
+    try {
+      const result = await cms.restorePlace(placeId, sha);
+      if (result.status === 'restored') {
+        showToast('Restored — the old content is live in a new commit.', 'success');
+        setPreview(undefined);
+        await load();
+      } else if (result.status === 'noop') {
+        showToast('Already at that version — no new commit was needed.', 'info');
+      } else if (result.status === 'conflict') {
+        showToast('Nothing was restored — this place changed on GitHub first.', 'error');
+      } else {
+        const first = result.issues[0];
+        showToast(
+          first ? `That version no longer validates — ${first.path}: ${first.message}` : 'That version no longer validates.',
+          'error',
+        );
+      }
+    } catch (thrown) {
+      showToast(thrown instanceof Error ? thrown.message : 'Restore failed', 'error');
+    } finally {
+      setBusySha(undefined);
+    }
+  };
+
+  return (
+    <section className="space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight text-[#1a1a1a] flex items-center gap-2">
+            <History className="w-5 h-5 text-[#e60023]" /> History
+          </h2>
+          <p className="text-sm text-[#73736c]">
+            Every publish is a commit. Restore writes an older version as a new commit.
+          </p>
+        </div>
+        {revisions === undefined && (
+          <button
+            type="button"
+            onClick={() => void load()}
+            disabled={loading}
+            className="px-5 py-2 rounded-full border border-[#dcdcd5] bg-white text-xs font-semibold text-[#1a1c1b] hover:border-[#1a1c1b] transition-colors disabled:opacity-60 cursor-pointer"
+          >
+            {loading ? 'Loading…' : 'Show history'}
+          </button>
+        )}
+      </div>
+
+      {revisions !== undefined && (
+        <div className="bg-white rounded-2xl border border-[#e7e7e2] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-[#eeeeec]">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#8c8c83]">
+              Latest commits for this place
+            </span>
+            <button
+              type="button"
+              onClick={() => void load()}
+              disabled={loading}
+              className="text-xs text-[#e60023] font-semibold hover:text-[#b7001a] disabled:opacity-60 cursor-pointer"
+            >
+              {loading ? 'Refreshing…' : 'Refresh'}
+            </button>
+          </div>
+          {revisions.length === 0 ? (
+            <p className="px-5 py-6 text-sm text-[#8c8c83]">No history yet.</p>
+          ) : (
+            <ul className="divide-y divide-[#f0f0ec]">
+              {revisions.map((revision, index) => {
+                const isCurrent = index === 0;
+                return (
+                  <li key={revision.commitSha} className="px-5 py-3.5 flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-[#1a1c1b] truncate">
+                        {revision.message || '(no commit message)'}
+                      </p>
+                      <p className="text-xs text-[#8c8c83] mt-0.5">
+                        {formatRevisionDate(revision.authoredAt)}
+                        {revision.authorName ? ` · ${revision.authorName}` : ''}
+                        <span className="font-mono"> · {revision.commitSha.slice(0, 7)}</span>
+                        {isCurrent ? ' · current' : ''}
+                      </p>
+                    </div>
+                    {!isCurrent && (
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => void showPreview(revision.commitSha)}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-[#dcdcd5] text-xs font-semibold text-[#5f5e5e] hover:border-[#1a1c1b] hover:text-[#1a1c1b] transition-colors cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5" /> Preview
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void restore(revision.commitSha, revision.authoredAt ?? revision.message)}
+                          disabled={busySha !== undefined}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#e60023] hover:bg-[#cc001f] text-white text-xs font-semibold transition-colors disabled:opacity-60 disabled:cursor-wait cursor-pointer"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                          {busySha === revision.commitSha ? 'Restoring…' : 'Restore'}
+                        </button>
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {preview && (
+        <div className="rounded-2xl border border-[#e2e3df] bg-[#fafaf7] p-5 space-y-2">
+          <p className="text-xs font-bold uppercase tracking-wider text-[#8c8c83]">
+            Preview of version {preview.sha.slice(0, 7)} — read only
+          </p>
+          <p className="text-sm text-[#1a1c1b]">
+            <strong>{preview.name || '(no name)'}</strong> · status: {preview.status}
+          </p>
+          <p className="text-sm text-[#5f5e5e]">{preview.fragment || '(no one-line fragment)'}</p>
+          <p className="text-xs text-[#8c8c83]">
+            Nothing was written. Use Restore on that row to make it the current version.
+          </p>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function formatRevisionDate(value: string | undefined): string {
+  if (!value) return 'unknown date';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
 }
