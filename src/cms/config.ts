@@ -190,7 +190,7 @@ const settings = defineFiles({
 });
 
 export const config = defineConfig({
-  site: { name: 'Atlas', url: 'https://atlas.example.workers.dev' },
+  site: { name: 'Atlas', url: 'https://cms-test.scantest.workers.dev' },
   // `deploy.contexts` is intentionally omitted (verified against patcms
   // dist-types/status/classify.d.ts + Cloudflare docs, 2026-11): check runs are
   // the PRIMARY deploy-status source and need no context string, and Workers

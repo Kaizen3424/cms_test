@@ -1,5 +1,5 @@
 const SITE_NAME = 'Atlas — Photography Travel Explorer';
-const SITE_URL = 'https://atlas.scantest.workers.dev';
+const SITE_URL = 'https://cms-test.scantest.workers.dev';
 
 export function absoluteUrl(path: string, site?: URL | string): string {
   const url = new URL(path, site ? String(site) : SITE_URL);

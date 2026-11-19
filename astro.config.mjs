@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 // Cloudflare Workers injects nothing at build time, so the site URL is an env
 // var with the deployed workers.dev URL as default. Override SITE_URL when
 // building for a custom domain.
-const site = process.env.SITE_URL ?? 'https://atlas.scantest.workers.dev';
+const site = process.env.SITE_URL ?? 'https://cms-test.scantest.workers.dev';
 
 export default defineConfig({
   site,
